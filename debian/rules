@@ -15,8 +15,7 @@ endif
 TXT2MANPAGES = debian/vdr-dbg.1
 MANPAGES = debian/vdrdbg-buildpackage.1 debian/debugvdr.1 debian/vdrleaktest.1
 
-MAKE_OPTIONS = REMOTE=LIRC CONFDIR=/var/lib/vdr LOCDIR=/usr/share/locale \
-               VIDEODIR=/var/lib/video.00 PLUGINLIBDIR=/usr/lib/vdr/plugins
+MAKE_OPTIONS = REMOTE=LIRC LCLBLD=1
 
 $(MANPAGES): %.1: %
 	sh $< -h | \
