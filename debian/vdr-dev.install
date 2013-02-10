@@ -6,7 +6,9 @@ PLUGINS/src/dvbhddevice/libhdffcmd/*.h      usr/include/vdr/dvbhddevice/
 
 PLUGINS/src/dvbsddevice/dvbsdffdevice.h     usr/include/vdr/dvbsddevice/
 
-libsi/*.h                       usr/include/vdr/libsi/
+#libsi/*.h                       usr/include/vdr/libsi/
+# vanilla-vdr install header here:
+libsi/*.h                       usr/include/libsi/
 
 debian/debianize-vdrplugin      usr/bin/
 debian/plugin-template/         usr/share/vdr-dev/
@@ -19,4 +21,6 @@ debian/dependencies.sh          usr/share/vdr-dev/
 
 debian/vdrdbg-buildpackage      usr/bin/
 Make.config                     usr/include/vdr/
-Make.global                     usr/include/vdr/
+#Make.global                     usr/include/vdr/
+
+vdr.pc                          usr/lib/pkg-config/
