@@ -53,4 +53,4 @@ opt-10_vdr-1.7.37-vasarajanauloja.patch
 #opt-67_epgsearch-exttimeredit-0.0.2.diff
 
 #xprmtl-01_externalci.patch
-#opt-99_dvbhddevice-make.patch
+lirc-hotfix.patch
