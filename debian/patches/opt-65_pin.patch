@@ -1,6 +1,6 @@
 --- a/device.c
 +++ b/device.c
-@@ -776,6 +776,7 @@
+@@ -777,6 +777,7 @@
       cChannel *channel;
       while ((channel = Channels.GetByNumber(n, Direction)) != NULL) {
             // try only channels which are currently available
@@ -8,7 +8,7 @@
             if (GetDevice(channel, LIVEPRIORITY, true, true))
                break;
             n = channel->Number() + Direction;
-@@ -797,6 +798,12 @@
+@@ -798,6 +799,12 @@
  
  eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
  {
@@ -40,19 +40,17 @@
       Add(file = new cMenuEditStrItem( tr("File"),   data.file, sizeof(data.file)));
       SetFirstDayItem();
       }
-@@ -2626,7 +2636,10 @@
-   for (cRecording *recording = Recordings.First(); recording; recording = Recordings.Next(recording)) {
-       if (!base || (strstr(recording->Name(), base) == recording->Name() && recording->Name()[strlen(base)] == FOLDERDELIMCHAR)) {
-          cMenuRecordingItem *Item = new cMenuRecordingItem(recording, level);
--         if (*Item->Text() && (!Item->IsDirectory() || (!LastItem || !LastItem->IsDirectory() || strcmp(Item->Text(), LastItemText) != 0))) {
-+
-+         if (*Item->Text() && (!Item->IsDirectory() || (!LastItem || !LastItem->IsDirectory() || strcmp(Item->Text(), LastItemText) != 0))
-+            && (!cStatus::MsgReplayProtected(Item->Recording(), Item->Name(), base,
-+                                             Item->IsDirectory(), true))) {              // PIN PATCH
+@@ -2635,7 +2645,8 @@
+                    }
+                 }
+             }
+-         if (*Item->Text() && !LastDir) {
++         if (*Item->Text() && !LastDir
++            && (!cStatus::MsgReplayProtected(Item->Recording(), Item->Name(), base, Item->IsDirectory(), true))) { // PIN PATCH
              Add(Item);
              LastItem = Item;
-             free(LastItemText);
-@@ -2678,6 +2691,9 @@
+             if (Item->IsDirectory())
+@@ -2686,6 +2697,9 @@
  {
    cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
    if (ri) {
@@ -62,7 +60,7 @@
       if (ri->IsDirectory())
          Open();
       else {
-@@ -3785,28 +3801,32 @@
+@@ -3804,28 +3818,32 @@
  
    // Basic menu items:
  
@@ -100,7 +98,7 @@
       Add(new cOsdItem(hk(tr("Commands")),  osCommands));
  
    }
-@@ -3890,6 +3910,14 @@
+@@ -3909,6 +3927,14 @@
    eOSState state = cOsdMenu::ProcessKey(Key);
    HadSubMenu |= HasSubMenu();
  
@@ -115,7 +113,7 @@
    cOsdObject *menu = NULL;
    switch (state) {
      case osSchedule:
-@@ -3942,6 +3970,7 @@
+@@ -3961,6 +3987,7 @@
                           if (item) {
                              cPlugin *p = cPluginManager::GetPlugin(item->PluginIndex());
                              if (p) {
@@ -123,7 +121,7 @@
                                 cOsdObject *menu = p->MainMenuAction();
                                 if (menu) {
                                    if (menu->IsMenu())
-@@ -3953,6 +3982,7 @@
+@@ -3972,6 +3999,7 @@
                                    }
                                 }
                              }
@@ -131,7 +129,7 @@
                           state = osEnd;
                         }
                         break;
-@@ -4164,6 +4194,7 @@
+@@ -4183,6 +4211,7 @@
             Channel = Direction > 0 ? Channels.Next(Channel) : Channels.Prev(Channel);
             if (!Channel && Setup.ChannelsWrap)
                Channel = Direction > 0 ? Channels.First() : Channels.Last();
@@ -139,7 +137,7 @@
             if (Channel && !Channel->GroupSep() && cDevice::GetDevice(Channel, LIVEPRIORITY, true, true))
                return Channel;
             }
-@@ -4857,6 +4888,7 @@
+@@ -4876,6 +4905,7 @@
             for (int i = 0; i < MAXRECORDCONTROLS; i++) {
                 if (!RecordControls[i]) {
                    RecordControls[i] = new cRecordControl(device, Timer, Pause);
@@ -159,7 +157,7 @@
  {
 --- a/osd.h
 +++ b/osd.h
-@@ -932,6 +932,7 @@
+@@ -927,6 +927,7 @@
         ///<        delete pm;
         ///<        }
    tArea vidWin;
@@ -277,15 +275,15 @@
  #endif //__STATUS_H
 --- a/timers.c
 +++ b/timers.c
-@@ -78,6 +78,7 @@
+@@ -76,6 +76,7 @@
       stop -= 2400;
    priority = Pause ? Setup.PausePriority : Setup.DefaultPriority;
    lifetime = Pause ? Setup.PauseLifetime : Setup.DefaultLifetime;
 +  fskProtection = 0;                                        // PIN PATCH
    if (Instant && channel)
       snprintf(file, sizeof(file), "%s%s", Setup.MarkInstantRecord ? "@" : "", *Setup.NameInstantRecord ? Setup.NameInstantRecord : channel->Name());
-   if (VfatFileSystem && (Utf8StrLen(file) > VFAT_MAX_FILENAME)) {
-@@ -117,6 +118,7 @@
+ }
+@@ -110,10 +111,12 @@
       stop -= 2400;
    priority = Setup.DefaultPriority;
    lifetime = Setup.DefaultLifetime;
@@ -293,15 +291,12 @@
    const char *Title = Event->Title();
    if (!isempty(Title))
       Utf8Strn0Cpy(file, Event->Title(), sizeof(file));
-@@ -126,6 +128,7 @@
-      dsyslog("timer file name truncated to '%s'", file);
-      }
    SetEvent(Event);
 +  cStatus::MsgTimerCreation(this, Event);                    // PIN PATCH
  }
  
  cTimer::cTimer(const cTimer &Timer)
-@@ -161,6 +164,7 @@
+@@ -149,6 +152,7 @@
       stop         = Timer.stop;
       priority     = Timer.priority;
       lifetime     = Timer.lifetime;
@@ -309,7 +304,7 @@
       strncpy(file, Timer.file, sizeof(file));
       free(aux);
       aux = Timer.aux ? strdup(Timer.aux) : NULL;
-@@ -355,6 +359,7 @@
+@@ -331,6 +335,7 @@
          result = false;
          }
       }
@@ -317,7 +312,7 @@
    free(channelbuffer);
    free(daybuffer);
    free(filebuffer);
-@@ -713,6 +718,36 @@
+@@ -689,6 +694,36 @@
    Matches(); // refresh start and end time
  }
  
@@ -362,7 +357,7 @@
    int priority;
 +  int fskProtection;                                               // PIN PATCH
    int lifetime;
-   mutable char file[MaxFileName];
+   mutable char file[NAME_MAX * 2]; // *2 to be able to hold 'title' and 'episode', which can each be up to 255 characters long
    char *aux;
 @@ -59,6 +60,7 @@
    int Start(void) const { return start; }
@@ -390,7 +385,7 @@
  
  #define MINCHANNELWAIT        10 // seconds to wait between failed channel switchings
  #define ACTIVITYTIMEOUT       60 // seconds before starting housekeeping
-@@ -958,6 +959,7 @@
+@@ -1006,6 +1007,7 @@
          cOsdObject *Interact = Menu ? Menu : cControl::Control();
          eKeys key = Interface->GetKey(!Interact || !Interact->NeedsFastResponse());
          if (ISREALKEY(key)) {
@@ -398,7 +393,7 @@
             EITScanner.Activity();
             // Cancel shutdown countdown:
             if (ShutdownHandler.countdown)
-@@ -1030,10 +1032,12 @@
+@@ -1078,10 +1080,12 @@
                       cControl::Control()->Hide();
                    cPlugin *plugin = cPluginManager::GetPlugin(PluginName);
                    if (plugin) {
@@ -411,7 +406,7 @@
                    else
                       esyslog("ERROR: unknown plugin '%s'", PluginName);
                    }
-@@ -1246,9 +1250,11 @@
+@@ -1294,9 +1298,11 @@
               // Instant resume of the last viewed recording:
               case kPlay:
                    if (cReplayControl::LastReplayed()) {

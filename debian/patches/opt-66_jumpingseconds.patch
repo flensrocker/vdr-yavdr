@@ -1,6 +1,6 @@
 --- a/config.c
 +++ b/config.c
-@@ -475,6 +475,8 @@
+@@ -478,6 +478,8 @@
    ChannelsWrap = 0;
    ShowChannelNamesWithSource = 0;
    EmergencyExit = 1;
@@ -9,19 +9,19 @@
  }
  
  cSetup& cSetup::operator= (const cSetup &s)
-@@ -682,6 +684,8 @@
-   else if (!strcasecmp(Name, "ChannelsWrap"))        ChannelsWrap       = atoi(Value);
+@@ -688,6 +690,8 @@
    else if (!strcasecmp(Name, "ShowChannelNamesWithSource")) ShowChannelNamesWithSource = atoi(Value);
    else if (!strcasecmp(Name, "EmergencyExit"))       EmergencyExit      = atoi(Value);
+   else if (!strcasecmp(Name, "LastReplayed"))        cReplayControl::SetRecording(Value);
 +  else if (!strcasecmp(Name, "JumpSeconds"))         JumpSeconds        = atoi(Value);
 +  else if (!strcasecmp(Name, "JumpSecondsSlow"))     JumpSecondsSlow    = atoi(Value);
    else
       return false;
    return true;
-@@ -792,6 +796,8 @@
-   Store("ChannelsWrap",       ChannelsWrap);
+@@ -801,6 +805,8 @@
    Store("ShowChannelNamesWithSource", ShowChannelNamesWithSource);
    Store("EmergencyExit",      EmergencyExit);
+   Store("LastReplayed",       cReplayControl::LastReplayed());
 +  Store("JumpSeconds",        JumpSeconds);
 +  Store("JumpSecondsSlow",    JumpSecondsSlow);
  
@@ -29,7 +29,7 @@
  
 --- a/config.h
 +++ b/config.h
-@@ -342,6 +342,8 @@
+@@ -344,6 +344,8 @@
    int ChannelsWrap;
    int ShowChannelNamesWithSource;
    int EmergencyExit;
@@ -40,7 +40,7 @@
    cString DeviceBondings;
 --- a/menu.c
 +++ b/menu.c
-@@ -3523,6 +3523,8 @@
+@@ -3536,6 +3536,8 @@
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Jump&Play"), &data.JumpPlay));
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Play&Jump"), &data.PlayJump));
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Pause at last mark"), &data.PauseLastMark));
@@ -49,7 +49,7 @@
  }
  
  void cMenuSetupReplay::Store(void)
-@@ -5485,9 +5487,9 @@
+@@ -5506,9 +5508,9 @@
      case kRight:   Forward(); break;
      case kRed:     TimeSearch(); break;
      case kGreen|k_Repeat:
@@ -61,7 +61,7 @@
      case kPrev|k_Repeat:
      case kPrev:    if (lastSkipTimeout.TimedOut()) {
                        lastSkipSeconds = REPLAYCONTROLSKIPSECONDS;
-@@ -5534,7 +5536,7 @@
+@@ -5555,7 +5557,7 @@
                                    marks.Save();
                                    }
                                 else
@@ -70,7 +70,7 @@
                                 break;
          case k3|k_Repeat:
          case k3:               if (GetReplayMode(play, forward, speed) && !play && GetIndex(Current, Total) && (m = marks.Get(Current)) != NULL) {
-@@ -5547,7 +5549,7 @@
+@@ -5568,7 +5570,7 @@
                                    marks.Save();
                                    }
                                 else
