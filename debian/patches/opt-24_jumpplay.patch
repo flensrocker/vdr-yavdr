@@ -132,7 +132,7 @@
 +    Added French language texts (thanks to Michaël Nival)
 --- a/config.c
 +++ b/config.c
-@@ -461,6 +461,9 @@
+@@ -464,6 +464,9 @@
    ProgressDisplayTime = 0;
    PauseOnMarkSet = 0;
    ResumeID = 0;
@@ -142,7 +142,7 @@
    CurrentChannel = -1;
    CurrentVolume = MAXVOLUME;
    CurrentDolby = 0;
-@@ -663,6 +666,9 @@
+@@ -668,6 +671,9 @@
    else if (!strcasecmp(Name, "ProgressDisplayTime")) ProgressDisplayTime= atoi(Value);
    else if (!strcasecmp(Name, "PauseOnMarkSet"))      PauseOnMarkSet     = atoi(Value);
    else if (!strcasecmp(Name, "ResumeID"))            ResumeID           = atoi(Value);
@@ -152,7 +152,7 @@
    else if (!strcasecmp(Name, "CurrentChannel"))      CurrentChannel     = atoi(Value);
    else if (!strcasecmp(Name, "CurrentVolume"))       CurrentVolume      = atoi(Value);
    else if (!strcasecmp(Name, "CurrentDolby"))        CurrentDolby       = atoi(Value);
-@@ -768,6 +774,9 @@
+@@ -776,6 +782,9 @@
    Store("ProgressDisplayTime",ProgressDisplayTime);
    Store("PauseOnMarkSet",     PauseOnMarkSet);
    Store("ResumeID",           ResumeID);
@@ -173,7 +173,7 @@
  #define MAXPRIORITY       99
  #define MINPRIORITY       (-MAXPRIORITY)
  #define LIVEPRIORITY      0                  // priority used when selecting a device for live viewing
-@@ -322,6 +324,9 @@
+@@ -324,6 +326,9 @@
    int ProgressDisplayTime;
    int PauseOnMarkSet;
    int ResumeID;
@@ -307,7 +307,7 @@
                  if (ringBuffer->Put(readFrame))
                     readFrame = NULL;
                  else
-@@ -572,8 +638,13 @@
+@@ -573,8 +639,13 @@
                  p = NULL;
                  }
               }
@@ -324,7 +324,7 @@
  
 --- a/menu.c
 +++ b/menu.c
-@@ -3318,6 +3318,9 @@
+@@ -3333,6 +3333,9 @@
    Add(new cMenuEditIntItem( tr("Setup.Replay$Progress display time (s)"), &data.ProgressDisplayTime, 0, 60));
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Pause replay when setting mark"), &data.PauseOnMarkSet));
    Add(new cMenuEditIntItem(tr("Setup.Replay$Resume ID"), &data.ResumeID, 0, 99));
@@ -334,7 +334,7 @@
  }
  
  void cMenuSetupReplay::Store(void)
-@@ -4947,8 +4950,10 @@
+@@ -4970,8 +4973,10 @@
          marks.Add(Current);
          bool Play, Forward;
          int Speed;
@@ -346,7 +346,7 @@
          }
       ShowTimed(2);
       marksModified = true;
-@@ -4962,8 +4967,17 @@
+@@ -4985,8 +4990,17 @@
       if (marks.Count()) {
          cMark *m = Forward ? marks.GetNext(Current) : marks.GetPrev(Current);
          if (m) {
@@ -366,7 +366,7 @@
             return;
             }
          }
-@@ -5025,7 +5039,7 @@
+@@ -5048,7 +5062,7 @@
       if (!m)
          m = marks.GetNext(Current);
       if (m) {

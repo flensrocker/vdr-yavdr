@@ -78,7 +78,7 @@ Author: Tobias Grimm <tg@e-tobi.net>
  
  #define MAXWAIT4EPGINFO   3 // seconds
  #define MODETIMEOUT       3 // seconds
-@@ -3526,6 +3527,9 @@
+@@ -3545,6 +3546,9 @@
    cancelFileTransferItem = NULL;
    stopRecordingItem = NULL;
    recordControlsState = 0;
@@ -88,7 +88,7 @@ Author: Tobias Grimm <tg@e-tobi.net>
    Set();
  
    // Initial submenus:
-@@ -3554,6 +3558,29 @@
+@@ -3573,6 +3577,29 @@
    SetTitle("VDR");
    SetHasHotkeys();
  
@@ -118,7 +118,7 @@ Author: Tobias Grimm <tg@e-tobi.net>
    // Basic menu items:
  
    Add(new cOsdItem(hk(tr("Schedule")),   osSchedule));
-@@ -3580,6 +3607,8 @@
+@@ -3599,6 +3626,8 @@
    if (Commands.Count())
       Add(new cOsdItem(hk(tr("Commands")),  osCommands));
  
@@ -127,7 +127,7 @@ Author: Tobias Grimm <tg@e-tobi.net>
    Update(true);
  
    Display();
-@@ -3704,6 +3733,41 @@
+@@ -3723,6 +3752,41 @@
                           state = osEnd;
                         }
                         break;

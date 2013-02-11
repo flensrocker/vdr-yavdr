@@ -5,7 +5,7 @@ Author: Torsten Kunkel <vdr@tkunkel.de>
 Author: Thomas Günther <tom@toms-cafe.de>
 --- a/config.c
 +++ b/config.c
-@@ -375,6 +375,7 @@
+@@ -376,6 +376,7 @@
    strcpy(OSDLanguage, ""); // default is taken from environment
    strcpy(OSDSkin, "lcars");
    strcpy(OSDTheme, "default");
@@ -13,7 +13,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
    PrimaryDVB = 1;
    ShowInfoOnChSwitch = 1;
    TimeoutRequChInfo = 1;
-@@ -581,6 +582,7 @@
+@@ -584,6 +585,7 @@
    if      (!strcasecmp(Name, "OSDLanguage"))       { strn0cpy(OSDLanguage, Value, sizeof(OSDLanguage)); I18nSetLocale(OSDLanguage); }
    else if (!strcasecmp(Name, "OSDSkin"))             Utf8Strn0Cpy(OSDSkin, Value, MaxSkinName);
    else if (!strcasecmp(Name, "OSDTheme"))            Utf8Strn0Cpy(OSDTheme, Value, MaxThemeName);
@@ -21,7 +21,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
    else if (!strcasecmp(Name, "PrimaryDVB"))          PrimaryDVB         = atoi(Value);
    else if (!strcasecmp(Name, "ShowInfoOnChSwitch"))  ShowInfoOnChSwitch = atoi(Value);
    else if (!strcasecmp(Name, "TimeoutRequChInfo"))   TimeoutRequChInfo  = atoi(Value);
-@@ -690,6 +692,7 @@
+@@ -696,6 +698,7 @@
    Store("OSDLanguage",        OSDLanguage);
    Store("OSDSkin",            OSDSkin);
    Store("OSDTheme",           OSDTheme);
@@ -147,15 +147,14 @@ Author: Thomas Günther <tom@toms-cafe.de>
 +
 --- a/Makefile
 +++ b/Makefile
-@@ -50,6 +50,8 @@
+@@ -74,6 +74,7 @@
+        timers.o tools.o transfer.o vdr.o videodir.o
  
  OBJS += vdrttxtsubshooks.o
- 
 +OBJS += iconpatch.o
-+
- ifndef NO_KBD
- DEFINES += -DREMOTE_KBD
- endif
+ 
+ DEFINES  += $(CDEFINES)
+ INCLUDES += $(CINCLUDES)
 --- a/menu.c
 +++ b/menu.c
 @@ -8,6 +8,7 @@
@@ -231,7 +230,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
       SetText(buffer);
       result = true;
       }
-@@ -2911,6 +2925,7 @@
+@@ -2920,6 +2934,7 @@
    Add(new cMenuEditStraItem(tr("Setup.OSD$Skin"),                   &skinIndex, numSkins, skinDescriptions));
    if (themes.NumThemes())
    Add(new cMenuEditStraItem(tr("Setup.OSD$Theme"),                  &themeIndex, themes.NumThemes(), themes.Descriptions()));
@@ -249,7 +248,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
  #include <ctype.h>
  #include <dirent.h>
  #include <errno.h>
-@@ -881,7 +882,7 @@
+@@ -987,7 +988,7 @@
  
  const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level) const
  {
@@ -258,7 +257,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
    free(titleBuffer);
    titleBuffer = NULL;
    if (Level < 0 || Level == HierarchyLevels()) {
-@@ -901,7 +902,7 @@
+@@ -1007,7 +1008,7 @@
                     Minutes % 60
                     );
          }

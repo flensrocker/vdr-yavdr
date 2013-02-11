@@ -15,15 +15,15 @@ Origin: ttxsubs plugin
    Use DiSEqC = no        Generally turns DiSEqC support on or off.
 --- a/Makefile
 +++ b/Makefile
-@@ -48,6 +48,8 @@
+@@ -73,6 +73,8 @@
         skinclassic.o skinlcars.o skins.o skinsttng.o sourceparams.o sources.o spu.o status.o svdrp.o themes.o thread.o\
         timers.o tools.o transfer.o vdr.o videodir.o
  
 +OBJS += vdrttxtsubshooks.o
 +
- ifndef NO_KBD
- DEFINES += -DREMOTE_KBD
- endif
+ DEFINES  += $(CDEFINES)
+ INCLUDES += $(CINCLUDES)
+ 
 --- a/channels.c
 +++ b/channels.c
 @@ -408,6 +408,26 @@
@@ -182,7 +182,7 @@ Origin: ttxsubs plugin
       do {
 --- a/config.c
 +++ b/config.c
-@@ -396,6 +396,7 @@
+@@ -397,6 +397,7 @@
    MarginStop = 10;
    AudioLanguages[0] = -1;
    DisplaySubtitles = 0;
@@ -190,7 +190,7 @@ Origin: ttxsubs plugin
    SubtitleLanguages[0] = -1;
    SubtitleOffset = 0;
    SubtitleFgTransparency = 0;
-@@ -601,6 +602,7 @@
+@@ -604,6 +605,7 @@
    else if (!strcasecmp(Name, "MarginStop"))          MarginStop         = atoi(Value);
    else if (!strcasecmp(Name, "AudioLanguages"))      return ParseLanguages(Value, AudioLanguages);
    else if (!strcasecmp(Name, "DisplaySubtitles"))    DisplaySubtitles   = atoi(Value);
@@ -198,7 +198,7 @@ Origin: ttxsubs plugin
    else if (!strcasecmp(Name, "SubtitleLanguages"))   return ParseLanguages(Value, SubtitleLanguages);
    else if (!strcasecmp(Name, "SubtitleOffset"))      SubtitleOffset     = atoi(Value);
    else if (!strcasecmp(Name, "SubtitleFgTransparency")) SubtitleFgTransparency = atoi(Value);
-@@ -709,6 +711,7 @@
+@@ -715,6 +717,7 @@
    Store("MarginStop",         MarginStop);
    StoreLanguages("AudioLanguages", AudioLanguages);
    Store("DisplaySubtitles",   DisplaySubtitles);
@@ -226,7 +226,7 @@ Origin: ttxsubs plugin
  
  // --- cLiveSubtitle ---------------------------------------------------------
  
-@@ -1306,6 +1307,13 @@
+@@ -1313,6 +1314,13 @@
                    }
                 break;
            case 0xBD: { // private stream 1
@@ -240,7 +240,7 @@ Origin: ttxsubs plugin
                 int PayloadOffset = Data[8] + 9;
  
                 // Compatibility mode for old subtitles plugin:
-@@ -1465,6 +1473,7 @@
+@@ -1472,6 +1480,7 @@
       tsToPesVideo.Reset();
       tsToPesAudio.Reset();
       tsToPesSubtitle.Reset();
@@ -248,7 +248,7 @@ Origin: ttxsubs plugin
       }
    else if (Length < TS_SIZE) {
       esyslog("ERROR: skipped %d bytes of TS fragment", Length);
-@@ -1510,6 +1519,17 @@
+@@ -1517,6 +1526,17 @@
                      if (!VideoOnly || HasIBPTrickSpeed())
                         PlayTsSubtitle(Data, TS_SIZE);
                      }
@@ -268,7 +268,7 @@ Origin: ttxsubs plugin
             else if (Pid == patPmtParser.Ppid()) {
 --- a/device.h
 +++ b/device.h
-@@ -579,6 +579,7 @@
+@@ -584,6 +584,7 @@
    cTsToPes tsToPesVideo;
    cTsToPes tsToPesAudio;
    cTsToPes tsToPesSubtitle;
@@ -278,7 +278,7 @@ Origin: ttxsubs plugin
    const cPatPmtParser *PatPmtParser(void) const { return &patPmtParser; }
 --- a/menu.c
 +++ b/menu.c
-@@ -2999,6 +2999,7 @@
+@@ -3010,6 +3010,7 @@
       Add(new cMenuEditIntItem( tr("Setup.DVB$Subtitle foreground transparency"), &data.SubtitleFgTransparency, 0, 9));
       Add(new cMenuEditIntItem( tr("Setup.DVB$Subtitle background transparency"), &data.SubtitleBgTransparency, 0, 10));
       }
@@ -757,7 +757,7 @@ Origin: ttxsubs plugin
                                   dbgpatpmt(" '%s'", ld->languageCode);
 --- a/remux.h
 +++ b/remux.h
-@@ -292,6 +292,7 @@
+@@ -294,6 +294,7 @@
    int MakeStream(uchar *Target, uchar Type, int Pid);
    int MakeAC3Descriptor(uchar *Target, uchar Type);
    int MakeSubtitlingDescriptor(uchar *Target, const char *Language, uchar SubtitlingType, uint16_t CompositionPageId, uint16_t AncillaryPageId);
@@ -765,7 +765,7 @@ Origin: ttxsubs plugin
    int MakeLanguageDescriptor(uchar *Target, const char *Language);
    int MakeCRC(uchar *Target, const uchar *Data, int Length);
    void GeneratePmtPid(const cChannel *Channel);
-@@ -339,6 +340,7 @@
+@@ -341,6 +342,7 @@
    int vpid;
    int ppid;
    int vtype;
@@ -773,7 +773,7 @@ Origin: ttxsubs plugin
    int apids[MAXAPIDS + 1]; // list is zero-terminated
    int atypes[MAXAPIDS + 1]; // list is zero-terminated
    char alangs[MAXAPIDS][MAXLANGCODE2];
-@@ -351,6 +353,8 @@
+@@ -353,6 +355,8 @@
    uint16_t compositionPageIds[MAXSPIDS];
    uint16_t ancillaryPageIds[MAXSPIDS];
    bool updatePrimaryDevice;
@@ -782,7 +782,7 @@ Origin: ttxsubs plugin
  protected:
    int SectionLength(const uchar *Data, int Length) { return (Length >= 3) ? ((int(Data[1]) & 0x0F) << 8)| Data[2] : 0; }
  public:
-@@ -387,6 +391,9 @@
+@@ -389,6 +393,9 @@
    int Vtype(void) const { return vtype; }
         ///< Returns the video stream type as defined by the current PMT, or 0 if no video
         ///< stream type has been detected, yet.
@@ -792,7 +792,7 @@ Origin: ttxsubs plugin
    const int *Apids(void) const { return apids; }
    const int *Dpids(void) const { return dpids; }
    const int *Spids(void) const { return spids; }
-@@ -401,6 +408,8 @@
+@@ -403,6 +410,8 @@
    uchar SubtitlingType(int i) const { return (0 <= i && i < MAXSPIDS) ? subtitlingTypes[i] : uchar(0); }
    uint16_t CompositionPageId(int i) const { return (0 <= i && i < MAXSPIDS) ? compositionPageIds[i] : uint16_t(0); }
    uint16_t AncillaryPageId(int i) const { return (0 <= i && i < MAXSPIDS) ? ancillaryPageIds[i] : uint16_t(0); }
