@@ -23,4 +23,4 @@ debian/vdrdbg-buildpackage      usr/bin/
 Make.config                     usr/include/vdr/
 #Make.global                     usr/include/vdr/
 
-vdr.pc                          usr/lib/pkg-config/
+vdr.pc                          usr/lib/pkgconfig/
