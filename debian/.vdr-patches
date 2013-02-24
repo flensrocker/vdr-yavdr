@@ -1,4 +1,4 @@
-debian/patches/16_channels.conf.terr-fix.patch:92ea3d82643ae71d4fe2b3bfed7bc3f4
+debian/patches/opt-24_jumpplay.patch:36425aeea827703631a733e822b7c4eb
 debian/patches/opt-55_wareagleicon.patch:cf2120309c05fcd2bd5e80b8420e7cbf
 debian/patches/04_newplugin.patch:4b1964ee4ebf7c793333151d299c0611
 debian/patches/opt-27_ttxtsubs.patch:82cf1a83ccb5def174963b97efd494e2
@@ -7,7 +7,6 @@ debian/patches/opt-37-x_menuorg.patch:bab2831a4c6c4c95a577e23817c8a2a3
 debian/patches/opt-56_eventdetails_v3.patch:e2ff963982af0673b0436d3f7f6c2048
 debian/patches/opt-41-x_timer-info.patch:deefdf8e55c93ebeef6f46932651e21c
 debian/patches/xprmtl-01_externalci.patch:d6c51a420a8cd2c92e844181fe695580
-debian/patches/opt-24_jumpplay.patch:36425aeea827703631a733e822b7c4eb
 debian/patches/opt-66_jumpingseconds.patch:2268423d25b2f2652afcc2848519a125
 debian/patches/opt-57_vdr-remote_instant_recordings.patch:4f1360970c773fba3b3e2c4d53de4360
 debian/patches/opt-61_dynamite.patch:a168ccd13275e52945b6c272dfbe3d8a

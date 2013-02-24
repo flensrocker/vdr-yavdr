@@ -1,3 +1,9 @@
+vdr (1.7.38-0yavdr0~precise) precise; urgency=medium
+
+  * new upstream release
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Sun, 24 Feb 2013 14:52:04 +0100
+
 vdr (1.7.37-2yavdr0~precise) precise; urgency=medium
 
   * correct libdir in vdr.pc
