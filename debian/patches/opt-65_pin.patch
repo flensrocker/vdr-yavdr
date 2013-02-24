@@ -50,7 +50,7 @@
              Add(Item);
              LastItem = Item;
              if (Item->IsDirectory())
-@@ -2686,6 +2697,9 @@
+@@ -2688,6 +2699,9 @@
  {
    cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
    if (ri) {
@@ -60,7 +60,7 @@
       if (ri->IsDirectory())
          Open();
       else {
-@@ -3804,28 +3818,32 @@
+@@ -3806,28 +3820,32 @@
  
    // Basic menu items:
  
@@ -98,7 +98,7 @@
       Add(new cOsdItem(hk(tr("Commands")),  osCommands));
  
    }
-@@ -3909,6 +3927,14 @@
+@@ -3911,6 +3929,14 @@
    eOSState state = cOsdMenu::ProcessKey(Key);
    HadSubMenu |= HasSubMenu();
  
@@ -113,7 +113,7 @@
    cOsdObject *menu = NULL;
    switch (state) {
      case osSchedule:
-@@ -3961,6 +3987,7 @@
+@@ -3963,6 +3989,7 @@
                           if (item) {
                              cPlugin *p = cPluginManager::GetPlugin(item->PluginIndex());
                              if (p) {
@@ -121,7 +121,7 @@
                                 cOsdObject *menu = p->MainMenuAction();
                                 if (menu) {
                                    if (menu->IsMenu())
-@@ -3972,6 +3999,7 @@
+@@ -3974,6 +4001,7 @@
                                    }
                                 }
                              }
@@ -129,7 +129,7 @@
                           state = osEnd;
                         }
                         break;
-@@ -4183,6 +4211,7 @@
+@@ -4185,6 +4213,7 @@
             Channel = Direction > 0 ? Channels.Next(Channel) : Channels.Prev(Channel);
             if (!Channel && Setup.ChannelsWrap)
                Channel = Direction > 0 ? Channels.First() : Channels.Last();
@@ -137,7 +137,7 @@
             if (Channel && !Channel->GroupSep() && cDevice::GetDevice(Channel, LIVEPRIORITY, true, true))
                return Channel;
             }
-@@ -4876,6 +4905,7 @@
+@@ -4878,6 +4907,7 @@
             for (int i = 0; i < MAXRECORDCONTROLS; i++) {
                 if (!RecordControls[i]) {
                    RecordControls[i] = new cRecordControl(device, Timer, Pause);
@@ -385,7 +385,7 @@
  
  #define MINCHANNELWAIT        10 // seconds to wait between failed channel switchings
  #define ACTIVITYTIMEOUT       60 // seconds before starting housekeeping
-@@ -1006,6 +1007,7 @@
+@@ -1010,6 +1011,7 @@
          cOsdObject *Interact = Menu ? Menu : cControl::Control();
          eKeys key = Interface->GetKey(!Interact || !Interact->NeedsFastResponse());
          if (ISREALKEY(key)) {
@@ -393,7 +393,7 @@
             EITScanner.Activity();
             // Cancel shutdown countdown:
             if (ShutdownHandler.countdown)
-@@ -1078,10 +1080,12 @@
+@@ -1082,10 +1084,12 @@
                       cControl::Control()->Hide();
                    cPlugin *plugin = cPluginManager::GetPlugin(PluginName);
                    if (plugin) {
@@ -406,7 +406,7 @@
                    else
                       esyslog("ERROR: unknown plugin '%s'", PluginName);
                    }
-@@ -1294,9 +1298,11 @@
+@@ -1298,9 +1302,11 @@
               // Instant resume of the last viewed recording:
               case kPlay:
                    if (cReplayControl::LastReplayed()) {

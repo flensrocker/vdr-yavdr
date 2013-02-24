@@ -170,13 +170,12 @@ Origin: ttxsubs plugin
       }
  }
  
-@@ -1937,6 +1939,9 @@
+@@ -1937,6 +1939,8 @@
           CaPmt.AddPid(*Dpid, STREAM_TYPE_PRIVATE);
       for (const int *Spid = Channel->Spids(); *Spid; Spid++)
-          CaPmt.AddPid(*Spid, STREAM_TYPE_PRIVATE); 
-+     if (Channel->Tpid() && Setup.SupportTeletext) {
+          CaPmt.AddPid(*Spid, STREAM_TYPE_PRIVATE);
++     if (Channel->Tpid() && Setup.SupportTeletext)
 +        CaPmt.AddPid(Channel->Tpid(), STREAM_TYPE_PRIVATE);
-+        }
       cas->SendPMT(&CaPmt);
       cTimeMs Timeout(QUERY_REPLY_TIMEOUT);
       do {
@@ -208,7 +207,7 @@ Origin: ttxsubs plugin
    Store("SubtitleFgTransparency", SubtitleFgTransparency);
 --- a/config.h
 +++ b/config.h
-@@ -272,6 +272,7 @@
+@@ -275,6 +275,7 @@
    int MarginStart, MarginStop;
    int AudioLanguages[I18N_MAX_LANGUAGES + 1];
    int DisplaySubtitles;
@@ -278,7 +277,7 @@ Origin: ttxsubs plugin
    const cPatPmtParser *PatPmtParser(void) const { return &patPmtParser; }
 --- a/menu.c
 +++ b/menu.c
-@@ -3010,6 +3010,7 @@
+@@ -3012,6 +3012,7 @@
       Add(new cMenuEditIntItem( tr("Setup.DVB$Subtitle foreground transparency"), &data.SubtitleFgTransparency, 0, 9));
       Add(new cMenuEditIntItem( tr("Setup.DVB$Subtitle background transparency"), &data.SubtitleBgTransparency, 0, 10));
       }
@@ -439,9 +438,9 @@ Origin: ttxsubs plugin
  
 --- a/po/fr_FR.po
 +++ b/po/fr_FR.po
-@@ -974,6 +974,9 @@
+@@ -978,6 +978,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
- msgstr "Transparence du fond"
+ msgstr "Transparence du fond des sous-titres"
  
 +msgid "Setup.DVB$Enable teletext support"
 +msgstr ""
@@ -547,7 +546,7 @@ Origin: ttxsubs plugin
  
 --- a/po/ro_RO.po
 +++ b/po/ro_RO.po
-@@ -971,6 +971,9 @@
+@@ -970,6 +970,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Transparenţa fundalului subtitrării"
  
@@ -619,7 +618,7 @@ Origin: ttxsubs plugin
  
 --- a/po/uk_UA.po
 +++ b/po/uk_UA.po
-@@ -968,6 +968,9 @@
+@@ -969,6 +969,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Прозорість заднього плану субтитрів"
  

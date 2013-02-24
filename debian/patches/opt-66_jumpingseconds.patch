@@ -29,7 +29,7 @@
  
 --- a/config.h
 +++ b/config.h
-@@ -344,6 +344,8 @@
+@@ -347,6 +347,8 @@
    int ChannelsWrap;
    int ShowChannelNamesWithSource;
    int EmergencyExit;
@@ -40,7 +40,7 @@
    cString DeviceBondings;
 --- a/menu.c
 +++ b/menu.c
-@@ -3536,6 +3536,8 @@
+@@ -3538,6 +3538,8 @@
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Jump&Play"), &data.JumpPlay));
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Play&Jump"), &data.PlayJump));
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Pause at last mark"), &data.PauseLastMark));
@@ -49,7 +49,7 @@
  }
  
  void cMenuSetupReplay::Store(void)
-@@ -5506,9 +5508,9 @@
+@@ -5505,9 +5507,9 @@
      case kRight:   Forward(); break;
      case kRed:     TimeSearch(); break;
      case kGreen|k_Repeat:
@@ -61,7 +61,7 @@
      case kPrev|k_Repeat:
      case kPrev:    if (lastSkipTimeout.TimedOut()) {
                        lastSkipSeconds = REPLAYCONTROLSKIPSECONDS;
-@@ -5555,7 +5557,7 @@
+@@ -5554,7 +5556,7 @@
                                    marks.Save();
                                    }
                                 else
@@ -70,7 +70,7 @@
                                 break;
          case k3|k_Repeat:
          case k3:               if (GetReplayMode(play, forward, speed) && !play && GetIndex(Current, Total) && (m = marks.Get(Current)) != NULL) {
-@@ -5568,7 +5570,7 @@
+@@ -5567,7 +5569,7 @@
                                    marks.Save();
                                    }
                                 else

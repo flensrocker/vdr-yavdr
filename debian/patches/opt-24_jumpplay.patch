@@ -173,7 +173,7 @@
  #define MAXPRIORITY       99
  #define MINPRIORITY       (-MAXPRIORITY)
  #define LIVEPRIORITY      0                  // priority used when selecting a device for live viewing
-@@ -324,6 +326,9 @@
+@@ -327,6 +329,9 @@
    int ProgressDisplayTime;
    int PauseOnMarkSet;
    int ResumeID;
@@ -324,7 +324,7 @@
  
 --- a/menu.c
 +++ b/menu.c
-@@ -3333,6 +3333,9 @@
+@@ -3335,6 +3335,9 @@
    Add(new cMenuEditIntItem( tr("Setup.Replay$Progress display time (s)"), &data.ProgressDisplayTime, 0, 60));
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Pause replay when setting mark"), &data.PauseOnMarkSet));
    Add(new cMenuEditIntItem(tr("Setup.Replay$Resume ID"), &data.ResumeID, 0, 99));
@@ -334,7 +334,7 @@
  }
  
  void cMenuSetupReplay::Store(void)
-@@ -4970,8 +4973,10 @@
+@@ -4971,8 +4974,10 @@
          marks.Add(Current);
          bool Play, Forward;
          int Speed;
@@ -347,9 +347,9 @@
       ShowTimed(2);
       marksModified = true;
 @@ -4985,8 +4990,17 @@
+   if (GetIndex(Current, Total)) {
       if (marks.Count()) {
-         cMark *m = Forward ? marks.GetNext(Current) : marks.GetPrev(Current);
-         if (m) {
+         if (cMark *m = Forward ? marks.GetNext(Current) : marks.GetPrev(Current)) {
 -           Goto(m->Position(), true);
 -           displayFrames = true;
 +           bool Play2, Forward2;
@@ -366,7 +366,7 @@
             return;
             }
          }
-@@ -5048,7 +5062,7 @@
+@@ -5047,7 +5061,7 @@
       if (!m)
          m = marks.GetNext(Current);
       if (m) {
@@ -395,7 +395,7 @@
  
 --- a/po/fr_FR.po
 +++ b/po/fr_FR.po
-@@ -1098,6 +1098,15 @@
+@@ -1102,6 +1102,15 @@
  msgid "Replay"
  msgstr "Lecture"
  

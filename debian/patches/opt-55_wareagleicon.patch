@@ -31,7 +31,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
    Store("TimeoutRequChInfo",  TimeoutRequChInfo);
 --- a/config.h
 +++ b/config.h
-@@ -256,6 +256,7 @@
+@@ -259,6 +259,7 @@
    char OSDLanguage[I18N_MAX_LOCALE_LEN];
    char OSDSkin[MaxSkinName];
    char OSDTheme[MaxThemeName];
@@ -230,7 +230,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
       SetText(buffer);
       result = true;
       }
-@@ -2920,6 +2934,7 @@
+@@ -2922,6 +2936,7 @@
    Add(new cMenuEditStraItem(tr("Setup.OSD$Skin"),                   &skinIndex, numSkins, skinDescriptions));
    if (themes.NumThemes())
    Add(new cMenuEditStraItem(tr("Setup.OSD$Theme"),                  &themeIndex, themes.NumThemes(), themes.Descriptions()));

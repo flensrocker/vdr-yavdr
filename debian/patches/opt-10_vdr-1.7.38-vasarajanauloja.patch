@@ -590,7 +590,7 @@
  // --- cMenuRecordings -------------------------------------------------------
  
  cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus)
-@@ -2458,6 +2620,16 @@
+@@ -2460,6 +2622,16 @@
    return osContinue;
  }
  
@@ -607,7 +607,7 @@
  eOSState cMenuRecordings::ProcessKey(eKeys Key)
  {
    bool HadSubMenu = HasSubMenu();
-@@ -2471,7 +2643,7 @@
+@@ -2473,7 +2645,7 @@
         case kRed:    return (helpKeys > 1 && RecordingCommands.Count()) ? Commands() : Play();
         case kGreen:  return Rewind();
         case kYellow: return Delete();
@@ -616,7 +616,7 @@
         case kBlue:   return Info();
         case k0:      return Sort();
         case k1...k9: return Commands(Key);
-@@ -3366,6 +3538,7 @@
+@@ -3368,6 +3540,7 @@
    replaying = false;
    stopReplayItem = NULL;
    cancelEditingItem = NULL;
@@ -624,7 +624,7 @@
    stopRecordingItem = NULL;
    recordControlsState = 0;
    Set();
-@@ -3460,6 +3633,19 @@
+@@ -3462,6 +3635,19 @@
       result = true;
       }
  
@@ -644,7 +644,7 @@
    // Record control:
    if (cRecordControls::StateChanged(recordControlsState)) {
       while (stopRecordingItem) {
-@@ -3508,6 +3694,12 @@
+@@ -3510,6 +3696,12 @@
                            return osEnd;
                            }
                         break;
@@ -657,7 +657,7 @@
      case osPlugin:     {
                           cMenuPluginItem *item = (cMenuPluginItem *)Get(Current());
                           if (item) {
-@@ -4481,6 +4673,10 @@
+@@ -4483,6 +4675,10 @@
  
  // --- cReplayControl --------------------------------------------------------
  
@@ -668,7 +668,7 @@
  cReplayControl *cReplayControl::currentReplayControl = NULL;
  cString cReplayControl::fileName;
  
-@@ -4495,6 +4691,9 @@
+@@ -4497,6 +4693,9 @@
    lastCurrent = lastTotal = -1;
    lastPlay = lastForward = false;
    lastSpeed = -2; // an invalid value
@@ -678,7 +678,7 @@
    timeoutShow = 0;
    timeSearchActive = false;
    cRecording Recording(fileName);
-@@ -4830,7 +5029,7 @@
+@@ -4829,7 +5028,7 @@
             Skins.Message(mtError, tr("No editing marks defined!"));
          else if (!marks.GetNumSequences())
             Skins.Message(mtError, tr("No editing sequences defined!"));
@@ -687,7 +687,7 @@
             Skins.Message(mtError, tr("Can't start editing process!"));
          else
             Skins.Message(mtInfo, tr("Editing process started"));
-@@ -4928,6 +5127,32 @@
+@@ -4927,6 +5126,32 @@
      case kGreen:   SkipSeconds(-60); break;
      case kYellow|k_Repeat:
      case kYellow:  SkipSeconds( 60); break;
@@ -709,7 +709,7 @@
 +    case kNext|k_Repeat:
 +    case kNext:    if (lastSkipTimeout.TimedOut()) {
 +                      lastSkipSeconds = REPLAYCONTROLSKIPSECONDS;
-+                      lastSkipKey = kNext;
++                      lastSkipKey = kNext;	
 +                   }
 +                   else if (RAWKEY(lastSkipKey) != kNext && lastSkipSeconds > (2 * REPLAYCONTROLSKIPLIMIT)) {
 +                      lastSkipSeconds /= 2;
@@ -720,7 +720,7 @@
      case kStop:
      case kBlue:    Hide();
                     Stop();
-@@ -4937,12 +5162,8 @@
+@@ -4936,12 +5161,8 @@
        switch (int(Key)) {
          // Editing:
          case kMarkToggle:      MarkToggle(); break;
@@ -925,7 +925,7 @@
 +
 +msgid "File transfer already active!"
 +msgstr "Dateiübertragung bereits aktiv!"
-+
++ 
 +#. TRANSLATORS: note the leading blank!
 +msgid " Cancel file transfer"
 +msgstr " Dateiübertragung beenden"
@@ -998,7 +998,7 @@
 +
 +msgid "File transfer already active!"
 +msgstr "Tiedoston siirto on jo kÃ¤ynnissÃ¤!"
-+
++ 
 +#. TRANSLATORS: note the leading blank!
 +msgid " Cancel file transfer"
 +msgstr " Peru tiedoston siirto"
@@ -1059,7 +1059,7 @@
             recording->deleted = time(NULL);
 --- a/recording.h
 +++ b/recording.h
-@@ -120,6 +120,7 @@
+@@ -118,6 +118,7 @@
    const char *Title(char Delimiter = ' ', bool NewIndicator = false, int Level = -1) const;
    const cRecordingInfo *Info(void) const { return info; }
    const char *PrefixFileName(char Prefix);
@@ -1067,7 +1067,7 @@
    int HierarchyLevels(void) const;
    void ResetResume(void) const;
    double FramesPerSecond(void) const { return framesPerSecond; }
-@@ -131,7 +132,7 @@
+@@ -129,7 +130,7 @@
    int FileSizeMB(void) const;
         ///< Returns the total file size of this recording (in MB), or -1 if the file
         ///< size is unknown.
@@ -1076,7 +1076,7 @@
    bool IsEdited(void) const;
    bool IsPesRecording(void) const { return isPesRecording; }
    bool IsOnVideoDirectoryFileSystem(void) const;
-@@ -191,7 +192,7 @@
+@@ -189,7 +190,7 @@
    void ResetResume(const char *ResumeFileName = NULL);
    cRecording *GetByName(const char *FileName);
    void AddByName(const char *FileName, bool TriggerUpdate = true);
@@ -1261,7 +1261,7 @@
  #include "i18n.h"
  #include "interface.h"
  #include "keys.h"
-@@ -1311,6 +1312,12 @@
+@@ -1315,6 +1316,12 @@
                else
                   Skins.QueueMessage(mtInfo, tr("Editing process finished"));
                }
@@ -1274,7 +1274,7 @@
             }
  
          // SIGHUP shall cause a restart:
-@@ -1326,7 +1333,7 @@
+@@ -1330,7 +1337,7 @@
                ShutdownHandler.countdown.Cancel();
             }
  
@@ -1283,7 +1283,7 @@
             // Handle housekeeping tasks
  
             // Shutdown:
-@@ -1375,6 +1382,7 @@
+@@ -1379,6 +1386,7 @@
  
    PluginManager.StopPlugins();
    cRecordControls::Shutdown();
