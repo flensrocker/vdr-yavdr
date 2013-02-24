@@ -1,5 +1,5 @@
 debian/patches/opt-10_vdr-1.7.38-vasarajanauloja.patch:c35fe910ea0b36b5ac6fb2a0abacab43
-debian/patches/opt-24_jumpplay.patch:97a61091819ba37eddc47177cab0f439
+debian/patches/opt-24_jumpplay.patch:6d04dc21b27a141a784f63e06a4c2044
 debian/patches/opt-55_wareagleicon.patch:73999bf078caf8d8265650d2b9aa5bf1
 debian/patches/04_newplugin.patch:4b1964ee4ebf7c793333151d299c0611
 debian/patches/opt-27_ttxtsubs.patch:d4604f1102597d6b1b0fbaafe16bc336
