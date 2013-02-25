@@ -1,3 +1,9 @@
+vdr (1.7.38-1yavdr0~precise) precise; urgency=medium
+
+  * fix include path in vdr.pc
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Mon, 25 Feb 2013 19:33:19 +0100
+
 vdr (1.7.38-0yavdr0~precise) precise; urgency=medium
 
   * new upstream release
