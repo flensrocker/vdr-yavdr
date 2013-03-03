@@ -354,7 +354,7 @@ Origin: ttxsubs plugin
  
 --- a/po/cs_CZ.po
 +++ b/po/cs_CZ.po
-@@ -970,6 +970,9 @@
+@@ -971,6 +971,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Pr≈Øhlednost pozad√≠ titulk≈Ø"
  
@@ -438,7 +438,7 @@ Origin: ttxsubs plugin
  
 --- a/po/fr_FR.po
 +++ b/po/fr_FR.po
-@@ -978,6 +978,9 @@
+@@ -977,6 +977,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Transparence du fond des sous-titres"
  
@@ -462,9 +462,9 @@ Origin: ttxsubs plugin
  
 --- a/po/hu_HU.po
 +++ b/po/hu_HU.po
-@@ -971,6 +971,9 @@
+@@ -972,6 +972,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
- msgstr "Felirat h·tterÈnek transzparenci·ja"
+ msgstr "Felirat h√°tter√©nek transzparenci√°ja"
  
 +msgid "Setup.DVB$Enable teletext support"
 +msgstr ""
@@ -522,7 +522,7 @@ Origin: ttxsubs plugin
  
 --- a/po/pl_PL.po
 +++ b/po/pl_PL.po
-@@ -969,6 +969,9 @@
+@@ -970,6 +970,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Przeºrocze podtytu≥Ûw: T≥o"
  
@@ -594,7 +594,7 @@ Origin: ttxsubs plugin
  
 --- a/po/sv_SE.po
 +++ b/po/sv_SE.po
-@@ -971,6 +971,9 @@
+@@ -972,6 +972,9 @@
  msgid "Setup.DVB$Subtitle background transparency"
  msgstr "Transparent bakgrund textremsa"
  
@@ -726,7 +726,7 @@ Origin: ttxsubs plugin
       for (SI::Loop::Iterator it; Pmt.streamLoop.getNext(stream, it); ) {
           dbgpatpmt("     stream type = %02X, pid = %d", stream.getStreamType(), stream.getPid());
 @@ -768,6 +799,28 @@
-                                     spids[NumSpids]= 0;
+                                     spids[NumSpids] = 0;
                                      }
                                   break;
 +                            case SI::TeletextDescriptorTag: {

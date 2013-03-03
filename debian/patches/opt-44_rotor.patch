@@ -39,7 +39,7 @@ Origin: extracted from the rotor plugin 0.1.4-vdr1.5
    cDvbTuner *bondedTuner;
    bool bondedMaster;
    bool SetFrontendType(const cChannel *Channel);
-@@ -328,12 +330,16 @@
+@@ -329,12 +331,16 @@
    bool Locked(int TimeoutMs = 0);
    int GetSignalStrength(void) const;
    int GetSignalQuality(void) const;
@@ -56,7 +56,7 @@ Origin: extracted from the rotor plugin 0.1.4-vdr1.5
    frontendType = SYS_UNDEFINED;
    device = Device;
    fd_frontend = Fd_Frontend;
-@@ -644,6 +650,35 @@
+@@ -652,6 +658,35 @@
    return -1;
  }
  
@@ -92,7 +92,7 @@ Origin: extracted from the rotor plugin 0.1.4-vdr1.5
  static unsigned int FrequencyToHz(unsigned int f)
  {
    while (f && f < 1000000)
-@@ -857,6 +892,10 @@
+@@ -865,6 +900,10 @@
          if (GetFrontendStatus(NewStatus))
             Status = NewStatus;
          cMutexLock MutexLock(&mutex);
@@ -103,7 +103,7 @@ Origin: extracted from the rotor plugin 0.1.4-vdr1.5
          int WaitTime = 1000;
          switch (tunerStatus) {
            case tsIdle:
-@@ -1540,6 +1579,11 @@
+@@ -1548,6 +1587,11 @@
    return dvbTuner ? dvbTuner->Locked(TimeoutMs) : false;
  }
  

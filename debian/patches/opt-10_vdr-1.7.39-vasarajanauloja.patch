@@ -50,7 +50,7 @@
           ///< Returns true if the cutter is currently active.
 --- a/dvbplayer.c
 +++ b/dvbplayer.c
-@@ -364,11 +364,16 @@
+@@ -367,11 +367,16 @@
    if (index) {
       int Index = ptsIndex.FindIndex(DeviceGetSTC());
       if (Index >= 0) {
@@ -616,7 +616,7 @@
         case kBlue:   return Info();
         case k0:      return Sort();
         case k1...k9: return Commands(Key);
-@@ -3368,6 +3540,7 @@
+@@ -3370,6 +3542,7 @@
    replaying = false;
    stopReplayItem = NULL;
    cancelEditingItem = NULL;
@@ -624,7 +624,7 @@
    stopRecordingItem = NULL;
    recordControlsState = 0;
    Set();
-@@ -3462,6 +3635,19 @@
+@@ -3464,6 +3637,19 @@
       result = true;
       }
  
@@ -644,7 +644,7 @@
    // Record control:
    if (cRecordControls::StateChanged(recordControlsState)) {
       while (stopRecordingItem) {
-@@ -3510,6 +3696,12 @@
+@@ -3512,6 +3698,12 @@
                            return osEnd;
                            }
                         break;
@@ -657,7 +657,7 @@
      case osPlugin:     {
                           cMenuPluginItem *item = (cMenuPluginItem *)Get(Current());
                           if (item) {
-@@ -4483,6 +4675,10 @@
+@@ -4485,6 +4677,10 @@
  
  // --- cReplayControl --------------------------------------------------------
  
@@ -668,7 +668,7 @@
  cReplayControl *cReplayControl::currentReplayControl = NULL;
  cString cReplayControl::fileName;
  
-@@ -4497,6 +4693,9 @@
+@@ -4499,6 +4695,9 @@
    lastCurrent = lastTotal = -1;
    lastPlay = lastForward = false;
    lastSpeed = -2; // an invalid value
@@ -678,7 +678,7 @@
    timeoutShow = 0;
    timeSearchActive = false;
    cRecording Recording(fileName);
-@@ -4829,7 +5028,7 @@
+@@ -4831,7 +5030,7 @@
             Skins.Message(mtError, tr("No editing marks defined!"));
          else if (!marks.GetNumSequences())
             Skins.Message(mtError, tr("No editing sequences defined!"));
@@ -687,7 +687,7 @@
             Skins.Message(mtError, tr("Can't start editing process!"));
          else
             Skins.Message(mtInfo, tr("Editing process started"));
-@@ -4927,6 +5126,32 @@
+@@ -4929,6 +5128,32 @@
      case kGreen:   SkipSeconds(-60); break;
      case kYellow|k_Repeat:
      case kYellow:  SkipSeconds( 60); break;
@@ -720,7 +720,7 @@
      case kStop:
      case kBlue:    Hide();
                     Stop();
-@@ -4936,12 +5161,8 @@
+@@ -4938,12 +5163,8 @@
        switch (int(Key)) {
          // Editing:
          case kMarkToggle:      MarkToggle(); break;
@@ -1022,7 +1022,7 @@
 +msgstr "Tiedosto on jo olemassa - ylikirjoitetaanko?"
 --- a/recording.c
 +++ b/recording.c
-@@ -1057,6 +1057,16 @@
+@@ -1058,6 +1058,16 @@
    return NULL;
  }
  
@@ -1039,7 +1039,7 @@
  int cRecording::HierarchyLevels(void) const
  {
    const char *s = name;
-@@ -1349,7 +1359,7 @@
+@@ -1350,7 +1360,7 @@
       }
  }
  
@@ -1048,7 +1048,7 @@
  {
    LOCK_THREAD;
    cRecording *recording = GetByName(FileName);
-@@ -1357,7 +1367,7 @@
+@@ -1358,7 +1368,7 @@
       cThreadLock DeletedRecordingsLock(&DeletedRecordings);
       Del(recording, false);
       char *ext = strrchr(recording->fileName, '.');
@@ -1095,7 +1095,7 @@
  #include "i18n.h"
  #include "interface.h"
  #include "menu.h"
-@@ -166,6 +167,10 @@
+@@ -171,6 +172,10 @@
       if (!Interactive || !Interface->Confirm(tr("Editing - shut down anyway?")))
          return false;
       }
@@ -1106,7 +1106,7 @@
  
    cTimer *timer = Timers.GetNextActiveTimer();
    time_t Next = timer ? timer->StartTime() : 0;
-@@ -209,6 +214,10 @@
+@@ -214,6 +219,10 @@
       if (!Interactive || !Interface->Confirm(tr("Editing - restart anyway?")))
          return false;
       }
@@ -1263,13 +1263,13 @@
  #include "keys.h"
 @@ -1315,6 +1316,12 @@
                else
-                  Skins.QueueMessage(mtInfo, tr("Editing process finished"));
+                  Skins.Message(mtInfo, tr("Editing process finished"));
                }
 +           if (!cFileTransfer::Active() && cFileTransfer::Ended()) {
 +              if (cFileTransfer::Error())
-+                 Skins.QueueMessage(mtError, tr("File transfer failed!"));
++                 Skins.Message(mtError, tr("File transfer failed!"));
 +              else
-+                 Skins.QueueMessage(mtInfo, tr("File transfer finished"));
++                 Skins.Message(mtInfo, tr("File transfer finished"));
 +              }
             }
  

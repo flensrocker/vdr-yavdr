@@ -60,7 +60,7 @@
       if (ri->IsDirectory())
          Open();
       else {
-@@ -3806,28 +3820,32 @@
+@@ -3808,28 +3822,32 @@
  
    // Basic menu items:
  
@@ -98,7 +98,7 @@
       Add(new cOsdItem(hk(tr("Commands")),  osCommands));
  
    }
-@@ -3911,6 +3929,14 @@
+@@ -3913,6 +3931,14 @@
    eOSState state = cOsdMenu::ProcessKey(Key);
    HadSubMenu |= HasSubMenu();
  
@@ -113,7 +113,7 @@
    cOsdObject *menu = NULL;
    switch (state) {
      case osSchedule:
-@@ -3963,6 +3989,7 @@
+@@ -3965,6 +3991,7 @@
                           if (item) {
                              cPlugin *p = cPluginManager::GetPlugin(item->PluginIndex());
                              if (p) {
@@ -121,7 +121,7 @@
                                 cOsdObject *menu = p->MainMenuAction();
                                 if (menu) {
                                    if (menu->IsMenu())
-@@ -3974,6 +4001,7 @@
+@@ -3976,6 +4003,7 @@
                                    }
                                 }
                              }
@@ -129,7 +129,7 @@
                           state = osEnd;
                         }
                         break;
-@@ -4185,6 +4213,7 @@
+@@ -4187,6 +4215,7 @@
             Channel = Direction > 0 ? Channels.Next(Channel) : Channels.Prev(Channel);
             if (!Channel && Setup.ChannelsWrap)
                Channel = Direction > 0 ? Channels.First() : Channels.Last();
@@ -137,7 +137,7 @@
             if (Channel && !Channel->GroupSep() && cDevice::GetDevice(Channel, LIVEPRIORITY, true, true))
                return Channel;
             }
-@@ -4878,6 +4907,7 @@
+@@ -4880,6 +4909,7 @@
             for (int i = 0; i < MAXRECORDCONTROLS; i++) {
                 if (!RecordControls[i]) {
                    RecordControls[i] = new cRecordControl(device, Timer, Pause);
