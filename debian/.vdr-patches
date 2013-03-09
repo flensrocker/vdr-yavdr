@@ -12,7 +12,7 @@ debian/patches/opt-66_jumpingseconds.patch:cf4a18b57146bdc8a9f01f3e17b5868f
 debian/patches/opt-57_vdr-remote_instant_recordings.patch:24a2c95895171f64aaeac1d33542139e
 debian/patches/99_ncursesw-include.patch:160d3e86f8e3aecb9650583421057c96
 debian/patches/82_valgrind.patch:d80d503246949306079c8a7791065740
-debian/patches/opt-61_dynamite.patch:ffee7d921b9bc1d3078dbaf762afa941
+debian/patches/opt-61_dynamite.patch:f527d37451f29114bd81639da573a429
 debian/patches/opt-22-x_edit_marks.patch:fe93eb55aaa31236e28f87d2acd0c86c
 debian/patches/opt-67_epgsearch-exttimeredit-0.0.2.diff:7c73f6e5069d6dfe1d43047e136a1ccb
 debian/patches/opt-44_rotor.patch:80cae69d098da655df0f5afbe5dc0af2
