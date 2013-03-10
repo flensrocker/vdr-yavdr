@@ -51,24 +51,24 @@ Re-Authored: Lars Hanisch <dvb@flensrocker.de>
 +# Default directories (adjust as necessary or desired):
 +
 +PREFIX    = /usr
-+#BINDIR    = $(PREFIX)/bin
-+#INCDIR    = $(PREFIX)/include
++BINDIR    = $(PREFIX)/bin
++INCDIR    = $(PREFIX)/include
 +LIBDIR    = $(PREFIX)/lib/vdr/plugins
-+#LOCDIR    = $(PREFIX)/share/locale
-+#MANDIR    = $(PREFIX)/share/man
-+#PCDIR     = $(PREFIX)/lib/pkgconfig
-+#RESDIR    = $(PREFIX)/share/vdr
++LOCDIR    = $(PREFIX)/share/locale
++MANDIR    = $(PREFIX)/share/man
++PCDIR     = $(PREFIX)/lib/pkgconfig
++RESDIR    = $(PREFIX)/share/vdr
 +#DVBDIR    = /usr/src/v4l-dvb/linux/include/uapi
 +
 +VIDEODIR  = /srv/vdr/video.00
-+#CONFDIR   = /var/lib/vdr
-+#CACHEDIR  = /var/cache/vdr
++CONFDIR   = /var/lib/vdr
++CACHEDIR  = /var/cache/vdr
 +
 +# Overrides for preset/legacy configurations:
 +
 +# Use 'make LCLBLD=1' to build locale and plugin files under the source directory:
 +ifdef LCLBLD
-+LOCDIR       = $(CWD)/locale
++#LOCDIR       = $(CWD)/locale
 +PLUGINDIR    = $(CWD)/PLUGINS
 +ifndef PLUGIN # don't overwrite for plugins with old makefiles
 +LIBDIR       = $(PLUGINDIR)/lib
