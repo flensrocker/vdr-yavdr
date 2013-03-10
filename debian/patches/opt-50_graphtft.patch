@@ -124,7 +124,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    };
  
  cMenuSetupOSD::cMenuSetupOSD(void)
-@@ -2989,6 +3025,7 @@
+@@ -2992,6 +3028,7 @@
  public:
    cMenuSetupEPG(void);
    virtual eOSState ProcessKey(eKeys Key);
@@ -132,7 +132,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    };
  
  cMenuSetupEPG::cMenuSetupEPG(void)
-@@ -3086,6 +3123,7 @@
+@@ -3089,6 +3126,7 @@
  public:
    cMenuSetupDVB(void);
    virtual eOSState ProcessKey(eKeys Key);
@@ -140,7 +140,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    };
  
  cMenuSetupDVB::cMenuSetupDVB(void)
-@@ -3232,6 +3270,7 @@
+@@ -3235,6 +3273,7 @@
  public:
    cMenuSetupLNB(void);
    virtual eOSState ProcessKey(eKeys Key);
@@ -148,7 +148,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    };
  
  cMenuSetupLNB::cMenuSetupLNB(void)
-@@ -3337,6 +3376,7 @@
+@@ -3340,6 +3379,7 @@
  public:
    cMenuSetupCAM(void);
    virtual eOSState ProcessKey(eKeys Key);
@@ -156,7 +156,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    };
  
  cMenuSetupCAM::cMenuSetupCAM(void)
-@@ -3524,6 +3564,7 @@
+@@ -3527,6 +3567,7 @@
  public:
    cMenuSetupPlugins(void);
    virtual eOSState ProcessKey(eKeys Key);
@@ -164,7 +164,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    };
  
  cMenuSetupPlugins::cMenuSetupPlugins(void)
-@@ -3579,6 +3620,7 @@
+@@ -3582,6 +3623,7 @@
  public:
    cMenuSetup(void);
    virtual eOSState ProcessKey(eKeys Key);

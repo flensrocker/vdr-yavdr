@@ -23,7 +23,7 @@ Origin: extracted from the rotor plugin 0.1.4-vdr1.5
  
 --- a/dvbdevice.c
 +++ b/dvbdevice.c
-@@ -287,6 +287,7 @@
+@@ -288,6 +288,7 @@
  private:
    static cMutex bondMutex;
    enum eTunerStatus { tsIdle, tsSet, tsTuned, tsLocked };
@@ -31,7 +31,7 @@ Origin: extracted from the rotor plugin 0.1.4-vdr1.5
    int frontendType;
    const cDvbDevice *device;
    int fd_frontend;
-@@ -303,6 +304,7 @@
+@@ -304,6 +305,7 @@
    cMutex mutex;
    cCondVar locked;
    cCondVar newSet;
@@ -39,7 +39,7 @@ Origin: extracted from the rotor plugin 0.1.4-vdr1.5
    cDvbTuner *bondedTuner;
    bool bondedMaster;
    bool SetFrontendType(const cChannel *Channel);
-@@ -329,12 +331,16 @@
+@@ -330,12 +332,16 @@
    bool Locked(int TimeoutMs = 0);
    int GetSignalStrength(void) const;
    int GetSignalQuality(void) const;
@@ -56,7 +56,7 @@ Origin: extracted from the rotor plugin 0.1.4-vdr1.5
    frontendType = SYS_UNDEFINED;
    device = Device;
    fd_frontend = Fd_Frontend;
-@@ -652,6 +658,35 @@
+@@ -653,6 +659,35 @@
    return -1;
  }
  
@@ -92,7 +92,7 @@ Origin: extracted from the rotor plugin 0.1.4-vdr1.5
  static unsigned int FrequencyToHz(unsigned int f)
  {
    while (f && f < 1000000)
-@@ -865,6 +900,10 @@
+@@ -867,6 +902,10 @@
          if (GetFrontendStatus(NewStatus))
             Status = NewStatus;
          cMutexLock MutexLock(&mutex);
@@ -103,7 +103,7 @@ Origin: extracted from the rotor plugin 0.1.4-vdr1.5
          int WaitTime = 1000;
          switch (tunerStatus) {
            case tsIdle:
-@@ -1548,6 +1587,11 @@
+@@ -1551,6 +1590,11 @@
    return dvbTuner ? dvbTuner->Locked(TimeoutMs) : false;
  }
  

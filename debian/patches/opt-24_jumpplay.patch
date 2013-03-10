@@ -9,7 +9,7 @@
 
 --- a/MANUAL
 +++ b/MANUAL
-@@ -897,6 +897,25 @@
+@@ -902,6 +902,25 @@
                           0 resulting in a file named 'resume', and any other
                           value resulting in 'resume.n'.
  
@@ -132,7 +132,7 @@
 +    Added French language texts (thanks to Michaël Nival)
 --- a/config.c
 +++ b/config.c
-@@ -464,6 +464,9 @@
+@@ -465,6 +465,9 @@
    ProgressDisplayTime = 0;
    PauseOnMarkSet = 0;
    ResumeID = 0;
@@ -142,7 +142,7 @@
    CurrentChannel = -1;
    CurrentVolume = MAXVOLUME;
    CurrentDolby = 0;
-@@ -668,6 +671,9 @@
+@@ -670,6 +673,9 @@
    else if (!strcasecmp(Name, "ProgressDisplayTime")) ProgressDisplayTime= atoi(Value);
    else if (!strcasecmp(Name, "PauseOnMarkSet"))      PauseOnMarkSet     = atoi(Value);
    else if (!strcasecmp(Name, "ResumeID"))            ResumeID           = atoi(Value);
@@ -152,7 +152,7 @@
    else if (!strcasecmp(Name, "CurrentChannel"))      CurrentChannel     = atoi(Value);
    else if (!strcasecmp(Name, "CurrentVolume"))       CurrentVolume      = atoi(Value);
    else if (!strcasecmp(Name, "CurrentDolby"))        CurrentDolby       = atoi(Value);
-@@ -776,6 +782,9 @@
+@@ -779,6 +785,9 @@
    Store("ProgressDisplayTime",ProgressDisplayTime);
    Store("PauseOnMarkSet",     PauseOnMarkSet);
    Store("ResumeID",           ResumeID);
@@ -173,7 +173,7 @@
  #define MAXPRIORITY       99
  #define MINPRIORITY       (-MAXPRIORITY)
  #define LIVEPRIORITY      0                  // priority used when selecting a device for live viewing
-@@ -327,6 +329,9 @@
+@@ -328,6 +330,9 @@
    int ProgressDisplayTime;
    int PauseOnMarkSet;
    int ResumeID;
@@ -185,7 +185,7 @@
    int CurrentDolby;
 --- a/dvbplayer.c
 +++ b/dvbplayer.c
-@@ -204,6 +204,7 @@
+@@ -211,6 +211,7 @@
    cNonBlockingFileReader *nonBlockingFileReader;
    cRingBufferFrame *ringBuffer;
    cPtsIndex ptsIndex;
@@ -193,7 +193,7 @@
    cFileName *fileName;
    cIndexFile *index;
    cUnbufferedFile *replayFile;
-@@ -289,6 +290,7 @@
+@@ -296,6 +297,7 @@
       }
    else if (PauseLive)
       framesPerSecond = cRecording(FileName).FramesPerSecond(); // the fps rate might have changed from the default
@@ -201,7 +201,7 @@
  }
  
  cDvbPlayer::~cDvbPlayer()
-@@ -367,6 +369,10 @@
+@@ -374,6 +376,10 @@
    if (index) {
       int Index = ptsIndex.FindIndex(DeviceGetSTC());
       if (Index >= 0) {
@@ -212,7 +212,7 @@
          int backup = int(round(RESUMEBACKUP * framesPerSecond));
          if (Index >= index->Last() - backup)
             Index = 0;
-@@ -398,11 +404,26 @@
+@@ -405,11 +411,26 @@
  {
    uchar *p = NULL;
    int pc = 0;
@@ -239,7 +239,7 @@
    nonBlockingFileReader = new cNonBlockingFileReader;
    int Length = 0;
    bool Sleep = false;
-@@ -429,7 +450,7 @@
+@@ -436,7 +457,7 @@
  
            // Read the next frame from the file:
  
@@ -248,7 +248,7 @@
               if (!readFrame && (replayFile || readIndex >= 0)) {
                  if (!nonBlockingFileReader->Reading()) {
                     if (!SwitchToPlayFrame && (playMode == pmFast || (playMode == pmSlow && playDir == pdBackward))) {
-@@ -466,6 +487,44 @@
+@@ -473,6 +494,44 @@
                     else if (index) {
                        uint16_t FileNumber;
                        off_t FileOffset;
@@ -293,7 +293,7 @@
                        if (index->Get(readIndex + 1, &FileNumber, &FileOffset, &readIndependent, &Length) && NextFile(FileNumber, FileOffset))
                           readIndex++;
                        else
-@@ -510,6 +569,13 @@
+@@ -517,6 +576,13 @@
               // Store the frame in the buffer:
  
               if (readFrame) {
@@ -307,7 +307,7 @@
                  if (ringBuffer->Put(readFrame))
                     readFrame = NULL;
                  else
-@@ -576,8 +642,13 @@
+@@ -583,8 +649,13 @@
                  p = NULL;
                  }
               }
@@ -324,7 +324,7 @@
  
 --- a/menu.c
 +++ b/menu.c
-@@ -3337,6 +3337,9 @@
+@@ -3340,6 +3340,9 @@
    Add(new cMenuEditIntItem( tr("Setup.Replay$Progress display time (s)"), &data.ProgressDisplayTime, 0, 60));
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Pause replay when setting mark"), &data.PauseOnMarkSet));
    Add(new cMenuEditIntItem(tr("Setup.Replay$Resume ID"), &data.ResumeID, 0, 99));
@@ -334,7 +334,7 @@
  }
  
  void cMenuSetupReplay::Store(void)
-@@ -4973,8 +4976,10 @@
+@@ -4976,8 +4979,10 @@
          marks.Add(Current);
          bool Play, Forward;
          int Speed;
@@ -346,7 +346,7 @@
          }
       ShowTimed(2);
       marksModified = true;
-@@ -4987,8 +4992,17 @@
+@@ -4990,8 +4995,17 @@
    if (GetIndex(Current, Total)) {
       if (marks.Count()) {
          if (cMark *m = Forward ? marks.GetNext(Current) : marks.GetPrev(Current)) {
@@ -366,7 +366,7 @@
             return;
             }
          }
-@@ -5049,7 +5063,7 @@
+@@ -5052,7 +5066,7 @@
       if (!m)
          m = marks.GetNext(Current);
       if (m) {
@@ -377,7 +377,7 @@
             Goto(m->Position() - SecondsToFrames(3, FramesPerSecond()));
 --- a/po/de_DE.po
 +++ b/po/de_DE.po
-@@ -1092,6 +1092,15 @@
+@@ -1095,6 +1095,15 @@
  msgid "Replay"
  msgstr "Wiedergabe"
  
@@ -395,7 +395,7 @@
  
 --- a/po/fr_FR.po
 +++ b/po/fr_FR.po
-@@ -1101,6 +1101,15 @@
+@@ -1105,6 +1105,15 @@
  msgid "Replay"
  msgstr "Lecture"
  

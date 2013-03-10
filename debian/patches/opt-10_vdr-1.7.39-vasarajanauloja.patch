@@ -50,7 +50,7 @@
           ///< Returns true if the cutter is currently active.
 --- a/dvbplayer.c
 +++ b/dvbplayer.c
-@@ -367,11 +367,16 @@
+@@ -374,11 +374,16 @@
    if (index) {
       int Index = ptsIndex.FindIndex(DeviceGetSTC());
       if (Index >= 0) {
@@ -616,7 +616,7 @@
         case kBlue:   return Info();
         case k0:      return Sort();
         case k1...k9: return Commands(Key);
-@@ -3370,6 +3542,7 @@
+@@ -3373,6 +3545,7 @@
    replaying = false;
    stopReplayItem = NULL;
    cancelEditingItem = NULL;
@@ -624,7 +624,7 @@
    stopRecordingItem = NULL;
    recordControlsState = 0;
    Set();
-@@ -3464,6 +3637,19 @@
+@@ -3467,6 +3640,19 @@
       result = true;
       }
  
@@ -644,7 +644,7 @@
    // Record control:
    if (cRecordControls::StateChanged(recordControlsState)) {
       while (stopRecordingItem) {
-@@ -3512,6 +3698,12 @@
+@@ -3515,6 +3701,12 @@
                            return osEnd;
                            }
                         break;
@@ -657,7 +657,7 @@
      case osPlugin:     {
                           cMenuPluginItem *item = (cMenuPluginItem *)Get(Current());
                           if (item) {
-@@ -4485,6 +4677,10 @@
+@@ -4488,6 +4680,10 @@
  
  // --- cReplayControl --------------------------------------------------------
  
@@ -668,7 +668,7 @@
  cReplayControl *cReplayControl::currentReplayControl = NULL;
  cString cReplayControl::fileName;
  
-@@ -4499,6 +4695,9 @@
+@@ -4502,6 +4698,9 @@
    lastCurrent = lastTotal = -1;
    lastPlay = lastForward = false;
    lastSpeed = -2; // an invalid value
@@ -678,7 +678,7 @@
    timeoutShow = 0;
    timeSearchActive = false;
    cRecording Recording(fileName);
-@@ -4831,7 +5030,7 @@
+@@ -4834,7 +5033,7 @@
             Skins.Message(mtError, tr("No editing marks defined!"));
          else if (!marks.GetNumSequences())
             Skins.Message(mtError, tr("No editing sequences defined!"));
@@ -687,7 +687,7 @@
             Skins.Message(mtError, tr("Can't start editing process!"));
          else
             Skins.Message(mtInfo, tr("Editing process started"));
-@@ -4929,6 +5128,32 @@
+@@ -4932,6 +5131,32 @@
      case kGreen:   SkipSeconds(-60); break;
      case kYellow|k_Repeat:
      case kYellow:  SkipSeconds( 60); break;
@@ -720,7 +720,7 @@
      case kStop:
      case kBlue:    Hide();
                     Stop();
-@@ -4938,12 +5163,8 @@
+@@ -4941,12 +5166,8 @@
        switch (int(Key)) {
          // Editing:
          case kMarkToggle:      MarkToggle(); break;
@@ -876,7 +876,7 @@
    void SetDisplayMenu(void);
 --- a/po/de_DE.po
 +++ b/po/de_DE.po
-@@ -1395,3 +1395,70 @@
+@@ -1398,3 +1398,70 @@
  
  msgid "free"
  msgstr "frei"
@@ -949,7 +949,7 @@
 +msgstr "Datei besteht bereits - überschreiben?"
 --- a/po/fi_FI.po
 +++ b/po/fi_FI.po
-@@ -1398,3 +1398,70 @@
+@@ -1402,3 +1402,70 @@
  
  msgid "free"
  msgstr "vapaana"
@@ -1022,7 +1022,7 @@
 +msgstr "Tiedosto on jo olemassa - ylikirjoitetaanko?"
 --- a/recording.c
 +++ b/recording.c
-@@ -1058,6 +1058,16 @@
+@@ -1066,6 +1066,16 @@
    return NULL;
  }
  
@@ -1039,7 +1039,7 @@
  int cRecording::HierarchyLevels(void) const
  {
    const char *s = name;
-@@ -1350,7 +1360,7 @@
+@@ -1358,7 +1368,7 @@
       }
  }
  
@@ -1048,7 +1048,7 @@
  {
    LOCK_THREAD;
    cRecording *recording = GetByName(FileName);
-@@ -1358,7 +1368,7 @@
+@@ -1366,7 +1376,7 @@
       cThreadLock DeletedRecordingsLock(&DeletedRecordings);
       Del(recording, false);
       char *ext = strrchr(recording->fileName, '.');
@@ -1059,7 +1059,7 @@
             recording->deleted = time(NULL);
 --- a/recording.h
 +++ b/recording.h
-@@ -118,6 +118,7 @@
+@@ -119,6 +119,7 @@
    const char *Title(char Delimiter = ' ', bool NewIndicator = false, int Level = -1) const;
    const cRecordingInfo *Info(void) const { return info; }
    const char *PrefixFileName(char Prefix);
@@ -1067,7 +1067,7 @@
    int HierarchyLevels(void) const;
    void ResetResume(void) const;
    double FramesPerSecond(void) const { return framesPerSecond; }
-@@ -129,7 +130,7 @@
+@@ -130,7 +131,7 @@
    int FileSizeMB(void) const;
         ///< Returns the total file size of this recording (in MB), or -1 if the file
         ///< size is unknown.
@@ -1076,8 +1076,8 @@
    bool IsEdited(void) const;
    bool IsPesRecording(void) const { return isPesRecording; }
    bool IsOnVideoDirectoryFileSystem(void) const;
-@@ -189,7 +190,7 @@
-   void ResetResume(const char *ResumeFileName = NULL);
+@@ -191,7 +192,7 @@
+   void ClearSortNames(void);
    cRecording *GetByName(const char *FileName);
    void AddByName(const char *FileName, bool TriggerUpdate = true);
 -  void DelByName(const char *FileName);

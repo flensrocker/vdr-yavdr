@@ -13,7 +13,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
    PrimaryDVB = 1;
    ShowInfoOnChSwitch = 1;
    TimeoutRequChInfo = 1;
-@@ -584,6 +585,7 @@
+@@ -585,6 +586,7 @@
    if      (!strcasecmp(Name, "OSDLanguage"))       { strn0cpy(OSDLanguage, Value, sizeof(OSDLanguage)); I18nSetLocale(OSDLanguage); }
    else if (!strcasecmp(Name, "OSDSkin"))             Utf8Strn0Cpy(OSDSkin, Value, MaxSkinName);
    else if (!strcasecmp(Name, "OSDTheme"))            Utf8Strn0Cpy(OSDTheme, Value, MaxThemeName);
@@ -21,7 +21,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
    else if (!strcasecmp(Name, "PrimaryDVB"))          PrimaryDVB         = atoi(Value);
    else if (!strcasecmp(Name, "ShowInfoOnChSwitch"))  ShowInfoOnChSwitch = atoi(Value);
    else if (!strcasecmp(Name, "TimeoutRequChInfo"))   TimeoutRequChInfo  = atoi(Value);
-@@ -696,6 +698,7 @@
+@@ -698,6 +700,7 @@
    Store("OSDLanguage",        OSDLanguage);
    Store("OSDSkin",            OSDSkin);
    Store("OSDTheme",           OSDTheme);
@@ -248,7 +248,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
  #include <ctype.h>
  #include <dirent.h>
  #include <errno.h>
-@@ -988,7 +989,7 @@
+@@ -996,7 +997,7 @@
  
  const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level) const
  {
@@ -257,7 +257,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
    free(titleBuffer);
    titleBuffer = NULL;
    if (Level < 0 || Level == HierarchyLevels()) {
-@@ -1008,7 +1009,7 @@
+@@ -1016,7 +1017,7 @@
                     Minutes % 60
                     );
          }

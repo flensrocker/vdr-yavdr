@@ -4,7 +4,7 @@ Author: Tobias Grimm <tg@e-tobi.net>
 --- a/PLUGINS/src/skincurses/skincurses.c
 +++ b/PLUGINS/src/skincurses/skincurses.c
 @@ -6,7 +6,7 @@
-  * $Id: skincurses.c 2.11 2013/01/12 14:13:12 kls Exp $
+  * $Id: skincurses.c 2.12 2013/03/03 15:33:59 kls Exp $
   */
  
 -#include <ncurses.h>
