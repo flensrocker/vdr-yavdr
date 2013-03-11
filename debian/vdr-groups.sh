@@ -17,7 +17,7 @@ is_group_in_list()
 {
     local group=$1
     shift
-    local group_list=$*
+    local group_list="$*"
     local current_group
 
     for current_group in $group_list; do
