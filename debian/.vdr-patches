@@ -22,4 +22,4 @@ debian/patches/12_osdbase-maxitems.patch:e378fe23cb8d1582abd1ee4c349febba
 debian/patches/opt-50_graphtft-liemikuutio.patch:518dd69cc7d01f132a8f59b62dabb342
 debian/patches/opt-45_yaepg.patch:c22d286c4c65b904a55cf3baeb9f467f
 debian/patches/06_default_svdrp_port_0.patch:ef3e192ee2e2bc3c8fbab9669e8bdefc
-debian/patches/81_Make_config.patch:684acde7fab3dd3e6078bed9fefbef7b
+debian/patches/81_Make_config.patch:0c7ea8e353c4c4403290d39b7be7db5f
