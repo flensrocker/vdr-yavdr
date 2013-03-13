@@ -15,10 +15,7 @@ set -e
 
 ABI_VERSION=`cat /usr/share/vdr-dev/abi-version`
 
-
 # A plugin requires exactly the VDR ABI version it was compiled for
 for p in $(dh_listpackages); do
     echo "vdr:Depends=$ABI_VERSION" >> debian/$p.substvars
-# all plugins activate individual triggers
-#    echo "activate $p-trigger" >> debian/triggers
 done

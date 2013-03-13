@@ -1,6 +1,0 @@
-#!/bin/sh
-
-mv /usr/lib/pkgconfig/vdr.pc /tmp/vdr.pc
-sed -e 's#libdir=.*#libdir=/usr/lib/vdr/plugins#' -e 's#locdir=.*#locdir=/usr/share/locale#' -e 's#-I/.*/include#-I/usr/include#' /tmp/vdr.pc > /usr/lib/pkgconfig/vdr.pc
-rm /tmp/vdr.pc
-

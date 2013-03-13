@@ -83,17 +83,11 @@ startvdr()
                 OPTIONS="--vfat $OPTIONS"
             fi
 
-            if [ -n "$LIRC" ]; then
-                LIRC_OPT="--lirc=$LIRC"
-            else
-                LIRC_OPT="--lirc"
-            fi
-
             start-stop-daemon --start --quiet --startas $DAEMON --background \
                 --name $(basename $DAEMON) --pidfile $PIDFILE --make-pidfile -- \
                 -v $VIDEO_DIR -c $CFG_DIR -L $PLUGIN_DIR -r $REC_CMD \
                 -s $VDRSHUTDOWN -E $EPG_FILE -u $USER -g /tmp \
-                --port $SVDRP_PORT $LIRC_OPT $PLUGINS $OPTIONS $REDIRECT
+                --port $SVDRP_PORT $OPTIONS $PLUGINS $REDIRECT
         else
             echo -n " - seems to be running already"
         fi

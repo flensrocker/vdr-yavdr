@@ -2,15 +2,11 @@
 # This file is called by /etc/init.d/vdr
 #
 
-mkdir -p /var/run/vdr
-chown -R vdr:vdr /var/run/vdr
-
 getplugins ()
 {
     local plugin_order
     local installed_plugins
     local ordered_plugins
-    local last_plugins
     local plugin
     local i
     local arguments
@@ -81,13 +77,7 @@ getplugins ()
         # move ordered plugins to list of ordered plugins
         for plugin in ${plugin_order[@]}; do
             for (( i=0 ; i<${#installed_plugins[@]} ; i++ )); do
-                if [ "$plugin" = "-${installed_plugins[$i]}" -o "$plugin" = "-*${installed_plugins[$i]}" ]; then
-                    unset installed_plugins[$i]
-                    installed_plugins=( "${installed_plugins[@]}" )
-                    break
-                fi
-                if [ "$plugin" = "*${installed_plugins[$i]}" ]; then
-                    last_plugins=( "${last_plugins[@]}" "${installed_plugins[$i]}" )
+                if [ "$plugin" = "-${installed_plugins[$i]}" ]; then
                     unset installed_plugins[$i]
                     installed_plugins=( "${installed_plugins[@]}" )
                     break
@@ -102,8 +92,8 @@ getplugins ()
         done
     fi
 
-    # append unordered and last plugins to ordered plugins
-    ordered_plugins=( "${ordered_plugins[@]}" "${installed_plugins[@]}" "${last_plugins[@]}" )
+    # append unordered to ordered plugins
+    ordered_plugins=( "${ordered_plugins[@]}" "${installed_plugins[@]}" )
 
     # add the command line arguments for each plugin
     for plugin in ${ordered_plugins[@]}; do

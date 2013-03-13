@@ -1,4 +1,3 @@
-#!/bin/sh
 #
 # This script checks which groups the vdr user should belong to and adds
 # it to the necessary groups or removes it from groups which are not needed
@@ -35,7 +34,7 @@ read_groups()
 add_to_groups()
 {
     local groups_file="$1"
-    local groups=`read_groups "$groups_file"`
+    local groups="`read_groups "$groups_file"`"
     local group
 
     for group in $groups; do
@@ -49,11 +48,15 @@ add_to_groups()
 remove_from_groups()
 {
     local groups_file="$1"
-    local groups=`read_groups "$groups_file"`
+    local groups="`read_groups "$groups_file"`"
     local needed_groups
     local group
-    
-    needed_groups=`read_groups $DIR/*`
+
+    for file in $DIR/*; do
+      if [ "$file" != "$groups_file" ] ; then
+        needed_groups="$needed_groups `read_groups $file`"
+      fi
+    done
 
     for group in $groups; do
         if is_group_in_list $group $ACTUAL_GROUPS; then
