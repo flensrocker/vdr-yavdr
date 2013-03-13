@@ -1,3 +1,9 @@
+vdr (1.7.40-6yavdr0~precise) precise; urgency=medium
+
+  * install Make.config to VDRDIR
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Thu, 14 Mar 2013 00:14:32 +0100
+
 vdr (1.7.40-5yavdr0~precise) precise; urgency=medium
 
   * add Make.config
