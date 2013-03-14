@@ -29,51 +29,13 @@ set -e
 case "$1" in
     configure)
 
-        . /usr/share/debconf/confmodule
-
         # install/move channels.conf 
         if [ ! -e /var/lib/vdr/channels.conf ]; then
-                db_get vdr/select_dvb_card
-
-                case "$RET" in
-                Satellite)
-                        gzip -dc /usr/share/doc/vdr/examples/channels.conf.gz \
-                        > /var/lib/vdr/channels.conf
-                        chmod 644 /var/lib/vdr/channels.conf
-                ;;
-                Terrestrial)
-                        gzip -dc /usr/share/doc/vdr/examples/channels.conf.terr.gz \
-                        > /var/lib/vdr/channels.conf
-                        chmod 644 /var/lib/vdr/channels.conf
-                ;;
-                Cable)
-                        gzip -dc /usr/share/doc/vdr/examples/channels.conf.cable.gz \
-                        > /var/lib/vdr/channels.conf
-                        chmod 644 /var/lib/vdr/channels.conf
-                ;;
-                esac
+                cp /usr/share/doc/vdr/examples/channels.conf* /var/lib/vdr/
+                gunzip /var/lib/vdr/channels.conf*.gz
         fi
 
-        db_get vdr/create_video_dir
-        if $RET; then
-                # check if an old directory /var/lib/video exists, and 
-                # symlink it to /var/lib/video.00
-                if [ -d /var/lib/video ] && [ ! -e /var/lib/video.00 ]; then
-                        ln -s video /var/lib/video.00
-                fi
-
-                # create /var/lib/video.00 if it does not exist
-                if [ ! -e /var/lib/video.00 ]; then
-                        mkdir /var/lib/video.00
-                fi
-
-                # check if /var/lib/video.00 exists and /var/lib/video is 
-                # missing, then create the symlink /var/lib/video which
-                # points to /var/lib/video.00
-                if [ ! -e /var/lib/video ] && [ -e /var/lib/video.00 ]; then
-                        ln -s video.00 /var/lib/video
-                fi
-        fi
+        [ ! -d /var/lib/video.00 ] && mkdir /var/lib/video.00
 
         # ensure that user and group 'vdr' exist
         USER=vdr
