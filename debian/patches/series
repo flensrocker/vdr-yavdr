@@ -52,3 +52,7 @@ opt-66_jumpingseconds.patch
 opt-67_epgsearch-exttimeredit-0.0.2.diff
 
 xprmtl-01_externalci.patch
+
+#kls hotfixes
+vdr-1.7.40-dirnamesdefaults.patch
+

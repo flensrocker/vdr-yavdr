@@ -1,3 +1,12 @@
+vdr (1.7.40-7yavdr0~precise) precise; urgency=medium
+
+  * remove debconf stuff from vdr.postinst
+  * add 'lastplugin' feature to plugin-loader.sh and order.conf
+  * add dirnamesdefaults patch
+  * use '--dirnames=,,1' if VFAT is set
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Thu, 14 Mar 2013 18:20:08 +0100
+
 vdr (1.7.40-6yavdr0~precise) precise; urgency=medium
 
   * install Make.config to VDRDIR
