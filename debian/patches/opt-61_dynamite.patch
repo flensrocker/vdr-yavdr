@@ -768,7 +768,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  bool cDvbDevice::HasCi(void)
  {
    return ciAdapter;
-@@ -1545,7 +1622,7 @@
+@@ -1547,7 +1624,7 @@
  
  bool cDvbDevice::ProvidesEIT(void) const
  {

@@ -357,7 +357,7 @@
    int priority;
 +  int fskProtection;                                               // PIN PATCH
    int lifetime;
-   mutable char file[NAME_MAX * 2]; // *2 to be able to hold 'title' and 'episode', which can each be up to 255 characters long
+   mutable char file[NAME_MAX * 2 + 1]; // *2 to be able to hold 'title' and 'episode', which can each be up to 255 characters long
    char *aux;
 @@ -59,6 +60,7 @@
    int Start(void) const { return start; }
@@ -385,7 +385,7 @@
  
  #define MINCHANNELWAIT        10 // seconds to wait between failed channel switchings
  #define ACTIVITYTIMEOUT       60 // seconds before starting housekeeping
-@@ -1010,6 +1011,7 @@
+@@ -1026,6 +1027,7 @@
          cOsdObject *Interact = Menu ? Menu : cControl::Control();
          eKeys key = Interface->GetKey(!Interact || !Interact->NeedsFastResponse());
          if (ISREALKEY(key)) {
@@ -393,7 +393,7 @@
             EITScanner.Activity();
             // Cancel shutdown countdown:
             if (ShutdownHandler.countdown)
-@@ -1082,10 +1084,12 @@
+@@ -1098,10 +1100,12 @@
                       cControl::Control()->Hide();
                    cPlugin *plugin = cPluginManager::GetPlugin(PluginName);
                    if (plugin) {
@@ -406,7 +406,7 @@
                    else
                       esyslog("ERROR: unknown plugin '%s'", PluginName);
                    }
-@@ -1298,9 +1302,11 @@
+@@ -1314,9 +1318,11 @@
               // Instant resume of the last viewed recording:
               case kPlay:
                    if (cReplayControl::LastReplayed()) {

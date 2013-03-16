@@ -1,3 +1,9 @@
+vdr (1.7.41-0yavdr0~precise) precise; urgency=medium
+
+  * new upstream release
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Sat, 16 Mar 2013 15:42:10 +0100
+
 vdr (1.7.40-9yavdr0~precise) precise; urgency=medium
 
   * don't install /etc/init.d/vdr, can now be found in
