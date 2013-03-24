@@ -48,6 +48,12 @@ ENABLE_SHUTDOWN=0
 # Video-Directory
 VIDEO_DIR="/var/lib/video.00"
 
+# Cache-Directory
+CACHE_DIR="/var/cache/vdr"
+
+# Resource-Directory
+RES_DIR="/usr/share/vdr"
+
 # Set this to load only startable plugins (check with "vdr -V -P plugin")
 PLUGIN_CHECK_STARTABLE="yes"
 

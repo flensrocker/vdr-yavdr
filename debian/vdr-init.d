@@ -82,6 +82,12 @@ startvdr()
             if [ "$VFAT" == "1" ]; then
                 OPTIONS="--dirname=,,1 $OPTIONS"
             fi
+            if [ "$CACHE_DIR" != "" ]; then
+                OPTIONS="--cachedir=\"$CACHE_DIR\" $OPTIONS"
+            fi
+            if [ "$RES_DIR" != "" ]; then
+                OPTIONS="--resdir=\"$RES_DIR\" $OPTIONS"
+            fi
 
             start-stop-daemon --start --quiet --startas $DAEMON --background \
                 --name $(basename $DAEMON) --pidfile $PIDFILE --make-pidfile -- \
