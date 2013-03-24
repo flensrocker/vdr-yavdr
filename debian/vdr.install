@@ -15,6 +15,7 @@ debian/runvdr                           usr/sbin/
 
 debian/config-loader.sh                 usr/lib/vdr/
 debian/plugin-loader.sh                 usr/lib/vdr/
+debian/plugin-loader2                   usr/lib/vdr/
 debian/commands-loader.sh               usr/lib/vdr/
 debian/vdr-groups.sh                    usr/lib/vdr/
 debian/vdr-recordingaction              usr/lib/vdr/
