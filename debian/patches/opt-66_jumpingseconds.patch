@@ -49,7 +49,7 @@
  }
  
  void cMenuSetupReplay::Store(void)
-@@ -5510,9 +5512,9 @@
+@@ -5512,9 +5514,9 @@
      case kRight:   Forward(); break;
      case kRed:     TimeSearch(); break;
      case kGreen|k_Repeat:
@@ -61,7 +61,7 @@
      case kPrev|k_Repeat:
      case kPrev:    if (lastSkipTimeout.TimedOut()) {
                        lastSkipSeconds = REPLAYCONTROLSKIPSECONDS;
-@@ -5559,7 +5561,7 @@
+@@ -5561,7 +5563,7 @@
                                    marks.Save();
                                    }
                                 else
@@ -70,7 +70,7 @@
                                 break;
          case k3|k_Repeat:
          case k3:               if (GetReplayMode(play, forward, speed) && !play && GetIndex(Current, Total) && (m = marks.Get(Current)) != NULL) {
-@@ -5572,7 +5574,7 @@
+@@ -5574,7 +5576,7 @@
                                    marks.Save();
                                    }
                                 else

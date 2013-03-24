@@ -633,7 +633,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    cPoller Poller(fd_frontend);
    if (Poller.Poll(TUNER_POLL_TIMEOUT)) {
       dvb_frontend_event Event;
-@@ -752,6 +763,8 @@
+@@ -757,6 +768,8 @@
  
  bool cDvbTuner::SetFrontend(void)
  {
@@ -642,7 +642,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  #define MAXFRONTENDCMDS 16
  #define SETCMD(c, d) { Frontend[CmdSeq.num].cmd = (c);\
                         Frontend[CmdSeq.num].u.data = (d);\
-@@ -898,9 +911,11 @@
+@@ -903,9 +916,11 @@
    bool LostLock = false;
    fe_status_t Status = (fe_status_t)0;
    while (Running()) {
@@ -657,7 +657,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
          cMutexLock MutexLock(&mutex);
          if (SendDiseqc) {
             CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_MASTER_CMD, &diseqc_cmd));
-@@ -957,6 +972,40 @@
+@@ -962,6 +977,40 @@
          }
  }
  
@@ -698,7 +698,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  // --- cDvbSourceParam -------------------------------------------------------
  
  class cDvbSourceParam : public cSourceParam {
-@@ -1042,7 +1091,8 @@
+@@ -1047,7 +1096,8 @@
    NULL
    };
  
@@ -708,7 +708,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  {
    adapter = Adapter;
    frontend = Frontend;
-@@ -1062,7 +1112,7 @@
+@@ -1067,7 +1117,7 @@
  
    fd_ca = DvbOpen(DEV_DVB_CA, adapter, frontend, O_RDWR);
    if (fd_ca >= 0)
@@ -717,7 +717,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  
    // The DVR device (will be opened and closed as needed):
  
-@@ -1290,7 +1340,11 @@
+@@ -1295,7 +1345,11 @@
           if (d >= 0) {
              int ErrorDevice = 0;
              if (cDevice *Device1 = cDevice::GetDevice(i)) {
@@ -729,7 +729,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
                    if (cDvbDevice *DvbDevice1 = dynamic_cast<cDvbDevice *>(Device1)) {
                       if (cDvbDevice *DvbDevice2 = dynamic_cast<cDvbDevice *>(Device2)) {
                          if (!DvbDevice1->Bond(DvbDevice2))
-@@ -1324,7 +1378,10 @@
+@@ -1329,7 +1383,10 @@
  void cDvbDevice::UnBondDevices(void)
  {
    for (int i = 0; i < cDevice::NumDevices(); i++) {
@@ -741,7 +741,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
           d->UnBond();
        }
  }
-@@ -1378,6 +1435,26 @@
+@@ -1383,6 +1440,26 @@
    return true;
  }
  
@@ -768,7 +768,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  bool cDvbDevice::HasCi(void)
  {
    return ciAdapter;
-@@ -1547,7 +1624,7 @@
+@@ -1552,7 +1629,7 @@
  
  bool cDvbDevice::ProvidesEIT(void) const
  {
