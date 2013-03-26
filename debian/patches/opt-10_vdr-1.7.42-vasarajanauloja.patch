@@ -73,7 +73,7 @@
          }
 --- /dev/null
 +++ b/filetransfer.c
-@@ -0,0 +1,278 @@
+@@ -0,0 +1,281 @@
 +/*
 + * filetransfer.c: The video file transfer facilities
 + *
@@ -274,9 +274,12 @@
 +        cRecording *recording = Recordings.GetByName(*source);
 +        if (recording->Delete())
 +           Recordings.DelByName(*source, false);
++        target.Truncate(strlen(*target) - 1);
++        Recordings.UpdateByName(*target);
 +        }
-+     else
-+        Recordings.TouchUpdate();
++
++     // Must inform all VDR instances about the modification
++     Recordings.TouchUpdate();
 +     }
 +}
 +

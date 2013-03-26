@@ -8,13 +8,12 @@ debian/patches/opt-56_eventdetails_v3.patch:e2ff963982af0673b0436d3f7f6c2048
 debian/patches/opt-41-x_timer-info.patch:deefdf8e55c93ebeef6f46932651e21c
 debian/patches/xprmtl-01_externalci.patch:eefe96b88fc1fa280b596332f5ff6bf2
 debian/patches/opt-66_jumpingseconds.patch:9d2e3e30ed8fa55310929a086a6d95c1
-debian/patches/opt-67_epgsearch-exttimeredit-0.0.2.diff:7c73f6e5069d6dfe1d43047e136a1ccb
 debian/patches/opt-57_vdr-remote_instant_recordings.patch:5915ef251459cb502d32c34de9a2eb21
 debian/patches/99_ncursesw-include.patch:6a0302eb84bf6e056f2aa0d88ac921ae
 debian/patches/82_valgrind.patch:2aa30851b228e48bea9bf4edb25e607a
 debian/patches/opt-61_dynamite.patch:fe4021caba336d720f7a2d1ad8507f54
 debian/patches/opt-22-x_edit_marks.patch:624c66d0f33e51adc95ca97b7032514f
-debian/patches/opt-10_vdr-1.7.41-vasarajanauloja.patch:2c12068e47849edf96e557aa1e3287be
+debian/patches/opt-67_epgsearch-exttimeredit-0.0.2.diff:7c73f6e5069d6dfe1d43047e136a1ccb
 debian/patches/opt-44_rotor.patch:2a9e7afb1f04ad5b6819548b117d197f
 debian/patches/opt-42-x_MainMenuHooks-v1.0.1.patch:6cbebb3c2ee1a541dfff0921caf61e08
 debian/patches/opt-65_pin.patch:5c679d3773efc3d2869ee088c77bc729
@@ -22,4 +21,5 @@ debian/patches/12_osdbase-maxitems.patch:e378fe23cb8d1582abd1ee4c349febba
 debian/patches/opt-50_graphtft-liemikuutio.patch:518dd69cc7d01f132a8f59b62dabb342
 debian/patches/opt-45_yaepg.patch:c22d286c4c65b904a55cf3baeb9f467f
 debian/patches/06_default_svdrp_port_0.patch:a0e25c0e93fb69f3e76fc6b38c66ac19
+debian/patches/opt-10_vdr-1.7.42-vasarajanauloja.patch:26c7b898686fd668ae9bec54c97d288c
 debian/patches/81_Make_config.patch:0c7ea8e353c4c4403290d39b7be7db5f
