@@ -11,7 +11,7 @@ start on ((started dbus and started udev and stopped networking) \
 stop on runlevel [!2345]
 
 kill timeout 60
-# must be enabled if "dbus2vdr --upstart" is used
+# "expect stop" must be enabled if "dbus2vdr --upstart" is used
 #expect stop
 normal exit 0
 nice -10
@@ -28,8 +28,6 @@ end script
 
 script
 
-DAEMON=/usr/bin/vdr
-
 . /usr/lib/vdr/config-loader.sh
 
 # Set shutdown command
@@ -41,9 +39,9 @@ test "$ENABLE_SHUTDOWN" = "1" && VDRSHUTDOWN="/usr/lib/vdr/vdr-shutdown.wrapper"
 mergecommands "commands"
 mergecommands "reccmds"
 
-vdr_apiversion=`eval "$DAEMON -V -L$DAEMON 2>/dev/null | sed 's/.*(\(.*\)).*/\1/'"`
-vdr_apiversion=`echo "$vdr_apiversion" | sed 's:.*/::'`
-PLUGINS=`/usr/lib/vdr/plugin-loader2 --apiversion=$vdr_apiversion --confdir=$PLUGIN_CFG_DIR --libdir=$PLUGIN_DIR`
+VDR_APIVERSION=$(/usr/bin/vdr -V -L/usr/bin/vdr 2>/dev/null | sed 's/.*(\(.*\)).*/\1/' | sed 's:.*/::')
+PLUGINS=$(/usr/lib/vdr/plugin-loader2 --apiversion=$VDR_APIVERSION --confdir=$PLUGIN_CFG_DIR --libdir=$PLUGIN_DIR)
+
 
 if [ "$VFAT" = "1" ]; then 
    OPTIONS="$OPTIONS --dirnames=,,1"
@@ -56,7 +54,7 @@ if [ "$RES_DIR" != "" ]; then
 fi
 
 # enable debug measures
-if [ "$VDR_DEBUG" = "1" ]; then
+if [ -f /etc/init/vdr-dbg.conf ]; then
    ulimit -c unlimited
    OPTIONS="$OPTIONS --userdump"
    echo "/var/log/vdr/core.%p" > /proc/sys/kernel/core_pattern
@@ -73,7 +71,7 @@ fi
 
 export HOME=/var/lib/vdr
 
-exec $DAEMON -v $VIDEO_DIR -c $CFG_DIR -L $PLUGIN_DIR -r $REC_CMD -s $VDRSHUTDOWN -E $EPG_FILE -u $USER -g /tmp --port $SVDRP_PORT $OPTIONS $PLUGINS $REDIRECT
+eval exec /usr/bin/vdr -v $VIDEO_DIR -c $CFG_DIR -L $PLUGIN_DIR -r $REC_CMD -s $VDRSHUTDOWN -E $EPG_FILE -u $USER -g /tmp --port $SVDRP_PORT $OPTIONS "$PLUGINS" $REDIRECT
 
 end script
 
