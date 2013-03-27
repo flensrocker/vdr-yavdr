@@ -74,8 +74,12 @@ static void ReadOrderConf(vector<string> &top, vector<string> &bottom, vector<st
   ReadFile(lines, filename);
   bool in_top = true;
   for (vector<string>::iterator it = lines.begin(); it != lines.end(); ++it) {
-      if (*it == "*")
-         in_top = false;
+      if ((*it).substr(0, 1) == "*") {
+         if ((*it).length() == 1) // new order.conf syntax with an * spliting first and last plugins
+            in_top = false;
+         else // old yavdr order.conf syntax with an * in front of all last plugins
+            bottom.push_back((*it).substr( 1, (*it).length()));
+         }
       else if ((*it).substr(0, 1) == "-")
          disabled.push_back((*it).substr(1, string::npos));
       else if (in_top)
