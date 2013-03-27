@@ -74,4 +74,3 @@ export HOME=/var/lib/vdr
 eval exec /usr/bin/vdr -v $VIDEO_DIR -c $CFG_DIR -L $PLUGIN_DIR -r $REC_CMD -s $VDRSHUTDOWN -E $EPG_FILE -u $USER -g /tmp --port $SVDRP_PORT $OPTIONS "$PLUGINS" $REDIRECT
 
 end script
-
