@@ -1,1 +1,3 @@
 channels.conf.*
+debian/vdr-init.d
+debian/vdr-upstart
