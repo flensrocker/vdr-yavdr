@@ -11,8 +11,12 @@ start on ((started dbus and started udev and stopped networking) \
 stop on runlevel [!2345]
 
 kill timeout 60
+
 # "expect stop" must be enabled if "dbus2vdr --upstart" is used
+# "expect stop" must not be enabled if "dbus2vdr --upstart" is not used
+# The Upstart job will hang if you don't pay attention to this
 #expect stop
+
 normal exit 0
 nice -10
 
