@@ -43,8 +43,11 @@ VDR_APIVERSION=$(/usr/bin/vdr -V -L/usr/bin/vdr 2>/dev/null | sed 's/.*(\(.*\)).
 PLUGINS=$(/usr/lib/vdr/plugin-loader2 --apiversion=$VDR_APIVERSION --confdir=$PLUGIN_CFG_DIR --libdir=$PLUGIN_DIR)
 
 
+if [ -n "$LIRC" ]; then 
+   OPTIONS="--lirc=$LIRC $OPTIONS"
+fi 
 if [ "$VFAT" = "1" ]; then 
-   OPTIONS="$OPTIONS --dirnames=,,1"
+   OPTIONS="--dirnames=,,1 $OPTIONS"
 fi 
 if [ "$CACHE_DIR" != "" ]; then
    OPTIONS="--cachedir=$CACHE_DIR $OPTIONS"

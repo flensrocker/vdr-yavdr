@@ -2,6 +2,7 @@ vdr (1.7.42-2yavdr0~precise) precise; urgency=medium
 
   * update vasarajanauloja patch
   * add vdr-dbg Upstart job for collection crash log
+  * add support for "LIRC=/dev/path" in /etc/default/vdr
 
  -- Lars Hanisch <dvb@flensrocker.de>  Tue, 26 Mar 2013 19:47:17 +0100
 
