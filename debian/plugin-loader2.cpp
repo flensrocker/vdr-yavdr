@@ -51,17 +51,23 @@ static vector<string> &ReadFile(vector<string> &list, const string &filename)
   string line;
   size_t pos;
   list.clear();
-  ifstream file(filename.c_str(), ifstream::in);
-  while (file.peek() != EOF) {
-        getline(file, line);
-        line = trim(line);
-        pos = line.find("#");
-        if (pos != string::npos)
-           line = line.substr(0, pos);
-        if (!line.empty())
-           list.push_back(line);
-        }
-  file.close();
+  try
+  {
+    ifstream file(filename.c_str(), ifstream::in);
+    while (file.peek() != EOF) {
+          getline(file, line);
+          line = trim(line);
+          pos = line.find("#");
+          if (pos != string::npos)
+             line = line.substr(0, pos);
+          if (!line.empty())
+             list.push_back(line);
+          }
+    file.close();
+  }
+  catch (...)
+  {
+  }
   return list;
 }
 
@@ -103,6 +109,17 @@ static string &GetPluginParameters(string &parameters, const string &plugin_cfg_
   return parameters;
 }
 
+static bool HasPluginParameter(const string &plugin_cfg_dir, const string &plugin, const string &parameter_name)
+{
+  vector<string> lines;
+  ReadFile(lines, plugin_cfg_dir + "/plugin." + plugin + ".conf");
+  for (vector<string>::iterator it = lines.begin(); it != lines.end(); ++it) {
+      if ((*it).find(parameter_name) != string::npos)
+         return true;
+      }
+  return false;
+}
+
 static vector<string> &GetInstalledPlugins(vector<string> &plugins, const string &plugin_dir, const string &vdr_apiversion, const vector<string> &disabled)
 {
   plugins.clear();
@@ -136,6 +153,8 @@ int main(int argc, char *argv[])
   string vdr_apiversion;
   string plugin_cfg_dir;
   string plugin_dir;
+  string plugin;
+  string has_parameter;
 
   // read parameter from environment
   const char *tmp = getenv("VDR_APIVERSION");
@@ -153,14 +172,16 @@ int main(int argc, char *argv[])
      plugin_dir = tmp;
 
   static struct option long_options[] = {
-      { "apiversion", required_argument, NULL, 'a' },
-      { "confdir",    required_argument, NULL, 'c' },
-      { "libdir",     required_argument, NULL, 'L' },
-      { NULL,         no_argument,       NULL,  0  }
+      { "apiversion",    required_argument, NULL, 'a' },
+      { "confdir",       required_argument, NULL, 'c' },
+      { "libdir",        required_argument, NULL, 'L' },
+      { "plugin",        required_argument, NULL, 'P' },
+      { "has-parameter", required_argument, NULL, 'h' },
+      { NULL,            no_argument,       NULL,  0  }
     };
 
   int c;
-  while ((c = getopt_long(argc, argv, "a:c:", long_options, NULL)) != -1) {
+  while ((c = getopt_long(argc, argv, "a:c:L:P:h:", long_options, NULL)) != -1) {
         switch (c) {
           case 'a':
             vdr_apiversion = optarg;
@@ -171,8 +192,22 @@ int main(int argc, char *argv[])
           case 'L':
             plugin_dir = optarg;
             break;
+          case 'P':
+            plugin = optarg;
+            break;
+          case 'h':
+            has_parameter = optarg;
+            break;
           }
         }
+
+  if (!plugin.empty() && !has_parameter.empty()) {
+     if (HasPluginParameter(plugin_cfg_dir, plugin, has_parameter)) {
+        cout << "1";
+        return 0;
+        }
+     return 1;
+     }
 
   if (vdr_apiversion.empty()) {
      cerr << "missing VDR_APIVERSION" << endl;
