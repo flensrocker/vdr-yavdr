@@ -19,6 +19,7 @@ debian/patches/opt-42-x_MainMenuHooks-v1.0.1.patch:6cbebb3c2ee1a541dfff0921caf61
 debian/patches/opt-65_pin.patch:5c679d3773efc3d2869ee088c77bc729
 debian/patches/12_osdbase-maxitems.patch:e378fe23cb8d1582abd1ee4c349febba
 debian/patches/opt-50_graphtft-liemikuutio.patch:518dd69cc7d01f132a8f59b62dabb342
+debian/patches/xprmtl-02_permashift-0.5.2.patch:ff32774f34c762fb13b1a66c6024232f
 debian/patches/opt-45_yaepg.patch:c22d286c4c65b904a55cf3baeb9f467f
 debian/patches/06_default_svdrp_port_0.patch:a0e25c0e93fb69f3e76fc6b38c66ac19
 debian/patches/81_Make_config.patch:0c7ea8e353c4c4403290d39b7be7db5f
