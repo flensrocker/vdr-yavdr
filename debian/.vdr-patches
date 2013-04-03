@@ -8,6 +8,7 @@ debian/patches/opt-37-x_menuorg.patch:176d387c1283102d8f6f2e6a2de1def2
 debian/patches/opt-56_eventdetails_v3.patch:e2ff963982af0673b0436d3f7f6c2048
 debian/patches/opt-41-x_timer-info.patch:deefdf8e55c93ebeef6f46932651e21c
 debian/patches/xprmtl-01_externalci.patch:eefe96b88fc1fa280b596332f5ff6bf2
+debian/patches/xprmtl-03_extra-video-directory.patch:f33e5449b2392370008ab87b7aff6a14
 debian/patches/opt-66_jumpingseconds.patch:9d2e3e30ed8fa55310929a086a6d95c1
 debian/patches/opt-57_vdr-remote_instant_recordings.patch:5915ef251459cb502d32c34de9a2eb21
 debian/patches/99_ncursesw-include.patch:800d092193c6392a5743e6702eb277de

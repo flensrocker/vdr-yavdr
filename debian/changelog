@@ -1,3 +1,9 @@
+vdr (2.0.0-2yavdr0~precise) precise; urgency=medium
+
+  * add extra-video-directory patch
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Wed, 03 Apr 2013 21:47:04 +0200
+
 vdr (2.0.0-1yavdr0~precise) precise; urgency=medium
 
   * add permashift patch
