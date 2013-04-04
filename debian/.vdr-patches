@@ -6,9 +6,9 @@ debian/patches/opt-27_ttxtsubs.patch:fa6c23a49c4788cb0ed45464646c6862
 debian/patches/opt-50_graphtft.patch:1febc064b45c771da669042f7912c4cf
 debian/patches/opt-37-x_menuorg.patch:176d387c1283102d8f6f2e6a2de1def2
 debian/patches/opt-56_eventdetails_v3.patch:e2ff963982af0673b0436d3f7f6c2048
-debian/patches/opt-41-x_timer-info.patch:deefdf8e55c93ebeef6f46932651e21c
-debian/patches/xprmtl-01_externalci.patch:eefe96b88fc1fa280b596332f5ff6bf2
-debian/patches/xprmtl-03_extra-video-directory.patch:f33e5449b2392370008ab87b7aff6a14
+debian/patches/opt-41-x_timer-info.patch:93cdf6e97b22c61b8368a0e951720c0b
+debian/patches/xprmtl-01_externalci.patch:f2c8a3783552d6a5db6c05e76d73db43
+debian/patches/xprmtl-03_extra-video-directory.patch:66923dfd8594f98490cea42b391bad8f
 debian/patches/opt-66_jumpingseconds.patch:9d2e3e30ed8fa55310929a086a6d95c1
 debian/patches/opt-57_vdr-remote_instant_recordings.patch:5915ef251459cb502d32c34de9a2eb21
 debian/patches/99_ncursesw-include.patch:800d092193c6392a5743e6702eb277de
@@ -19,7 +19,7 @@ debian/patches/opt-44_rotor.patch:2a9e7afb1f04ad5b6819548b117d197f
 debian/patches/opt-42-x_MainMenuHooks-v1.0.1.patch:6cbebb3c2ee1a541dfff0921caf61e08
 debian/patches/opt-65_pin.patch:5c679d3773efc3d2869ee088c77bc729
 debian/patches/12_osdbase-maxitems.patch:e378fe23cb8d1582abd1ee4c349febba
-debian/patches/opt-50_graphtft-liemikuutio.patch:518dd69cc7d01f132a8f59b62dabb342
+debian/patches/opt-50_graphtft-liemikuutio.patch:275847321787b3f5a3172aeef57c3370
 debian/patches/xprmtl-02_permashift-0.5.2.patch:ff32774f34c762fb13b1a66c6024232f
 debian/patches/opt-45_yaepg.patch:c22d286c4c65b904a55cf3baeb9f467f
 debian/patches/06_default_svdrp_port_0.patch:a0e25c0e93fb69f3e76fc6b38c66ac19

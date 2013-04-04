@@ -1,3 +1,9 @@
+Description: Add several video directories to vdr
+ and display all recordings in one list
+Origin: https://github.com/flensrocker/vdr-plugin-dynamite
+Forwarded: no
+Author: Lars Hanisch <dvb@flensrocker.de>
+
 --- a/menu.c
 +++ b/menu.c
 @@ -2703,6 +2703,19 @@
