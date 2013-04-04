@@ -1,3 +1,9 @@
+vdr (2.0.0-3yavdr0~precise) precise; urgency=medium
+
+  * Append CPPFLAGS to CFLAGS, so this gets stored in vdr.pc and can be used by plugins
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Thu, 04 Apr 2013 20:57:26 +0200
+
 vdr (2.0.0-2yavdr0~precise) precise; urgency=medium
 
   * add extra-video-directory patch
