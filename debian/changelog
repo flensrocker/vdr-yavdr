@@ -1,3 +1,9 @@
+vdr (2.0.0-2yavdr0~0.5~precise) precise; urgency=medium
+
+  * change version for yaVDR 0.5
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Thu, 04 Apr 2013 19:13:09 +0200
+
 vdr (2.0.0-2yavdr0~precise) precise; urgency=medium
 
   * add extra-video-directory patch
