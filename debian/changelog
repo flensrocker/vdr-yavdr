@@ -1,3 +1,27 @@
+vdr (2.0.0-2yavdr0~precise) precise; urgency=medium
+
+  * add extra-video-directory patch
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Wed, 03 Apr 2013 21:47:04 +0200
+
+vdr (2.0.0-1yavdr0~precise) precise; urgency=medium
+
+  * add permashift patch
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Tue, 02 Apr 2013 18:52:20 +0200
+
+vdr (2.0.0-0yavdr0~precise) precise; urgency=medium
+
+  * new upstream release
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Tue, 02 Apr 2013 13:50:56 +0200
+
+vdr (1.7.42-3yavdr0~precise) precise; urgency=medium
+
+  * pick some patches from etobi's repository
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Thu, 28 Mar 2013 21:59:01 +0100
+
 vdr (1.7.42-2yavdr0~precise) precise; urgency=medium
 
   * update vasarajanauloja patch

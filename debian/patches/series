@@ -9,7 +9,7 @@
 
 # rofafor Patch collection
 # http://www.saunalahti.fi/~rahrenbe/vdr/patches/index.php
-opt-10_vdr-1.7.42-vasarajanauloja.patch
+opt-10_vdr-2.0.0-vasarajanauloja.patch
 
 # Easy editing of cutting marks
 # (Requires opt-10_vasarajanauloja!)
@@ -49,7 +49,9 @@ opt-61_dynamite.patch
 ##opt-63_naludump.patch
 opt-65_pin.patch
 opt-66_jumpingseconds.patch
-opt-67_epgsearch-exttimeredit-0.0.2.diff
+opt-67_epgsearch-exttimeredit-0.0.2.patch
 
 xprmtl-01_externalci.patch
+xprmtl-02_permashift-0.5.2.patch
+xprmtl-03_extra-video-directory.patch
 
