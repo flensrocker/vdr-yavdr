@@ -10,6 +10,7 @@ debian/patches/opt-41-x_timer-info.patch:93cdf6e97b22c61b8368a0e951720c0b
 debian/patches/xprmtl-01_externalci.patch:f2c8a3783552d6a5db6c05e76d73db43
 debian/patches/xprmtl-03_extra-video-directory.patch:66923dfd8594f98490cea42b391bad8f
 debian/patches/opt-66_jumpingseconds.patch:9d2e3e30ed8fa55310929a086a6d95c1
+debian/patches/vdr-2.0.0-fixkeeptracksinit.patch:dec8c136af55eb2e630f9081c934bedf
 debian/patches/opt-57_vdr-remote_instant_recordings.patch:5915ef251459cb502d32c34de9a2eb21
 debian/patches/99_ncursesw-include.patch:800d092193c6392a5743e6702eb277de
 debian/patches/82_valgrind.patch:2aa30851b228e48bea9bf4edb25e607a

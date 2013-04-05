@@ -4,6 +4,7 @@ vdr (2.0.0-3yavdr0~precise) precise; urgency=medium
   * extract-patchinfo: grep auhtor and description from quilt header
   * update some patch headers
   * simplify commands-loader.sh, use "sort" instead of order.*.conf
+  * add keeptracks patch
 
  -- Lars Hanisch <dvb@flensrocker.de>  Thu, 04 Apr 2013 20:57:26 +0200
 
