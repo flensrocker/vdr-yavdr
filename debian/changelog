@@ -1,3 +1,13 @@
+vdr (2.0.0-3yavdr0~0.5~precise) precise; urgency=medium
+
+  * Append CPPFLAGS to CFLAGS, so this gets stored in vdr.pc and can be used by plugins
+  * extract-patchinfo: grep auhtor and description from quilt header
+  * update some patch headers
+  * simplify commands-loader.sh, use "sort" instead of order.*.conf
+  * add keeptracks patch
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Thu, 04 Apr 2013 20:57:26 +0200
+
 vdr (2.0.0-2yavdr0~0.5~precise) precise; urgency=medium
 
   * change version for yaVDR 0.5

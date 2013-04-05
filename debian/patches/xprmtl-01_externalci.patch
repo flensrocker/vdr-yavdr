@@ -1,7 +1,7 @@
-Description: Patch for VDR to support external CI devices
-Origin: https://github.com/flensrocker/vdr-plugin-dynamite
+Origin: https://github.com/flensrocker/vdr-plugin-ddci
 Forwarded: no
 Author: Lars Hanisch <dvb@flensrocker.de>
+
 --- a/ci.h
 +++ b/ci.h
 @@ -72,6 +72,7 @@

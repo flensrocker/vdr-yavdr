@@ -1,5 +1,5 @@
 Description: Patch required for the GraphTFT plugin with liemikuutio patch.
-Author: Jörg Wendel (Horchi)
+Author: JÃ¶rg Wendel (Horchi)
 Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
 
 --- a/menu.c

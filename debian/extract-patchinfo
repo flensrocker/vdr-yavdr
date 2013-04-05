@@ -2,9 +2,9 @@
 
 print_patch()
 {
-    #author=`dpatch cat --author-only $1`
+    author=`quilt header $1 | grep -e '^Author' | cut -d : -f 2`
     patch_name=`echo $1 | sed 's/[^_]*_\(.*\)/\1/'`
-    #patch_description=`dpatch cat --no-meta $patch` 
+    patch_description=`quilt header $1 | grep -e '^Description' | cut -d : -f 2`
     echo $patch_name:
     if [ ! -z "$author" ] ; then
        echo "    $author"
