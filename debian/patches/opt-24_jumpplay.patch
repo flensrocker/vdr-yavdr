@@ -1,11 +1,8 @@
-﻿#! /bin/sh /usr/share/dpatch/dpatch-run
-## opt-24_jumpplay.dpatch by Torsten Kunkel <vdr@tkunkel.de>, Thomas Günther <tom@toms-cafe.de>
-## http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
-##
-## All lines beginning with `## DP:' are a description of the patch.
-## DP: Play after jump to next mark. Automatically jump over commercial breaks.
-## DP: See README.jumpplay and MANUAL for details.
-## DP: 2011-03-19: Remove marks reloading for VDR-1.7.17, by Udo Richter <udo_richter@gmx.de>
+Description: Play after jump to next mark. Automatically jump over commercial breaks.
+ See README.jumpplay and MANUAL for details.
+ 2011-03-19: Remove marks reloading for VDR-1.7.17, by Udo Richter <udo_richter@gmx.de>
+Author: Torsten Kunkel <vdr@tkunkel.de>, Thomas Günther <tom@toms-cafe.de>
+Origin: http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
 
 --- a/MANUAL
 +++ b/MANUAL

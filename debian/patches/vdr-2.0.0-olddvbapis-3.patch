@@ -1,6 +1,6 @@
-===================================================================
-RCS file: ./RCS/dvbdevice.c
-retrieving revision 3.0
+Description: make vdr compatible with DVB-API >= 5.0
+Author: Klaus Schmidinger
+
 --- a/dvbdevice.c
 +++ b/dvbdevice.c
 @@ -21,10 +21,7 @@
