@@ -1,0 +1,14 @@
+Description: set IO priority to idle class
+Author: Jochen Dolze (Joe_D@vdrportal)
+
+--- a/thread.c
++++ b/thread.c
+@@ -229,7 +229,7 @@
+ 
+ void cThread::SetIOPriority(int Priority)
+ {
+-  if (syscall(SYS_ioprio_set, 1, 0, (Priority & 0xff) | (2 << 13)) < 0) // best effort class
++  if (syscall(SYS_ioprio_set, 1, 0, (Priority & 0xff) | (3 << 13)) < 0) // idle class
+      LOG_ERROR;
+ }
+ 

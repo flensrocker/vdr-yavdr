@@ -25,5 +25,6 @@ opt-67_epgsearch-exttimeredit-0.0.2.patch:7c73f6e5069d6dfe1d43047e136a1ccb
 xprmtl-01_externalci.patch:08b545f7dbef251947a3b7623e61b750
 xprmtl-02_permashift-0.5.2.patch:4cb8e8a0b263035dbefa117ccff489fe
 xprmtl-03_extra-video-directory.patch:66923dfd8594f98490cea42b391bad8f
+xprmtl-04_joe_d-cut-prio.patch:1cdfed3ef881a27fd0a6eb77cafc317b
 vdr-2.0.0-fixkeeptracksinit.patch:821ccd9b0bd88d09a0579eccfc67dfe7
 vdr-2.0.0-olddvbapis-3.patch:3c1a5b57259e1512484b2635712f5f90

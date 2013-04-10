@@ -2,6 +2,7 @@ vdr (2.0.0-4yavdr0~precise) precise; urgency=medium
 
   * add olddvbapi patch
   * The patchinfo is now generated with debian/rules accept-patches
+  * add cut-prio patch
 
  -- Lars Hanisch <dvb@flensrocker.de>  Wed, 10 Apr 2013 18:14:56 +0200
 

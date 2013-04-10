@@ -158,6 +158,13 @@ xprmtl-03_extra-video-directory.patch
 
     Add several video directories to vdr and display all recordings in one list
 
+xprmtl-04_joe_d-cut-prio.patch
+    Jochen Dolze (Joe_D@vdrportal)
+
+    set IO priority to idle class
+
+
+
 vdr-2.0.0-fixkeeptracksinit.patch
     Klaus Schmidinger
 
