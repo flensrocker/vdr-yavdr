@@ -1,3 +1,6 @@
+Description: patch for the pin plugin
+Author: Jörg Wendel (horchi@vdr-portal)
+
 --- a/device.c
 +++ b/device.c
 @@ -777,6 +777,7 @@

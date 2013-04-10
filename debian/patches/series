@@ -54,7 +54,9 @@ opt-67_epgsearch-exttimeredit-0.0.2.patch
 xprmtl-01_externalci.patch
 xprmtl-02_permashift-0.5.2.patch
 xprmtl-03_extra-video-directory.patch
+xprmtl-04_joe_d-cut-prio.patch
 
 # hotfixes by kls
 vdr-2.0.0-fixkeeptracksinit.patch
+vdr-2.0.0-olddvbapis-3.patch
 

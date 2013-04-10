@@ -1,3 +1,7 @@
+Description: vasara ja nauloja
+ different enhancements
+Author: Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
+
 --- a/cutter.c
 +++ b/cutter.c
 @@ -8,6 +8,7 @@

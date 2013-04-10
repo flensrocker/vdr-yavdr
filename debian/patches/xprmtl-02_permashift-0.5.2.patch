@@ -1,3 +1,6 @@
+Description: used by permashift plugin
+Author: Eike Sauer (Ein_Eike@vdrportal)
+
 --- a/menu.h
 +++ b/menu.h
 @@ -246,8 +246,11 @@
