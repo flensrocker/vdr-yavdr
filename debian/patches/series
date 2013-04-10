@@ -57,4 +57,5 @@ xprmtl-03_extra-video-directory.patch
 
 # hotfixes by kls
 vdr-2.0.0-fixkeeptracksinit.patch
+vdr-2.0.0-olddvbapis-3.patch
 

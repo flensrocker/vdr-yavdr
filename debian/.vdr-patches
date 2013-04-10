@@ -13,6 +13,7 @@ debian/patches/opt-66_jumpingseconds.patch:9d2e3e30ed8fa55310929a086a6d95c1
 debian/patches/vdr-2.0.0-fixkeeptracksinit.patch:dec8c136af55eb2e630f9081c934bedf
 debian/patches/opt-57_vdr-remote_instant_recordings.patch:5915ef251459cb502d32c34de9a2eb21
 debian/patches/99_ncursesw-include.patch:800d092193c6392a5743e6702eb277de
+debian/patches/vdr-2.0.0-olddvbapis-3.patch:2e8a98e02fd88e76709dc33efbc51b98
 debian/patches/82_valgrind.patch:2aa30851b228e48bea9bf4edb25e607a
 debian/patches/opt-61_dynamite.patch:fe4021caba336d720f7a2d1ad8507f54
 debian/patches/opt-22-x_edit_marks.patch:624c66d0f33e51adc95ca97b7032514f
