@@ -248,7 +248,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
  #include <ctype.h>
  #include <dirent.h>
  #include <errno.h>
-@@ -996,7 +997,7 @@
+@@ -998,7 +999,7 @@
  
  const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level) const
  {
@@ -257,7 +257,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
    free(titleBuffer);
    titleBuffer = NULL;
    if (Level < 0 || Level == HierarchyLevels()) {
-@@ -1016,7 +1017,7 @@
+@@ -1018,7 +1019,7 @@
                     Minutes % 60
                     );
          }

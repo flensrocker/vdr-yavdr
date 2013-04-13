@@ -1029,7 +1029,7 @@ Author: Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
 +msgstr "Tiedosto on jo olemassa - ylikirjoitetaanko?"
 --- a/recording.c
 +++ b/recording.c
-@@ -1066,6 +1066,16 @@
+@@ -1068,6 +1068,16 @@
    return NULL;
  }
  
@@ -1046,7 +1046,7 @@ Author: Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
  int cRecording::HierarchyLevels(void) const
  {
    const char *s = name;
-@@ -1358,7 +1368,7 @@
+@@ -1360,7 +1370,7 @@
       }
  }
  
@@ -1055,7 +1055,7 @@ Author: Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
  {
    LOCK_THREAD;
    cRecording *recording = GetByName(FileName);
-@@ -1366,7 +1376,7 @@
+@@ -1368,7 +1378,7 @@
       cThreadLock DeletedRecordingsLock(&DeletedRecordings);
       Del(recording, false);
       char *ext = strrchr(recording->fileName, '.');
