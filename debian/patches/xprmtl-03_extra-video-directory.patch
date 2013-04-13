@@ -28,7 +28,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  }
 --- a/recording.c
 +++ b/recording.c
-@@ -725,6 +725,7 @@
+@@ -727,6 +727,7 @@
    resume = RESUME_NOT_INITIALIZED;
    titleBuffer = NULL;
    sortBufferName = sortBufferTime = NULL;
@@ -36,7 +36,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    fileName = NULL;
    name = NULL;
    fileSizeMB = -1; // unknown
-@@ -777,7 +778,7 @@
+@@ -779,7 +780,7 @@
    info->lifetime = lifetime;
  }
  
@@ -45,7 +45,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  {
    resume = RESUME_NOT_INITIALIZED;
    fileSizeMB = -1; // unknown
-@@ -792,11 +793,12 @@
+@@ -794,11 +795,12 @@
    deleted = 0;
    titleBuffer = NULL;
    sortBufferName = sortBufferTime = NULL;
@@ -60,7 +60,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    const char *p = strrchr(FileName, '/');
  
    name = NULL;
-@@ -903,6 +905,8 @@
+@@ -905,6 +907,8 @@
  
  cRecording::~cRecording()
  {
@@ -69,7 +69,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    free(titleBuffer);
    free(sortBufferName);
    free(sortBufferTime);
-@@ -944,7 +948,7 @@
+@@ -946,7 +950,7 @@
  {
    char **sb = (RecordingsSortMode == rsmName) ? &sortBufferName : &sortBufferTime;
    if (!*sb) {
@@ -78,7 +78,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
       if (RecordingsSortMode != rsmName || Setup.AlwaysSortFoldersFirst)
          s = StripEpisodeName(s, RecordingsSortMode != rsmName);
       strreplace(s, '/', '0'); // some locales ignore '/' when sorting
-@@ -985,11 +989,11 @@
+@@ -987,11 +991,11 @@
       const char *fmt = isPesRecording ? NAMEFORMATPES : NAMEFORMATTS;
       int ch = isPesRecording ? priority : channel;
       int ri = isPesRecording ? lifetime : instanceId;
@@ -92,7 +92,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
       free(Name);
       }
    return fileName;
-@@ -1267,9 +1271,14 @@
+@@ -1269,9 +1273,14 @@
    ChangeState();
    Unlock();
    ScanVideoDir(VideoDirectory, Foreground);
@@ -108,7 +108,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  {
    cReadDir d(DirName);
    struct dirent *e;
-@@ -1289,7 +1298,7 @@
+@@ -1291,7 +1300,7 @@
                }
             if (S_ISDIR(st.st_mode)) {
                if (endswith(buffer, deleted ? DELEXT : RECEXT)) {
@@ -117,7 +117,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
                   if (r->Name()) {
                      r->NumFrames(); // initializes the numFrames member
                      r->FileSizeMB(); // initializes the fileSizeMB member
-@@ -1304,7 +1313,7 @@
+@@ -1306,7 +1315,7 @@
                      delete r;
                   }
                else

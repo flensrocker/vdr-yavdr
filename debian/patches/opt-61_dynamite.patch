@@ -569,7 +569,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  #endif //__DVBCI_H
 --- a/dvbdevice.c
 +++ b/dvbdevice.c
-@@ -291,7 +291,7 @@
+@@ -288,7 +288,7 @@
    bool SendDiseqc;
    int frontendType;
    const cDvbDevice *device;
@@ -578,7 +578,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    int adapter, frontend;
    uint32_t subsystemId;
    int tuneTimeout;
-@@ -302,7 +302,7 @@
+@@ -299,7 +299,7 @@
    const cScr *scr;
    bool lnbPowerTurnedOn;
    eTunerStatus tunerStatus;
@@ -587,7 +587,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    cCondVar locked;
    cCondVar newSet;
    dvb_diseqc_master_cmd diseqc_cmd;
-@@ -318,6 +318,10 @@
+@@ -315,6 +315,10 @@
    void ResetToneAndVoltage(void);
    bool SetFrontend(void);
    virtual void Action(void);
@@ -598,7 +598,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  public:
    cDvbTuner(const cDvbDevice *Device, int Fd_Frontend, int Adapter, int Frontend);
    virtual ~cDvbTuner();
-@@ -333,6 +337,8 @@
+@@ -330,6 +334,8 @@
    int GetSignalStrength(void) const;
    int GetSignalQuality(void) const;
    bool SendDiseqcCmd(dvb_diseqc_master_cmd cmd);
@@ -607,7 +607,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  private:
    int GetCurrentDeliverySystem(void);
    };
-@@ -357,6 +363,7 @@
+@@ -354,6 +360,7 @@
    tunerStatus = tsIdle;
    bondedTuner = NULL;
    bondedMaster = false;
@@ -615,7 +615,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    SetDescription("tuner on frontend %d/%d", adapter, frontend);
    Start();
  }
-@@ -374,6 +381,8 @@
+@@ -371,6 +378,8 @@
       ExecuteDiseqc(lastDiseqc, &Frequency);
       }
    */
@@ -624,7 +624,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  }
  
  bool cDvbTuner::Bond(cDvbTuner *Tuner)
-@@ -518,6 +527,8 @@
+@@ -515,6 +524,8 @@
  
  void cDvbTuner::ClearEventQueue(void) const
  {
@@ -633,7 +633,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    cPoller Poller(fd_frontend);
    if (Poller.Poll(TUNER_POLL_TIMEOUT)) {
       dvb_frontend_event Event;
-@@ -757,6 +768,8 @@
+@@ -754,6 +765,8 @@
  
  bool cDvbTuner::SetFrontend(void)
  {
@@ -642,7 +642,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  #define MAXFRONTENDCMDS 16
  #define SETCMD(c, d) { Frontend[CmdSeq.num].cmd = (c);\
                         Frontend[CmdSeq.num].u.data = (d);\
-@@ -903,9 +916,11 @@
+@@ -905,9 +918,11 @@
    bool LostLock = false;
    fe_status_t Status = (fe_status_t)0;
    while (Running()) {
@@ -657,7 +657,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
          cMutexLock MutexLock(&mutex);
          if (SendDiseqc) {
             CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_MASTER_CMD, &diseqc_cmd));
-@@ -962,6 +977,40 @@
+@@ -964,6 +979,40 @@
          }
  }
  
@@ -698,7 +698,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  // --- cDvbSourceParam -------------------------------------------------------
  
  class cDvbSourceParam : public cSourceParam {
-@@ -1047,7 +1096,8 @@
+@@ -1049,7 +1098,8 @@
    NULL
    };
  
@@ -708,7 +708,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  {
    adapter = Adapter;
    frontend = Frontend;
-@@ -1067,7 +1117,7 @@
+@@ -1069,7 +1119,7 @@
  
    fd_ca = DvbOpen(DEV_DVB_CA, adapter, frontend, O_RDWR);
    if (fd_ca >= 0)
@@ -717,7 +717,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  
    // The DVR device (will be opened and closed as needed):
  
-@@ -1295,7 +1345,11 @@
+@@ -1313,7 +1363,11 @@
           if (d >= 0) {
              int ErrorDevice = 0;
              if (cDevice *Device1 = cDevice::GetDevice(i)) {
@@ -729,7 +729,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
                    if (cDvbDevice *DvbDevice1 = dynamic_cast<cDvbDevice *>(Device1)) {
                       if (cDvbDevice *DvbDevice2 = dynamic_cast<cDvbDevice *>(Device2)) {
                          if (!DvbDevice1->Bond(DvbDevice2))
-@@ -1329,7 +1383,10 @@
+@@ -1347,7 +1401,10 @@
  void cDvbDevice::UnBondDevices(void)
  {
    for (int i = 0; i < cDevice::NumDevices(); i++) {
@@ -741,7 +741,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
           d->UnBond();
        }
  }
-@@ -1383,6 +1440,26 @@
+@@ -1401,6 +1458,26 @@
    return true;
  }
  
@@ -768,7 +768,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  bool cDvbDevice::HasCi(void)
  {
    return ciAdapter;
-@@ -1552,7 +1629,7 @@
+@@ -1570,7 +1647,7 @@
  
  bool cDvbDevice::ProvidesEIT(void) const
  {
@@ -779,7 +779,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  int cDvbDevice::NumProvidedSystems(void) const
 --- a/dvbdevice.h
 +++ b/dvbdevice.h
-@@ -107,7 +107,7 @@
+@@ -156,7 +156,7 @@
  /// The cDvbDevice implements a DVB device which can be accessed through the Linux DVB driver API.
  
  class cDvbDevice : public cDevice {
@@ -788,7 +788,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    static cString DvbName(const char *Name, int Adapter, int Frontend);
    static int DvbOpen(const char *Name, int Adapter, int Frontend, int Mode, bool ReportError = false);
  private:
-@@ -133,13 +133,15 @@
+@@ -182,13 +182,15 @@
    mutable bool needsDetachBondedReceivers;
    bool QueryDeliverySystems(int fd_frontend);
  public:
