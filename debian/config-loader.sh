@@ -46,7 +46,7 @@ ENABLED=0
 ENABLE_SHUTDOWN=0
 
 # Video-Directory
-VIDEO_DIR="/var/lib/video.00"
+VIDEO_DIR="/srv/vdr/video.00"
 
 # Cache-Directory
 CACHE_DIR="/var/cache/vdr"
@@ -80,7 +80,8 @@ ENV_FILE="none"
 # Enable VFAT file system support by default
 VFAT=1
 
-# if you want to use a specific lirc device, set in /etc/default/vdr
-#LIRC=/dev/null
+# if you want to use a specific lirc device, set it in /etc/default/vdr
+# if you want to disable lirc, set LIRC=""
+LIRC="/var/run/lirc/lircd"
 
 test -f /etc/default/vdr && . /etc/default/vdr
