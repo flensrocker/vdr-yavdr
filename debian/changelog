@@ -1,3 +1,9 @@
+vdr (2.0.1-3yavdr0) precise; urgency=medium
+
+  * no restart on upgrade
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Sat, 20 Apr 2013 10:04:59 +0200
+
 vdr (2.0.1-2yavdr0) precise; urgency=medium
 
   * remove all channels.conf on purge
