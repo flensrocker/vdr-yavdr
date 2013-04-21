@@ -1,4 +1,10 @@
-vdr (2.0.1-3yavdr0~0.5) precise; urgency=medium
+vdr (2.0.1-4yavdr0~0.5) precise; urgency=medium
+
+  * don't fail if owner on recordings can't be set
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Sun, 21 Apr 2013 11:47:48 +0200
+
+vdr (2.0.1-3yavdr0) precise; urgency=medium
 
   * no restart on upgrade
 
