@@ -1,3 +1,10 @@
+vdr (2.0.1-5yavdr0~0.5) precise; urgency=medium
+
+  * override stable Upstart job 'vdr-exit-other', it's not
+    compatible with the vdr package
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Wed, 24 Apr 2013 23:29:59 +0200
+
 vdr (2.0.1-4yavdr0~0.5) precise; urgency=medium
 
   * don't fail if owner on recordings can't be set
