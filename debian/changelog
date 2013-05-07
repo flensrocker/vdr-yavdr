@@ -1,3 +1,9 @@
+vdr (2.0.1-6yavdr0) precise; urgency=medium
+
+  * increase version to sync with yavdr-0.5
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Tue, 07 May 2013 19:36:06 +0200
+
 vdr (2.0.1-5yavdr0) precise; urgency=medium
 
   * set uid/gid of vdr/vdr to 666
