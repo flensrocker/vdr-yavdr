@@ -41,12 +41,12 @@ case "$1" in
         GROUP=vdr
         if ! getent group | grep -q "^$GROUP:" ; then
                 echo -n "Adding group $GROUP.."
-                addgroup --quiet --system $GROUP
+                addgroup --quiet --gid 666 --system $GROUP
                 echo "..done"
         fi
         if ! getent passwd | grep -q "^$USER:"; then
                 echo -n "Adding user $USER.."
-                adduser --system --home /var/lib/vdr --shell /bin/false \
+                adduser --system --uid 666 --home /var/lib/vdr --shell /bin/false \
                         --gecos "VDR user" --no-create-home \
                         --disabled-login --disabled-password \
                         --ingroup $GROUP \
