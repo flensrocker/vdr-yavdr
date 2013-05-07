@@ -1,3 +1,9 @@
+vdr (2.0.1-6yavdr0~0.5) precise; urgency=medium
+
+  * set uid/gid of vdr/vdr to 666
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Tue, 07 May 2013 19:32:50 +0200
+
 vdr (2.0.1-5yavdr0~0.5) precise; urgency=medium
 
   * override stable Upstart job 'vdr-exit-other', it's not
