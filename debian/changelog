@@ -1,3 +1,10 @@
+vdr (2.0.1-7yavdr0~0.5) precise; urgency=medium
+
+  * Upstart: start on static-network-up, not "stopping networking"
+    With Raring "networking" is not a task anymore.
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Wed, 08 May 2013 13:00:44 +0200
+
 vdr (2.0.1-6yavdr0~0.5) precise; urgency=medium
 
   * set uid/gid of vdr/vdr to 666
