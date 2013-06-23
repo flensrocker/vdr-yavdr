@@ -43,7 +43,7 @@ Author: ?
    cString DeviceBondings;
 --- a/menu.c
 +++ b/menu.c
-@@ -3543,6 +3543,8 @@
+@@ -3541,6 +3541,8 @@
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Jump&Play"), &data.JumpPlay));
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Play&Jump"), &data.PlayJump));
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Pause at last mark"), &data.PauseLastMark));
@@ -52,7 +52,7 @@ Author: ?
  }
  
  void cMenuSetupReplay::Store(void)
-@@ -5512,9 +5514,9 @@
+@@ -5510,9 +5512,9 @@
      case kRight:   Forward(); break;
      case kRed:     TimeSearch(); break;
      case kGreen|k_Repeat:
@@ -64,7 +64,7 @@ Author: ?
      case kPrev|k_Repeat:
      case kPrev:    if (lastSkipTimeout.TimedOut()) {
                        lastSkipSeconds = REPLAYCONTROLSKIPSECONDS;
-@@ -5561,7 +5563,7 @@
+@@ -5559,7 +5561,7 @@
                                    marks.Save();
                                    }
                                 else
@@ -73,7 +73,7 @@ Author: ?
                                 break;
          case k3|k_Repeat:
          case k3:               if (GetReplayMode(play, forward, speed) && !play && GetIndex(Current, Total) && (m = marks.Get(Current)) != NULL) {
-@@ -5574,7 +5576,7 @@
+@@ -5572,7 +5574,7 @@
                                    marks.Save();
                                    }
                                 else

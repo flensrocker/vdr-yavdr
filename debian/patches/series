@@ -52,6 +52,7 @@ opt-66_jumpingseconds.patch
 opt-67_epgsearch-exttimeredit-0.0.2.patch
 
 xprmtl-01_externalci.patch
-xprmtl-02_permashift-0.5.2.patch
+xprmtl-02_permashift-0.5.4.patch
 xprmtl-03_extra-video-directory.patch
 
+xprmtl-04_loglevel.patch

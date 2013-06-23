@@ -148,13 +148,18 @@ xprmtl-01_externalci.patch
 
     used by the ddci plugin
 
-xprmtl-02_permashift-0.5.2.patch
-    Eike Sauer (Ein_Eike@vdrportal)
+xprmtl-02_permashift-0.5.4.patch
+    Eike Sauer <eike@ein-eike.de>
 
-    used by permashift plugin
+    patch for permashift plugin
 
 xprmtl-03_extra-video-directory.patch
     Lars Hanisch <dvb@flensrocker.de>
 
     Add several video directories to vdr and display all recordings in one list
+
+xprmtl-04_loglevel.patch
+    Lars Hanisch <dvb@flensrocker.de>
+
+    set correct level on syslog messages
 
