@@ -6,7 +6,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
 
 --- a/menu.c
 +++ b/menu.c
-@@ -2703,6 +2703,19 @@
+@@ -2701,6 +2701,19 @@
       char *s = ExchangeChars(strdup(base), true);
       d = AddDirectory(d, s);
       free(s);
