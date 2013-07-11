@@ -1,6 +1,7 @@
 vdr (2.0.2-1yavdr0~0.5) precise; urgency=medium
 
   * update extra video directory patch
+  * add simple bash completion for svdrpsend
 
  -- Lars Hanisch <dvb@flensrocker.de>  Thu, 11 Jul 2013 22:08:47 +0200
 
