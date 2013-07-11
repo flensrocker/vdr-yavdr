@@ -1,0 +1,27 @@
+
+_svdrpsend ()
+{
+  local cur prev
+
+  _get_comp_words_by_ref cur prev
+
+  COMPREPLY=()
+
+  case "${prev}" in
+    plug|PLUG)
+      apiversion=`eval "/usr/bin/vdr -V -L/usr/bin/vdr 2>/dev/null | sed 's/.*(.*\/\(.*\)).*/\1/'"`
+      plugins=`eval "find /usr/lib/vdr/plugins -name 'libvdr-*.so.${apiversion}' -printf '%f\n' | sed -e 's/libvdr-\(.*\)\.so\.${apiversion}/\1/'"`
+      COMPREPLY=( $( compgen -W "$plugins" $cur ) )
+      return 0
+      ;;
+  esac
+
+  cmds="chan clre delc delr delt edit grab help hitk lstc lste lstr lstt mesg modc modt movc movr newc newt next play plug pute remo scan stat updt updr volu"
+  case "${cur}" in
+    *) COMPREPLY=( $( compgen -W "$cmds" $cur ) )
+       ;;
+  esac
+}
+
+complete -F _svdrpsend svdrpsend
+
