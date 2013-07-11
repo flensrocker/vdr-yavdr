@@ -24,5 +24,5 @@ opt-66_jumpingseconds.patch:5e8efa9e47f531c0af29ad7871fc9cd0
 opt-67_epgsearch-exttimeredit-0.0.2.patch:7c73f6e5069d6dfe1d43047e136a1ccb
 xprmtl-01_externalci.patch:3f134188bf5809f540d4d03b2606920e
 xprmtl-02_permashift-0.5.4.patch:088ed4d87fe47cf6d08b60a4dbf017b5
-xprmtl-03_extra-video-directory.patch:646a42ae76d21cc4b68c3680705a3010
+xprmtl-03_extra-video-directory.patch:f1f0c297e6aeef30d6a1a92cb8b07ac3
 xprmtl-04_loglevel.patch:1f2e0ecb04d04018b8934dcba588ca9d
