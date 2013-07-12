@@ -1,4 +1,5 @@
 
+have svdrpsend &&
 _svdrpsend ()
 {
   local cur prev
@@ -7,21 +8,28 @@ _svdrpsend ()
 
   COMPREPLY=()
 
-  case "${prev}" in
-    plug|PLUG)
-      apiversion=`eval "/usr/bin/vdr -V -L/usr/bin/vdr 2>/dev/null | sed 's/.*(.*\/\(.*\)).*/\1/'"`
-      plugins=`eval "find /usr/lib/vdr/plugins -name 'libvdr-*.so.${apiversion}' -printf '%f\n' | sed -e 's/libvdr-\(.*\)\.so\.${apiversion}/\1/'"`
-      COMPREPLY=( $( compgen -W "$plugins" $cur ) )
-      return 0
-      ;;
-  esac
+  if [[ ($COMP_CWORD -eq 1) || ("${prev^^}" == "HELP") ]]; then
 
-  cmds="chan clre delc delr delt edit grab help hitk lstc lste lstr lstt mesg modc modt movc movr newc newt next play plug pute remo scan stat updt updr volu"
-  case "${cur}" in
-    *) COMPREPLY=( $( compgen -W "$cmds" $cur ) )
-       ;;
-  esac
+    cmds="CHAN CLRE DELC DELR DELT EDIT GRAB HELP HITK LSTC LSTE LSTR LSTT MESG MODC MODT MOVC MOVR NEWC NEWT NEXT PLAY PLUG PUTE REMO SCAN STAT UPDT UPDR VOLU"
+    COMPREPLY=( $( compgen -W "$cmds" | grep -i "^$cur" ) )
+
+  else
+
+    case "${prev}" in
+
+      chan|CHAN)
+        COMPREPLY=( $( compgen -W "+ -" $cur ) )
+        ;;
+
+      plug|PLUG)
+        apiversion=`eval "/usr/bin/vdr -V -L/usr/bin/vdr 2>/dev/null | sed 's/.*(.*\/\(.*\)).*/\1/'"`
+        plugins=`eval "find /usr/lib/vdr/plugins -name 'libvdr-*.so.${apiversion}' -printf '%f\n' | sed -e 's/libvdr-\(.*\)\.so\.${apiversion}/\1/'"`
+        COMPREPLY=( $( compgen -W "$plugins" | grep -i "^$cur" ) )
+        ;;
+
+    esac
+
+  fi
 }
 
-complete -F _svdrpsend svdrpsend
-
+[ "$have" ] && complete -F _svdrpsend -o filenames svdrpsend
