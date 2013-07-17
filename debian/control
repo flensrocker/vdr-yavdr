@@ -83,6 +83,7 @@ Description: Plugin that adds support for full featured SD-DVB cards to VDR
 
 Package: vdr-plugin-dvbhddevice
 Architecture: any
+Breaks: vdr (<< 2.0.0)
 Depends: ${shlibs:Depends}, ${misc:Depends}, vdr (= ${binary:Version})
 Description: Plugin that adds support for full featured HD-DVB cards to VDR
  Video Disk Recorder (VDR) is a digital sat-receiver program using

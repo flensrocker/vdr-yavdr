@@ -1,3 +1,10 @@
+vdr (2.0.2-2yavdr0) precise; urgency=medium
+
+  * vdr-plugin-dvbhddevice breaks old vdr packages
+    vdr-1.7.27 package contains a file from vdr-plugin-dvbhddevice
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Wed, 17 Jul 2013 23:32:45 +0200
+
 vdr (2.0.2-1yavdr0) precise; urgency=medium
 
   * update extra video directory patch
