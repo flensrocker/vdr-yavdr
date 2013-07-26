@@ -1,3 +1,9 @@
+vdr (2.0.2-3yavdr0~0.5) precise; urgency=medium
+
+  * update extra video directory patch
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Fri, 26 Jul 2013 15:04:45 +0200
+
 vdr (2.0.2-2yavdr0~0.5) precise; urgency=medium
 
   * vdr-plugin-dvbhddevice breaks old vdr packages

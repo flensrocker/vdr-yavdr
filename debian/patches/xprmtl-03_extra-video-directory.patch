@@ -52,7 +52,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    cStatus::MsgReplaying(this, Recording.Name(), Recording.FileName(), true);
    marks.Load(fileName, Recording.FramesPerSecond(), Recording.IsPesRecording());
    SetTrackDescriptions(false);
-@@ -5218,9 +5232,10 @@
+@@ -5218,9 +5232,26 @@
    cDvbPlayerControl::Stop();
  }
  
@@ -61,6 +61,22 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  {
    fileName = FileName;
 +  videoDir = VideoDir;
++  if ((FileName != NULL) && (VideoDir == NULL)) {
++     uint fileLen = strlen(FileName);
++     if ((strlen(VideoDirectory) < fileLen) && startswith(FileName, VideoDirectory))
++        return;
++     if (!LockExtraVideoDirectories())
++        return;
++     int i = 0;
++     while (i < ExtraVideoDirectories.Size()) {
++           if ((strlen(ExtraVideoDirectories.At(i)) < fileLen) && startswith(FileName, ExtraVideoDirectories.At(i))) {
++              videoDir = ExtraVideoDirectories.At(i);
++              break;
++              }
++           i++;
++           }
++     UnlockExtraVideoDirectories();
++     }
  }
  
  const char *cReplayControl::NowReplaying(void)
