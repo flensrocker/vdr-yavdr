@@ -19,7 +19,7 @@ opt-55_wareagleicon.patch:e1aa3f029a44aadaa38cc4d9354868c0
 opt-56_eventdetails_v3.patch:e2ff963982af0673b0436d3f7f6c2048
 opt-57_vdr-remote_instant_recordings.patch:548ba7226d0eb6a869073390321abc59
 opt-61_dynamite.patch:f0d543c54f186294cad3785b0748a724
-opt-65_pin.patch:870f5f667d0c94e568bc477c88b22020
+opt-65_pin.patch:ca57f2ccd9ee9766d7258f00ac3a5939
 opt-66_jumpingseconds.patch:5e8efa9e47f531c0af29ad7871fc9cd0
 opt-67_epgsearch-exttimeredit-0.0.2.patch:7c73f6e5069d6dfe1d43047e136a1ccb
 xprmtl-01_externalci.patch:3f134188bf5809f540d4d03b2606920e

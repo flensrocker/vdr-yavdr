@@ -154,7 +154,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
  int cOsd::osdHeight = 0;
  cVector<cOsd *> cOsd::Osds;
  cMutex cOsd::mutex;
-+bool cOsd::pinValid = false;   // PIN PATCH
++bool cOsd::pinValid = true;   // PIN PATCH
  
  cOsd::cOsd(int Left, int Top, uint Level)
  {

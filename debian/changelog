@@ -1,3 +1,9 @@
+vdr (2.0.2-4yavdr0) precise; urgency=medium
+
+  * update pin patch
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Sun, 01 Sep 2013 10:32:57 +0200
+
 vdr (2.0.2-3yavdr0) precise; urgency=medium
 
   * update extra video directory patch
