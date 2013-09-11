@@ -1,3 +1,9 @@
+vdr (2.0.3-0yavdr0) precise; urgency=medium
+
+  * new upstream release
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Wed, 11 Sep 2013 23:28:17 +0200
+
 vdr (2.0.2-5yavdr0) precise; urgency=medium
 
   * add epghandler segment transfer patch

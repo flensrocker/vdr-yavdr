@@ -3,7 +3,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
 
 --- a/device.c
 +++ b/device.c
-@@ -777,6 +777,7 @@
+@@ -778,6 +778,7 @@
       cChannel *channel;
       while ((channel = Channels.GetByNumber(n, Direction)) != NULL) {
             // try only channels which are currently available
@@ -11,7 +11,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
             if (GetDevice(channel, LIVEPRIORITY, true, true))
                break;
             n = channel->Number() + Direction;
-@@ -798,6 +799,12 @@
+@@ -799,6 +800,12 @@
  
  eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
  {

@@ -226,7 +226,7 @@ Origin: ttxsubs plugin
  
  // --- cLiveSubtitle ---------------------------------------------------------
  
-@@ -1312,6 +1313,13 @@
+@@ -1313,6 +1314,13 @@
                    }
                 break;
            case 0xBD: { // private stream 1
@@ -240,7 +240,7 @@ Origin: ttxsubs plugin
                 int PayloadOffset = Data[8] + 9;
  
                 // Compatibility mode for old subtitles plugin:
-@@ -1471,6 +1479,7 @@
+@@ -1472,6 +1480,7 @@
       tsToPesVideo.Reset();
       tsToPesAudio.Reset();
       tsToPesSubtitle.Reset();
@@ -248,7 +248,7 @@ Origin: ttxsubs plugin
       }
    else if (Length < TS_SIZE) {
       esyslog("ERROR: skipped %d bytes of TS fragment", Length);
-@@ -1515,6 +1524,17 @@
+@@ -1516,6 +1525,17 @@
                      if (!VideoOnly || HasIBPTrickSpeed())
                         PlayTsSubtitle(Data, TS_SIZE);
                      }

@@ -36,7 +36,7 @@ Patches applied to vanilla vdr sources
 
     Use ncursesw header file
 
-opt-10_vdr-2.0.2-vasarajanauloja.patch
+opt-10_vdr-2.0.3-vasarajanauloja.patch
     Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
 
     vasara ja nauloja different enhancements
