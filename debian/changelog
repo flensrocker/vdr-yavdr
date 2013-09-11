@@ -1,4 +1,23 @@
-vdr (2.0.2-3yavdr0~0.5) precise; urgency=medium
+vdr (2.0.3-0yavdr0~0.5) precise; urgency=medium
+
+  * new upstream release
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Wed, 11 Sep 2013 23:28:17 +0200
+
+vdr (2.0.2-5yavdr0) precise; urgency=medium
+
+  * add epghandler segment transfer patch
+  * update extra video directories patch
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Wed, 11 Sep 2013 22:54:27 +0200
+
+vdr (2.0.2-4yavdr0) precise; urgency=medium
+
+  * update pin patch
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Sun, 01 Sep 2013 10:32:57 +0200
+
+vdr (2.0.2-3yavdr0) precise; urgency=medium
 
   * update extra video directory patch
 

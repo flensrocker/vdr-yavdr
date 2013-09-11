@@ -9,7 +9,7 @@
 
 # rofafor Patch collection
 # http://www.saunalahti.fi/~rahrenbe/vdr/patches/index.php
-opt-10_vdr-2.0.0-vasarajanauloja.patch
+opt-10_vdr-2.0.3-vasarajanauloja.patch
 
 # Easy editing of cutting marks
 # (Requires opt-10_vasarajanauloja!)
@@ -56,3 +56,7 @@ xprmtl-02_permashift-0.5.4.patch
 xprmtl-03_extra-video-directory.patch
 
 xprmtl-04_loglevel.patch
+
+#backports from vdr 2.1.x
+xprmtl-05_epghandler-segment-transfer.patch
+

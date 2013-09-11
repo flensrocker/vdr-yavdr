@@ -716,7 +716,7 @@ Author: Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
 +    case kNext|k_Repeat:
 +    case kNext:    if (lastSkipTimeout.TimedOut()) {
 +                      lastSkipSeconds = REPLAYCONTROLSKIPSECONDS;
-+                      lastSkipKey = kNext;	
++                      lastSkipKey = kNext;
 +                   }
 +                   else if (RAWKEY(lastSkipKey) != kNext && lastSkipSeconds > (2 * REPLAYCONTROLSKIPLIMIT)) {
 +                      lastSkipSeconds /= 2;
@@ -932,7 +932,7 @@ Author: Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
 +
 +msgid "File transfer already active!"
 +msgstr "Datei�bertragung bereits aktiv!"
-+ 
++
 +#. TRANSLATORS: note the leading blank!
 +msgid " Cancel file transfer"
 +msgstr " Datei�bertragung beenden"
@@ -1005,7 +1005,7 @@ Author: Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
 +
 +msgid "File transfer already active!"
 +msgstr "Tiedoston siirto on jo käynnissä!"
-+ 
++
 +#. TRANSLATORS: note the leading blank!
 +msgid " Cancel file transfer"
 +msgstr " Peru tiedoston siirto"
@@ -1027,9 +1027,82 @@ Author: Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
 +
 +msgid "File already exists - overwrite?"
 +msgstr "Tiedosto on jo olemassa - ylikirjoitetaanko?"
+--- a/po/hu_HU.po
++++ b/po/hu_HU.po
+@@ -1402,3 +1402,70 @@
+ 
+ msgid "free"
+ msgstr "szabad"
++
++msgid "Edit recording"
++msgstr "Felvétel szerkesztése"
++
++msgid "Button$Cut"
++msgstr "Vágás"
++
++msgid "Button$Copy"
++msgstr "Másolás"
++
++msgid "Button$Rename/Move"
++msgstr "Áthelyezés"
++
++msgid "Date"
++msgstr "Dátum"
++
++msgid "Length"
++msgstr "Hossz"
++
++msgid "Format"
++msgstr "Formátum"
++
++msgid "PES"
++msgstr "PES"
++
++msgid "TS"
++msgstr "TS"
++
++msgid "Size"
++msgstr "Méret"
++
++msgid "Delete marks information?"
++msgstr "Vágópontok törlése?"
++
++msgid "Delete resume information?"
++msgstr "Lejátszott pozició törlése?"
++
++msgid "File transfer started"
++msgstr "Áthelyezés folyamatban"
++
++msgid "Can't start file transfer!"
++msgstr "Áthelyezés nem indítható"
++
++msgid "File transfer already active!"
++msgstr "Áthelyezés már aktív!"
++
++#. TRANSLATORS: note the leading blank!
++msgid " Cancel file transfer"
++msgstr " Áthelyezés megszakítása"
++
++msgid "Cancel file transfer?"
++msgstr "Áthelyezés megszakítása?"
++
++msgid "Transfering file - shut down anyway?"
++msgstr "Áthelyezése folyamatban - biztos leállítjuk?"
++
++msgid "Transfering file - restart anyway?"
++msgstr "Áthelyezés folyamatban - biztos újraindítjuk?"
++
++msgid "File transfer failed!"
++msgstr "Sikertelen áthelyezés!"
++
++msgid "File transfer finished"
++msgstr "Áthelyezés befejezve"
++
++msgid "File already exists - overwrite?"
++msgstr "A file létezik - felülírjam?"
 --- a/recording.c
 +++ b/recording.c
-@@ -1068,6 +1068,16 @@
+@@ -1072,6 +1072,16 @@
    return NULL;
  }
  
@@ -1046,7 +1119,7 @@ Author: Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
  int cRecording::HierarchyLevels(void) const
  {
    const char *s = name;
-@@ -1360,7 +1370,7 @@
+@@ -1364,7 +1374,7 @@
       }
  }
  
@@ -1055,7 +1128,7 @@ Author: Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
  {
    LOCK_THREAD;
    cRecording *recording = GetByName(FileName);
-@@ -1368,7 +1378,7 @@
+@@ -1372,7 +1382,7 @@
       cThreadLock DeletedRecordingsLock(&DeletedRecordings);
       Del(recording, false);
       char *ext = strrchr(recording->fileName, '.');
@@ -1064,6 +1137,15 @@ Author: Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
          strncpy(ext, DELEXT, strlen(ext));
          if (access(recording->FileName(), F_OK) == 0) {
             recording->deleted = time(NULL);
+@@ -2400,7 +2410,7 @@
+ 
+ // --- Recordings Sort Mode --------------------------------------------------
+ 
+-eRecordingsSortMode RecordingsSortMode = rsmName;
++eRecordingsSortMode RecordingsSortMode = rsmTime;
+ 
+ bool HasRecordingsSortMode(const char *Directory)
+ {
 --- a/recording.h
 +++ b/recording.h
 @@ -119,6 +119,7 @@
