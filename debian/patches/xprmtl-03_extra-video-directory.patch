@@ -1,6 +1,6 @@
 Description: Add several video directories to vdr
  and display all recordings in one list
-Origin: https://github.com/flensrocker/vdr-plugin-dynamite
+Origin: https://github.com/flensrocker/vdr-plugin-dbus2vdr
 Forwarded: no
 Author: Lars Hanisch <dvb@flensrocker.de>
 
@@ -52,7 +52,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    cStatus::MsgReplaying(this, Recording.Name(), Recording.FileName(), true);
    marks.Load(fileName, Recording.FramesPerSecond(), Recording.IsPesRecording());
    SetTrackDescriptions(false);
-@@ -5218,9 +5232,26 @@
+@@ -5218,9 +5232,12 @@
    cDvbPlayerControl::Stop();
  }
  
@@ -61,22 +61,8 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  {
    fileName = FileName;
 +  videoDir = VideoDir;
-+  if ((FileName != NULL) && (VideoDir == NULL)) {
-+     uint fileLen = strlen(FileName);
-+     if ((strlen(VideoDirectory) < fileLen) && startswith(FileName, VideoDirectory))
-+        return;
-+     if (!LockExtraVideoDirectories())
-+        return;
-+     int i = 0;
-+     while (i < ExtraVideoDirectories.Size()) {
-+           if ((strlen(ExtraVideoDirectories.At(i)) < fileLen) && startswith(FileName, ExtraVideoDirectories.At(i))) {
-+              videoDir = ExtraVideoDirectories.At(i);
-+              break;
-+              }
-+           i++;
-+           }
-+     UnlockExtraVideoDirectories();
-+     }
++  if ((FileName != NULL) && (VideoDir == NULL))
++     videoDir = FindMatchingExtraVideoDirectory(FileName);
  }
  
  const char *cReplayControl::NowReplaying(void)
@@ -118,11 +104,19 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  {
    resume = RESUME_NOT_INITIALIZED;
    fileSizeMB = -1; // unknown
-@@ -794,11 +795,12 @@
+@@ -794,11 +795,20 @@
    deleted = 0;
    titleBuffer = NULL;
    sortBufferName = sortBufferTime = NULL;
-+  videoDir = VideoDir == NULL ? VideoDirectory : strdup(VideoDir);
++  if (VideoDir == NULL) {
++     cString extraVideoDir = FindMatchingExtraVideoDirectory(FileName);
++     if (*extraVideoDir == NULL)
++        videoDir = VideoDirectory;
++     else
++        videoDir = strdup(*extraVideoDir);
++     }
++  else
++     videoDir = strdup(VideoDir);
    FileName = fileName = strdup(FileName);
    if (*(fileName + strlen(fileName) - 1) == '/')
       *(fileName + strlen(fileName) - 1) = 0;
@@ -133,7 +127,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    const char *p = strrchr(FileName, '/');
  
    name = NULL;
-@@ -905,6 +907,8 @@
+@@ -905,6 +915,8 @@
  
  cRecording::~cRecording()
  {
@@ -142,7 +136,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    free(titleBuffer);
    free(sortBufferName);
    free(sortBufferTime);
-@@ -946,7 +950,7 @@
+@@ -946,7 +958,7 @@
  {
    char **sb = (RecordingsSortMode == rsmName) ? &sortBufferName : &sortBufferTime;
    if (!*sb) {
@@ -151,7 +145,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
       if (RecordingsSortMode != rsmName || Setup.AlwaysSortFoldersFirst)
          s = StripEpisodeName(s, RecordingsSortMode != rsmName);
       strreplace(s, '/', '0'); // some locales ignore '/' when sorting
-@@ -987,11 +991,11 @@
+@@ -987,11 +999,11 @@
       const char *fmt = isPesRecording ? NAMEFORMATPES : NAMEFORMATTS;
       int ch = isPesRecording ? priority : channel;
       int ri = isPesRecording ? lifetime : instanceId;
@@ -165,7 +159,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
       free(Name);
       }
    return fileName;
-@@ -1269,9 +1273,14 @@
+@@ -1269,9 +1281,14 @@
    ChangeState();
    Unlock();
    ScanVideoDir(VideoDirectory, Foreground);
@@ -181,7 +175,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  {
    cReadDir d(DirName);
    struct dirent *e;
-@@ -1291,7 +1300,7 @@
+@@ -1291,7 +1308,7 @@
                }
             if (S_ISDIR(st.st_mode)) {
                if (endswith(buffer, deleted ? DELEXT : RECEXT)) {
@@ -190,7 +184,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
                   if (r->Name()) {
                      r->NumFrames(); // initializes the numFrames member
                      r->FileSizeMB(); // initializes the fileSizeMB member
-@@ -1306,7 +1315,7 @@
+@@ -1306,7 +1323,7 @@
                      delete r;
                   }
                else
@@ -416,7 +410,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
                 "                           --dirnames=250,40,1\n"
 --- a/videodir.c
 +++ b/videodir.c
-@@ -19,6 +19,43 @@
+@@ -19,6 +19,65 @@
  #include "recording.h"
  #include "tools.h"
  
@@ -457,12 +451,109 @@ Author: Lars Hanisch <dvb@flensrocker.de>
 +     }
 +}
 +
++cString FindMatchingExtraVideoDirectory(const char *FileName)
++{
++  if (FileName == NULL)
++     return cString(NULL);
++  uint fileLen = strlen(FileName);
++  if ((strlen(VideoDirectory) < fileLen) && startswith(FileName, VideoDirectory))
++     return cString(NULL);
++  if (!LockExtraVideoDirectories())
++     return cString(NULL);
++  int i = 0;
++  cString videoDir(NULL);
++  while (i < ExtraVideoDirectories.Size()) {
++        if ((strlen(ExtraVideoDirectories.At(i)) < fileLen) && startswith(FileName, ExtraVideoDirectories.At(i))) {
++           videoDir = ExtraVideoDirectories.At(i);
++           break;
++           }
++        i++;
++        }
++  UnlockExtraVideoDirectories();
++  return videoDir;
++}
++
  const char *VideoDirectory = VIDEODIR;
  
  void SetVideoDirectory(const char *Directory)
+@@ -28,13 +87,13 @@
+ 
+ class cVideoDirectory {
+ private:
+-  char *name, *stored, *adjusted;
++  char *videoDir, *name, *stored, *adjusted;
+   int length, number, digits;
+ public:
+-  cVideoDirectory(void);
++  cVideoDirectory(const char *VideoDir = NULL);
+   ~cVideoDirectory();
+   int FreeMB(int *UsedMB = NULL);
+-  const char *Name(void) { return name ? name : VideoDirectory; }
++  const char *Name(void) { return name ? name : videoDir; }
+   const char *Stored(void) { return stored; }
+   int Length(void) { return length; }
+   bool IsDistributed(void) { return name != NULL; }
+@@ -43,10 +102,14 @@
+   const char *Adjust(const char *FileName);
+   };
+ 
+-cVideoDirectory::cVideoDirectory(void)
++cVideoDirectory::cVideoDirectory(const char *VideoDir)
+ {
+-  length = strlen(VideoDirectory);
+-  name = (VideoDirectory[length - 1] == '0') ? strdup(VideoDirectory) : NULL;
++  if (VideoDir == NULL)
++     videoDir = strdup(VideoDirectory);
++  else
++     videoDir = strdup(VideoDir);
++  length = strlen(videoDir);
++  name = (videoDir[length - 1] == '0') ? strdup(videoDir) : NULL;
+   stored = adjusted = NULL;
+   number = -1;
+   digits = 0;
+@@ -54,6 +117,7 @@
+ 
+ cVideoDirectory::~cVideoDirectory()
+ {
++  free(videoDir);
+   free(name);
+   free(stored);
+   free(adjusted);
+@@ -61,7 +125,7 @@
+ 
+ int cVideoDirectory::FreeMB(int *UsedMB)
+ {
+-  return FreeDiskSpaceMB(name ? name : VideoDirectory, UsedMB);
++  return FreeDiskSpaceMB(name ? name : videoDir, UsedMB);
+ }
+ 
+ bool cVideoDirectory::Next(void)
+@@ -113,14 +177,18 @@
+   const char *ActualFileName = FileName;
+ 
+   // Incoming name must be in base video directory:
++  cString extraVideoDir;
+   if (strstr(FileName, VideoDirectory) != FileName) {
+-     esyslog("ERROR: %s not in %s", FileName, VideoDirectory);
+-     errno = ENOENT; // must set 'errno' - any ideas for a better value?
+-     return NULL;
++     extraVideoDir = FindMatchingExtraVideoDirectory(FileName);
++     if (*extraVideoDir == NULL) {
++        esyslog("ERROR: %s not in %s", FileName, VideoDirectory);
++        errno = ENOENT; // must set 'errno' - any ideas for a better value?
++        return NULL;
++        }
+      }
+   // Are we going to create a new file?
+   if ((Flags & O_CREAT) != 0) {
+-     cVideoDirectory Dir;
++     cVideoDirectory Dir(*extraVideoDir);
+      if (Dir.IsDistributed()) {
+         // Find the directory with the most free space:
+         int MaxFree = Dir.FreeMB();
 --- a/videodir.h
 +++ b/videodir.h
-@@ -13,6 +13,15 @@
+@@ -13,6 +13,16 @@
  #include <stdlib.h>
  #include "tools.h"
  
@@ -474,6 +565,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
 +void UnlockExtraVideoDirectories(void);
 +void AddExtraVideoDirectory(const char *Directory);
 +void DelExtraVideoDirectory(const char *Directory);
++cString FindMatchingExtraVideoDirectory(const char *FileName);
 +
  extern const char *VideoDirectory;
  

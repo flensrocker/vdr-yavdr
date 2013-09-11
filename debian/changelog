@@ -1,3 +1,10 @@
+vdr (2.0.2-5yavdr0) precise; urgency=medium
+
+  * add epghandler segment transfer patch
+  * update extra video directories patch
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Wed, 11 Sep 2013 22:54:27 +0200
+
 vdr (2.0.2-4yavdr0) precise; urgency=medium
 
   * update pin patch

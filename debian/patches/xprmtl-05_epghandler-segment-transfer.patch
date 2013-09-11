@@ -1,0 +1,68 @@
+Description: patch for the epg2vdr plugin
+Author: Jörg Wendel (horchi@vdr-portal)
+
+--- a/eit.c
++++ b/eit.c
+@@ -46,6 +46,8 @@
+      return;
+      }
+ 
++  EpgHandlers.BeginSegmentTransfer(channel, OnlyRunningStatus);
++
+   bool handledExternally = EpgHandlers.HandledExternally(channel);
+   cSchedule *pSchedule = (cSchedule *)Schedules->GetSchedule(channel, true);
+ 
+@@ -310,6 +312,7 @@
+      Schedules->SetModified(pSchedule);
+      }
+   Channels.Unlock();
++  EpgHandlers.EndSegmentTransfer(Modified, OnlyRunningStatus);
+ }
+ 
+ // --- cTDT ------------------------------------------------------------------
+--- a/epg.c
++++ b/epg.c
+@@ -1562,3 +1562,19 @@
+       }
+   Schedule->DropOutdated(SegmentStart, SegmentEnd, TableID, Version);
+ }
++
++void cEpgHandlers::BeginSegmentTransfer(const cChannel *Channel, bool OnlyRunningStatus)
++{
++  for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
++      if (eh->BeginSegmentTransfer(Channel, OnlyRunningStatus))
++         return;
++      }
++}
++
++void cEpgHandlers::EndSegmentTransfer(bool Modified, bool OnlyRunningStatus)
++{
++  for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
++      if (eh->EndSegmentTransfer(Modified, OnlyRunningStatus))
++         return;
++      }
++}
+--- a/epg.h
++++ b/epg.h
+@@ -286,6 +286,12 @@
+   virtual bool DropOutdated(cSchedule *Schedule, time_t SegmentStart, time_t SegmentEnd, uchar TableID, uchar Version) { return false; }
+           ///< Takes a look at all EPG events between SegmentStart and SegmentEnd and
+           ///< drops outdated events.
++  virtual bool BeginSegmentTransfer(const cChannel *Channel, bool OnlyRunningStatus) { return false; }
++          ///< called directly after IgnoreChannel before any other handler method called
++          ///< designed to give handlers the ossibility to prepare a transaction
++  virtual bool EndSegmentTransfer(bool Modified, bool OnlyRunningStatus) { return false; }
++          ///< called at last after the segment data is processed
++          ///< at this oint handlers should close/commt/rollback their transactions
+   };
+ 
+ class cEpgHandlers : public cList<cEpgHandler> {
+@@ -308,6 +314,8 @@
+   void HandleEvent(cEvent *Event);
+   void SortSchedule(cSchedule *Schedule);
+   void DropOutdated(cSchedule *Schedule, time_t SegmentStart, time_t SegmentEnd, uchar TableID, uchar Version);
++  void BeginSegmentTransfer(const cChannel *Channel, bool OnlyRunningStatus);
++  void EndSegmentTransfer(bool Modified, bool OnlyRunningStatus);
+   };
+ 
+ extern cEpgHandlers EpgHandlers;

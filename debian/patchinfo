@@ -36,7 +36,7 @@ Patches applied to vanilla vdr sources
 
     Use ncursesw header file
 
-opt-10_vdr-2.0.0-vasarajanauloja.patch
+opt-10_vdr-2.0.2-vasarajanauloja.patch
     Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
 
     vasara ja nauloja different enhancements
@@ -162,4 +162,11 @@ xprmtl-04_loglevel.patch
     Lars Hanisch <dvb@flensrocker.de>
 
     set correct level on syslog messages
+
+xprmtl-05_epghandler-segment-transfer.patch
+    Jörg Wendel (horchi@vdr-portal)
+
+    patch for the epg2vdr plugin
+
+
 
