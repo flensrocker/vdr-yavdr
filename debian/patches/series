@@ -60,3 +60,4 @@ xprmtl-04_loglevel.patch
 #backports from vdr 2.1.x
 xprmtl-05_epghandler-segment-transfer.patch
 
+xprmtl-06_lirc-reconnect.patch
