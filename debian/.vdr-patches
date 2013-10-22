@@ -4,7 +4,7 @@
 81_Make_config.patch:0c7ea8e353c4c4403290d39b7be7db5f
 82_valgrind.patch:2aa30851b228e48bea9bf4edb25e607a
 99_ncursesw-include.patch:800d092193c6392a5743e6702eb277de
-opt-10_vdr-2.0.3-vasarajanauloja.patch:e1c03d5a527fd748944021985e525fcc
+opt-10_vdr-2.0.3-vasarajanauloja.patch:6b60d118614ed0bcf56495fb416246df
 opt-22-x_edit_marks.patch:624c66d0f33e51adc95ca97b7032514f
 opt-24_jumpplay.patch:4ab8c7b2df034988632b01cb50f4ac87
 opt-27_ttxtsubs.patch:ff50e5fd4f6833f42e1a6cf9112db443
