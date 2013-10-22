@@ -170,3 +170,8 @@ xprmtl-05_epghandler-segment-transfer.patch
 
 
 
+xprmtl-06_lirc-reconnect.patch
+    Lars Hanisch <dvb@flensrocker.de>
+
+    try to reconnect to lirc socket even if it's not present at startup
+

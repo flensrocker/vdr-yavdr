@@ -1,0 +1,42 @@
+Description: try to reconnect to lirc socket even if it's not present at startup
+Origin: http://www.vdr-portal.de/board16-video-disk-recorder/board4-vdr-installation/120551-inputlirc-startet-zu-fr%C3%BCh-upstart/
+Forwarded: no
+Author: Lars Hanisch <dvb@flensrocker.de>
+
+--- a/lirc.c
++++ b/lirc.c
+@@ -21,11 +21,9 @@
+ {
+   addr.sun_family = AF_UNIX;
+   strcpy(addr.sun_path, DeviceName);
+-  if (Connect()) {
+-     Start();
+-     return;
+-     }
+-  f = -1;
++  if (!Connect())
++     f = -1;
++  Start();
+ }
+ 
+ cLircRemote::~cLircRemote()
+@@ -67,14 +65,15 @@
+   bool repeat = false;
+   int timeout = -1;
+ 
+-  while (Running() && f >= 0) {
++  while (Running()) {
+ 
+-        bool ready = cFile::FileReady(f, timeout);
++        bool ready = f >= 0 ? cFile::FileReady(f, timeout) : false;
+         int ret = ready ? safe_read(f, buf, sizeof(buf)) : -1;
+ 
+-        if (ready && ret <= 0 ) {
++        if (ret <= 0) {
+            esyslog("ERROR: lircd connection broken, trying to reconnect every %.1f seconds", float(RECONNECTDELAY) / 1000);
+-           close(f);
++           if (f >= 0)
++              close(f);
+            f = -1;
+            while (Running() && f < 0) {
+                  cCondWait::SleepMs(RECONNECTDELAY);

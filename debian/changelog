@@ -1,4 +1,16 @@
-vdr (2.0.3-0yavdr0~0.5) precise; urgency=medium
+vdr (2.0.3-2yavdr0~0.5) precise; urgency=medium
+
+  * correct MOVR/CPYR from vasarajanauloja patch
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Tue, 22 Oct 2013 18:45:16 +0200
+
+vdr (2.0.3-1yavdr0) precise; urgency=medium
+
+  * add lirc-reconnect patch
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Mon, 14 Oct 2013 23:08:06 +0200
+
+vdr (2.0.3-0yavdr0) precise; urgency=medium
 
   * new upstream release
 

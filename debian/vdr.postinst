@@ -71,6 +71,9 @@ case "$1" in
             chown $USER:$GROUP /var/cache/vdr
             chown $USER:$GROUP /var/cache/vdr/* > /dev/null 2>&1|| true
         fi
+        
+        # set execution bit for /etc/vdr/recording-hooks/R90.custom
+        chmod +x /etc/vdr/recording-hooks/R90.custom  > /dev/null 2>&1 || true
 
         # make /usr/lib/vdr/vdr-shutdown.wrapper setuid/setgid
         # (owner root:vdr, mode 6750)

@@ -1249,7 +1249,7 @@ Author: Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
 +  if (*Option) {
 +     char *tail;
 +     int n = strtol(Option, &tail, 10);
-+     cRecording *recording = Recordings.Get(n - 1);
++     cRecording *recording = recordings.Get(n - 1);
 +     if (recording && tail && tail != Option) {
 +        char *oldName = strdup(recording->Name());
 +        tail = skipspace(tail);
@@ -1264,7 +1264,7 @@ Author: Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
 +        free(oldName);
 +        }
 +     else
-+        Reply(550, "Recording \"%d\" not found%s", n, Recordings.Count() ? "" : " (use LSTR before copying)");
++        Reply(550, "Recording \"%d\" not found%s", n, recordings.Count() ? "" : " (use LSTR before copying)");
 +     }
 +  else
 +     Reply(501, "Invalid Option \"%s\"", Option);
@@ -1282,7 +1282,7 @@ Author: Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
 +  if (*Option) {
 +     char *tail;
 +     int n = strtol(Option, &tail, 10);
-+     cRecording *recording = Recordings.Get(n - 1);
++     cRecording *recording = recordings.Get(n - 1);
 +     if (recording && tail && tail != Option) {
 +        char *oldName = strdup(recording->Name());
 +        tail = skipspace(tail);
@@ -1297,7 +1297,7 @@ Author: Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
 +        free(oldName);
 +        }
 +     else
-+        Reply(550, "Recording \"%d\" not found%s", n, Recordings.Count() ? "" : " (use LSTR before moving)");
++        Reply(550, "Recording \"%d\" not found%s", n, recordings.Count() ? "" : " (use LSTR before moving)");
 +     }
 +  else
 +     Reply(501, "Invalid Option \"%s\"", Option);
