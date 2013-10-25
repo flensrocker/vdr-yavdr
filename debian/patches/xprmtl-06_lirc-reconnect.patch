@@ -32,7 +32,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
          int ret = ready ? safe_read(f, buf, sizeof(buf)) : -1;
  
 -        if (ready && ret <= 0 ) {
-+        if (ret <= 0) {
++        if ((f < 0) || (ready && ret <= 0)) {
             esyslog("ERROR: lircd connection broken, trying to reconnect every %.1f seconds", float(RECONNECTDELAY) / 1000);
 -           close(f);
 +           if (f >= 0)
