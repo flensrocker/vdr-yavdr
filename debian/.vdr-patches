@@ -27,4 +27,4 @@ xprmtl-02_permashift-0.5.4.patch:088ed4d87fe47cf6d08b60a4dbf017b5
 xprmtl-03_extra-video-directory.patch:87feb674951f53a502fa50d86170eab8
 xprmtl-04_loglevel.patch:1f2e0ecb04d04018b8934dcba588ca9d
 xprmtl-05_epghandler-segment-transfer.patch:1550bf6361d8ab29d9ec11f9d6f20490
-xprmtl-06_lirc-reconnect.patch:67415406b6b1c4883b08a5a106424b11
+xprmtl-06_lirc-reconnect.patch:3a12e32da498351a7b55b6eff53468ed
