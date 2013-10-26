@@ -207,7 +207,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
  
  class cMenuMain : public cOsdMenu {
 @@ -111,6 +115,7 @@
-   cMenuMain(eOSState State = osUnknown);
+   cMenuMain(eOSState State = osUnknown, bool OpenSubMenus = false);
    virtual eOSState ProcessKey(eKeys Key);
    static cOsdObject *PluginOsdObject(void);
 +  virtual const char* MenuKind() { return "MenuMain"; }
