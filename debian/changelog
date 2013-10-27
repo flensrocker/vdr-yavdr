@@ -1,4 +1,10 @@
-vdr (2.0.3-3yavdr0~0.5) precise; urgency=medium
+vdr (2.0.4-0yavdr0~0.5) precise; urgency=medium
+
+  * new upstream release
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Sat, 26 Oct 2013 09:19:37 +0200
+
+vdr (2.0.3-3yavdr0) precise; urgency=medium
 
   * finetuning on lirc-reconnect patch
 

@@ -7,13 +7,13 @@
 opt-10_vdr-2.0.3-vasarajanauloja.patch:6b60d118614ed0bcf56495fb416246df
 opt-22-x_edit_marks.patch:624c66d0f33e51adc95ca97b7032514f
 opt-24_jumpplay.patch:4ab8c7b2df034988632b01cb50f4ac87
-opt-27_ttxtsubs.patch:ff50e5fd4f6833f42e1a6cf9112db443
+opt-27_ttxtsubs.patch:3b480b979799d6738dac68a16e5af713
 opt-37-x_menuorg.patch:93e43161da18abcacad41b99a17ff191
 opt-41-x_timer-info.patch:93cdf6e97b22c61b8368a0e951720c0b
-opt-42-x_MainMenuHooks-v1.0.1.patch:ce52acf0a32ab3bf259874214c845069
+opt-42-x_MainMenuHooks-v1.0.1.patch:72a58eb2f7873c240a79affdd8687227
 opt-44_rotor.patch:f4831ca41518aeaaf56676e4da8bf115
 opt-45_yaepg.patch:c22d286c4c65b904a55cf3baeb9f467f
-opt-50_graphtft.patch:c5c89e306a5edededb39470b65931920
+opt-50_graphtft.patch:d29408d82092d70960e02e598f7edaa7
 opt-50_graphtft-liemikuutio.patch:275847321787b3f5a3172aeef57c3370
 opt-55_wareagleicon.patch:14d33efa0ec97e5c3307ffad65f59a2c
 opt-56_eventdetails_v3.patch:e2ff963982af0673b0436d3f7f6c2048

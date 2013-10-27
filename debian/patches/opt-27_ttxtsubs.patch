@@ -54,7 +54,7 @@ Origin: ttxsubs plugin
  void cChannel::SetCaIds(const int *CaIds)
  {
    if (caids[0] && caids[0] <= CA_USER_MAX)
-@@ -536,10 +556,17 @@
+@@ -538,10 +558,17 @@
          q += IntArrayToString(q, Channel->dpids, 10, Channel->dlangs, Channel->dtypes);
          }
       *q = 0;
@@ -73,7 +73,7 @@ Origin: ttxsubs plugin
       if (Channel->spids[0]) {
          *q++ = ';';
          q += IntArrayToString(q, Channel->spids, 10, Channel->slangs);
-@@ -710,6 +737,32 @@
+@@ -712,6 +739,32 @@
                      }
                spids[NumSpids] = 0;
                }
