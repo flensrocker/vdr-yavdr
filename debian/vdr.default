@@ -13,3 +13,7 @@ ENABLE_SHUTDOWN=0
 # Options that will be passed to vdr's commandline
 # for example: OPTIONS="-w 15"
 OPTIONS="-w 60"
+
+LIRC=""
+VIDEO_DIR="/srv/vdr/video"
+
