@@ -537,7 +537,7 @@ Andreas Böttger <fboettger@t-online.de>
 Onno Kreuzinger <ok@solutas.net>
  for reporting leftover references to the file FORMATS in MANUAL and svdrp.c
 
-Rudi Hofer (Rudi.Hofer@gmx.de)
+Rudi Hofer <Rudi.Hofer@gmx.de>
  for his help in keeping 'channels.conf' up to date
  for reporting a problem with overlapping tab positions in skins when using wide fonts
 
@@ -618,8 +618,6 @@ Helmut Auer <vdr@helmutauer.de>
  for suggesting to read the epg.data file in a separate thread
  for some improvements to allowing the parameters PATH and NAME to the --dirnames
  command line option to be left empty to use the default values if only ENC shall be set
- for reporting an inconsistent behavior between opening the Recordings menu manually
- via the main menu and by pressing the Recordings key
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
@@ -1794,6 +1792,7 @@ Udo Richter <udo_richter@gmx.de>
  for requesting to keep using relative paths when building plugins locally
  for fixing a problem with detecting user inactivity in case the system time is
  changed after VDR has been started
+ for a patch that was used to add definitions for older DVB API versions, back until 5.0
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -2546,13 +2545,12 @@ Ulf Kiener <webmaster@ulf-kiener.de>
  for suggesting to add user defined key kUser0
  for suggesting to perform absolute jumps when replaying a recording (via the Red key)
  only if an actual value has been entered
- for suggesting to make the Yellow button in the main menu not act as "Pause" if
- "Pause key handling" is set to "do not pause live video"
 
 Jörg Wendel <vdr-ml@jwendel.de>
  for reporting that cPlugin::Active() was called too often
  for adding HandledExternally() to the EPG handler interface
  for adding IsUpdate() to the EPG handler interface
+ for adding Begin/EndSegmentTransfer() to the EPG handler interface
 
 Peter Pinnau <vdr@unterbrecher.de>
  for reporting that 'uint32_t' requires including stdint.h in font.h on some systems
@@ -2703,6 +2701,7 @@ Ales Jurik <ajurik@quick.cz>
  for reporting broken SI data on Czech/Slovak channels after changing the default
  character set to ISO-8859-9
  for adding MPEG 1 handling to remux.c
+ for a patch that was used as a base for implementing support for positioners
 
 Magnus Andersson <svankan@bahnhof.se>
  for translating OSD texts to the Swedish language
@@ -2760,7 +2759,7 @@ Johann Friedrichs <johann.friedrichs@web.de>
 Timo Helkio <timolavi@mbnet.fi>
  for reporting a hangup when replaying a TS recording with subtitles activated
 
-Derek Kelly (user.vdr@gmail.com)
+Derek Kelly <user.vdr@gmail.com>
  for fixing handling the 'new' indicator in the recordings menu for TS recordings
  for reporting a problem with HD NTSC broadcasts that split frames over several payload
  units
@@ -2884,6 +2883,7 @@ Christopher Reimer <reimer.christopher@freenet.de>
  for making plugin Makefiles use DESTDIR and the 'install' program
  for suggesting to make sure that plugins include the VDR header files from the actual
  VDR source directory when doing "make plugins"
+ for reverting the change from version 1.5.7 that made all logging go to LOG_ERR
 
 Stefan Huskamp <coca_cola1@gmx.de>
  for suggesting to make entering characters via the number keys
@@ -2961,7 +2961,6 @@ Johan Andersson <jna@jna.pp.se>
 Dave Pickles <dave@pickles.me.uk>
  for adding support for "content identifier descriptor" and "default authority
  descriptor" to 'libsi'
- for reporting that old EPG events are not cleaned up in case no epg data file is given
 
 Holger Dengler <holger.dengler@gmx.de>
  for making the isnumber() function check the given pointer for NULL
@@ -3010,11 +3009,6 @@ Torsten Lang <info@torstenlang.de>
  for suggesting to increase the size of the TS buffer to 5MB and that of the Recorder
  buffer to 20MB to better handle HD recordings
  for fixing setting the video format in the dvbhdffdevice
- for reporting a problem with setting the system time from the TDT in case devices
- are tuned to the same transponder on different sources, and these broadcast different
- time data
- for reporting a problem with unjustified "video data stream broken" errors in case
- the system time is changed while a recording is active
 
 Christian Ruppert <idl0r@gentoo.org>
  for some improvements to the Makefiles
@@ -3169,13 +3163,9 @@ Jochen Dolze <vdr@dolze.de>
 Dominique Dumont <domi.dumont@free.fr>
  for reporting a crash in the LCARS skin's main menu in case there is no current channel
 
+Seppo Ingalsuo <seppo.ingalsuo@iki.fi>
+ for a patch that was used as a base for implementing support for positioners
+
 Manfred Völkel <mvoelkel@digitaldevices.de>
  for suggesting to make all bonded devices (except for the master) turn off their LNB
  power completely to avoid problems when receiving vertically polarized transponders
-
-Thomas Maass <mase@setho.org>
- for reporting a difference in the internal sequence of actions when pressing the Blue
- and the Back key, respectively, during replay
-
-Eike Edener <eike@edener.de>
- for reporting a bug in writing group separators to channels.conf that contain a comma

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 2.25.1.2 2013/08/21 13:43:46 kls Exp $
+ * $Id: cutter.c 3.2 2013/08/21 13:15:24 kls Exp $
  */
 
 #include "cutter.h"
