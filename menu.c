@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.82.1.5 2013/10/16 09:46:24 kls Exp $
+ * $Id: menu.c 3.3 2013/08/21 10:45:11 kls Exp $
  */
 
 #include "menu.h"
@@ -2971,6 +2971,14 @@ void cMenuSetupLNB::Setup(void)
          }
      }
 
+  Add(new cMenuEditBoolItem(tr("Setup.LNB$Use dish positioner"), &data.UsePositioner));
+  if (data.UsePositioner) {
+     Add(new cMenuEditIntxItem(tr("Setup.LNB$Site latitude (degrees)"), &data.SiteLat, -900, 900, 10, tr("South"), tr("North")));
+     Add(new cMenuEditIntxItem(tr("Setup.LNB$Site longitude (degrees)"), &data.SiteLon, -1800, 1800, 10, tr("West"), tr("East")));
+     Add(new cMenuEditIntxItem(tr("Setup.LNB$Max. positioner swing (degrees)"), &data.PositionerSwing, 0, 900, 10));
+     Add(new cMenuEditIntxItem(tr("Setup.LNB$Positioner speed (degrees/s)"), &data.PositionerSpeed, 1, 1800, 10));
+     }
+
   SetCurrent(Get(current));
   Display();
 }
@@ -2978,6 +2986,7 @@ void cMenuSetupLNB::Setup(void)
 eOSState cMenuSetupLNB::ProcessKey(eKeys Key)
 {
   int oldDiSEqC = data.DiSEqC;
+  int oldUsePositioner = data.UsePositioner;
   bool DeviceBondingsChanged = false;
   if (Key == kOk) {
      cString NewDeviceBondings = satCableNumbers.ToString();
@@ -2986,7 +2995,7 @@ eOSState cMenuSetupLNB::ProcessKey(eKeys Key)
      }
   eOSState state = cMenuSetupBase::ProcessKey(Key);
 
-  if (Key != kNone && data.DiSEqC != oldDiSEqC)
+  if (Key != kNone && (data.DiSEqC != oldDiSEqC || data.UsePositioner != oldUsePositioner))
      Setup();
   else if (DeviceBondingsChanged)
      cDvbDevice::BondDevices(data.DeviceBondings);
@@ -3364,7 +3373,7 @@ cMenuPluginItem::cMenuPluginItem(const char *Name, int Index)
 
 cOsdObject *cMenuMain::pluginOsdObject = NULL;
 
-cMenuMain::cMenuMain(eOSState State, bool OpenSubMenus)
+cMenuMain::cMenuMain(eOSState State)
 :cOsdMenu("")
 {
   SetMenuCategory(mcMain);
@@ -3381,7 +3390,7 @@ cMenuMain::cMenuMain(eOSState State, bool OpenSubMenus)
     case osSchedule:   AddSubMenu(new cMenuSchedule); break;
     case osChannels:   AddSubMenu(new cMenuChannels); break;
     case osTimers:     AddSubMenu(new cMenuTimers); break;
-    case osRecordings: AddSubMenu(new cMenuRecordings(NULL, 0, OpenSubMenus)); break;
+    case osRecordings: AddSubMenu(new cMenuRecordings(NULL, 0, true)); break;
     case osSetup:      AddSubMenu(new cMenuSetup); break;
     case osCommands:   AddSubMenu(new cMenuCommands(tr("Commands"), &Commands)); break;
     default: break;
@@ -3448,7 +3457,7 @@ bool cMenuMain::Update(bool Force)
         stopReplayItem = NULL;
         }
      // Color buttons:
-     SetHelp(!replaying ? tr("Button$Record") : NULL, tr("Button$Audio"), replaying || !Setup.PauseKeyHandling ? NULL : tr("Button$Pause"), replaying ? tr("Button$Stop") : cReplayControl::LastReplayed() ? tr("Button$Resume") : tr("Button$Play"));
+     SetHelp(!replaying ? tr("Button$Record") : NULL, tr("Button$Audio"), replaying ? NULL : tr("Button$Pause"), replaying ? tr("Button$Stop") : cReplayControl::LastReplayed() ? tr("Button$Resume") : tr("Button$Play"));
      result = true;
      }
 
@@ -3543,7 +3552,7 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                                 }
                              break;
                case kYellow: if (!HadSubMenu)
-                                state = replaying || !Setup.PauseKeyHandling ? osContinue : osPause;
+                                state = replaying ? osContinue : osPause;
                              break;
                case kBlue:   if (!HadSubMenu)
                                 state = replaying ? osStopReplay : cReplayControl::LastReplayed() ? osReplay : osRecordings;
@@ -3625,6 +3634,7 @@ cDisplayChannel::cDisplayChannel(int Number, bool Switched)
   displayChannel = Skins.Current()->DisplayChannel(withInfo);
   number = 0;
   timeout = Switched || Setup.TimeoutRequChInfo;
+  positioner = NULL;
   channel = Channels.GetByNumber(Number);
   lastPresent = lastFollowing = NULL;
   if (channel) {
@@ -3646,6 +3656,7 @@ cDisplayChannel::cDisplayChannel(eKeys FirstKey)
   lastTime.Set();
   withInfo = Setup.ShowInfoOnChSwitch;
   displayChannel = Skins.Current()->DisplayChannel(withInfo);
+  positioner = NULL;
   channel = Channels.GetByNumber(cDevice::CurrentChannel());
   ProcessKey(FirstKey);
 }
@@ -3853,7 +3864,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
             return osEnd;
             }
     };
-  if (!timeout || lastTime.Elapsed() < (uint64_t)(Setup.ChannelInfoTime * 1000)) {
+  if (positioner || !timeout || lastTime.Elapsed() < (uint64_t)(Setup.ChannelInfoTime * 1000)) {
      if (Key == kNone && !number && group < 0 && !NewChannel && channel && channel->Number() != cDevice::CurrentChannel()) {
         // makes sure a channel switch through the SVDRP CHAN command is displayed
         channel = Channels.GetByNumber(cDevice::CurrentChannel());
@@ -3861,13 +3872,24 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
         lastTime.Set();
         }
      DisplayInfo();
-     displayChannel->Flush();
      if (NewChannel) {
         SetTrackDescriptions(NewChannel->Number()); // to make them immediately visible in the channel display
         Channels.SwitchTo(NewChannel->Number());
         SetTrackDescriptions(NewChannel->Number()); // switching the channel has cleared them
         channel = NewChannel;
         }
+     const cPositioner *Positioner = cDevice::ActualDevice()->Positioner();
+     bool PositionerMoving = Positioner && Positioner->IsMoving();
+     SetNeedsFastResponse(PositionerMoving);
+     if (!PositionerMoving) {
+        if (positioner)
+           lastTime.Set(); // to keep the channel display up a few seconds after the target position has been reached
+        Positioner = NULL;
+        }
+     if (Positioner || positioner) // making sure we call SetPositioner(NULL) if there is a switch from "with" to "without" positioner
+        displayChannel->SetPositioner(Positioner);
+     positioner = Positioner;
+     displayChannel->Flush();
      return osContinue;
      }
   return osEnd;
@@ -4968,8 +4990,10 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
                            else
                               Show();
                            break;
-            case kBack:    Hide();
-                           Stop();
+            case kBack:    if (Setup.DelTimeshiftRec) {
+                              cRecordControl* rc = cRecordControls::GetRecordControl(fileName);
+                              return rc && rc->InstantId() ? osEnd : osRecordings;
+                              }
                            return osRecordings;
             default:       return osUnknown;
             }
