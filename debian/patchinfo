@@ -28,6 +28,11 @@ opt-56_eventdetails_v3.patch
 
     Patch for vdr-plugin-restfulapi
 
+opt-57_vdr-remote_instant_recordings.patch
+    Frank Schmirler <vdrdev@schmirler.de> 
+
+    Patch for vdr-plugin-remotetimers
+
 xprmtl-06_lirc-reconnect.patch
     Lars Hanisch <dvb@flensrocker.de>
 

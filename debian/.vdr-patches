@@ -3,4 +3,5 @@
 81_Make_config.patch:0c7ea8e353c4c4403290d39b7be7db5f
 99_ncursesw-include.patch:841c6a5f9df2249aaa319a08b7094b4f
 opt-56_eventdetails_v3.patch:e2ff963982af0673b0436d3f7f6c2048
+opt-57_vdr-remote_instant_recordings.patch:b6e9bbdf40b2abb7c8af53b7c9be7eb3
 xprmtl-06_lirc-reconnect.patch:3a12e32da498351a7b55b6eff53468ed
