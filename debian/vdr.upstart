@@ -4,7 +4,7 @@ description     "VDR upstart script"
 author          "Steffen Barszus <steffenbpunkt@gmail.com>"
 author          "Lars Hanisch <dvb@flensrocker.de>"
 
-start on ((started dbus and started udev and static-network-up) \
+start on ((filesystem and started dbus and started udev and static-network-up) \
       or (stopped vdr RESULT=failed EXIT_SIGNAL=?* \
       or  stopped vdr RESULT=failed EXIT_STATUS!=[02]) \
       or resume)
