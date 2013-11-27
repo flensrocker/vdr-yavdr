@@ -1,4 +1,11 @@
-vdr (2.0.4-0yavdr0~0.5) precise; urgency=medium
+vdr (2.0.4-1yavdr0~0.5) precise; urgency=medium
+
+  * use setuid in shutdown-wrapper, otherwise smbstatus will fail
+  * upstart: wait for filesystem emitted by mountall
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Wed, 27 Nov 2013 22:54:22 +0100
+
+vdr (2.0.4-0yavdr0) precise; urgency=medium
 
   * new upstream release
 
