@@ -1,3 +1,10 @@
+vdr (2.1.2-3yavdr0) precise; urgency=medium
+
+  * re-enable dynamite and externalci patches
+    (don't expect dynamite to work with positioners)
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Sun, 15 Dec 2013 14:59:03 +0100
+
 vdr (2.1.2-2yavdr0) precise; urgency=medium
 
   * picked patches for shutdown-wrapper and upstart job from master
