@@ -33,6 +33,16 @@ opt-57_vdr-remote_instant_recordings.patch
 
     Patch for vdr-plugin-remotetimers
 
+opt-61_dynamite.patch
+    Lars Hanisch <dvb@flensrocker.de>
+
+    Patch for VDR to support hotpluggable devices via the dynamite plugin.
+
+xprmtl-01_externalci.patch
+    Lars Hanisch <dvb@flensrocker.de>
+
+    used by the ddci plugin
+
 xprmtl-06_lirc-reconnect.patch
     Lars Hanisch <dvb@flensrocker.de>
 

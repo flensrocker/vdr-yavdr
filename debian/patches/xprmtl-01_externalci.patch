@@ -27,7 +27,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    };
 --- a/device.h
 +++ b/device.h
-@@ -838,7 +838,14 @@
+@@ -840,7 +840,14 @@
  /// sure the returned data points to a TS packet and automatically
  /// re-synchronizes after broken packets.
  
@@ -43,7 +43,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  private:
    int f;
    int cardIndex;
-@@ -847,8 +854,8 @@
+@@ -849,8 +856,8 @@
    virtual void Action(void);
  public:
    cTSBuffer(int File, int Size, int CardIndex);
@@ -198,7 +198,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  #endif //__DVBCI_H
 --- a/dvbdevice.c
 +++ b/dvbdevice.c
-@@ -1117,9 +1117,8 @@
+@@ -1140,9 +1140,8 @@
  
    // Common Interface:
  
@@ -210,7 +210,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  
    // The DVR device (will be opened and closed as needed):
  
-@@ -1706,8 +1705,12 @@
+@@ -1729,8 +1728,12 @@
  {
    CloseDvr();
    fd_dvr = DvbOpen(DEV_DVB_DVR, adapter, frontend, O_RDONLY | O_NONBLOCK, true);

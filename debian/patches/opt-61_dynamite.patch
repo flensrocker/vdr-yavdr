@@ -28,7 +28,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  class cTPDU;
 --- a/device.c
 +++ b/device.c
-@@ -70,12 +70,22 @@
+@@ -69,12 +69,22 @@
  cDevice *cDevice::device[MAXDEVICES] = { NULL };
  cDevice *cDevice::primaryDevice = NULL;
  cList<cDeviceHook> cDevice::deviceHooks;
@@ -55,7 +55,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  
    SetDescription("receiver on device %d", CardIndex() + 1);
  
-@@ -107,10 +117,14 @@
+@@ -106,10 +116,14 @@
    for (int i = 0; i < MAXRECEIVERS; i++)
        receiver[i] = NULL;
  
@@ -73,7 +73,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  }
  
  cDevice::~cDevice()
-@@ -121,6 +135,29 @@
+@@ -120,6 +134,29 @@
    delete dvbSubtitleConverter;
    if (this == primaryDevice)
       primaryDevice = NULL;
@@ -103,7 +103,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  }
  
  bool cDevice::WaitForAllDevicesReady(int Timeout)
-@@ -159,6 +196,8 @@
+@@ -158,6 +195,8 @@
  
  int cDevice::DeviceNumber(void) const
  {
@@ -112,7 +112,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    for (int i = 0; i < numDevices; i++) {
        if (device[i] == this)
           return i;
-@@ -359,6 +398,8 @@
+@@ -358,6 +397,8 @@
  
  void cDevice::SetCamSlot(cCamSlot *CamSlot)
  {
@@ -121,7 +121,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    camSlot = CamSlot;
  }
  
-@@ -570,6 +611,10 @@
+@@ -569,6 +610,10 @@
  
  void cDevice::StartSectionHandler(void)
  {
@@ -132,7 +132,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    if (!sectionHandler) {
       sectionHandler = new cSectionHandler(this);
       AttachFilter(eitFilter = new cEitFilter);
-@@ -581,6 +626,10 @@
+@@ -580,6 +625,10 @@
  
  void cDevice::StopSectionHandler(void)
  {
@@ -143,7 +143,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    if (sectionHandler) {
       delete nitFilter;
       delete sdtFilter;
-@@ -612,12 +661,17 @@
+@@ -611,12 +660,17 @@
  
  void cDevice::AttachFilter(cFilter *Filter)
  {
@@ -161,7 +161,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    if (sectionHandler)
       sectionHandler->Detach(Filter);
  }
-@@ -779,6 +833,7 @@
+@@ -783,6 +837,7 @@
          sectionHandler->SetStatus(false);
          sectionHandler->SetChannel(NULL);
          }
@@ -169,7 +169,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
       // Tell the camSlot about the channel switch and add all PIDs of this
       // channel to it, for possible later decryption:
       if (camSlot)
-@@ -825,19 +880,27 @@
+@@ -829,19 +884,27 @@
  {
    if (!cTransferControl::ReceiverDevice()) {
       cChannel *Channel = Channels.GetByNumber(CurrentChannel());
@@ -198,7 +198,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    if (Seconds >= 0)
       occupiedTimeout = time(NULL) + min(Seconds, MAXOCCUPIEDTIMEOUT);
  }
-@@ -1218,7 +1281,10 @@
+@@ -1222,7 +1285,10 @@
  
  bool cDevice::AttachPlayer(cPlayer *Player)
  {
@@ -209,7 +209,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
       if (player)
          Detach(player);
       DELETENULL(liveSubtitle);
-@@ -1237,6 +1303,8 @@
+@@ -1241,6 +1307,8 @@
  
  void cDevice::Detach(cPlayer *Player)
  {
@@ -218,7 +218,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    if (Player && player == Player) {
       cPlayer *p = player;
       player = NULL; // avoids recursive calls to Detach()
-@@ -1256,6 +1324,8 @@
+@@ -1260,6 +1328,8 @@
  
  void cDevice::StopReplay(void)
  {
@@ -227,7 +227,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    if (player) {
       Detach(player);
       if (IsPrimaryDevice())
-@@ -1555,6 +1625,8 @@
+@@ -1540,6 +1610,8 @@
  
  int cDevice::Priority(void) const
  {
@@ -236,7 +236,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    int priority = IDLEPRIORITY;
    if (IsPrimaryDevice() && !Replaying() && HasProgramme())
       priority = TRANSFERPRIORITY; // we use the same value here, no matter whether it's actual Transfer Mode or real live viewing
-@@ -1573,6 +1645,8 @@
+@@ -1558,6 +1630,8 @@
  
  bool cDevice::Receiving(bool Dummy) const
  {
@@ -245,7 +245,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    cMutexLock MutexLock(&mutexReceiver);
    for (int i = 0; i < MAXRECEIVERS; i++) {
        if (receiver[i])
-@@ -1653,10 +1727,13 @@
+@@ -1638,10 +1712,13 @@
  
  bool cDevice::AttachReceiver(cReceiver *Receiver)
  {
@@ -259,7 +259,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  // activate the following line if you need it - actually the driver should be fixed!
  //#define WAIT_FOR_TUNER_LOCK
  #ifdef WAIT_FOR_TUNER_LOCK
-@@ -1695,6 +1772,8 @@
+@@ -1680,6 +1757,8 @@
  
  void cDevice::Detach(cReceiver *Receiver)
  {
@@ -268,7 +268,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    if (!Receiver || Receiver->device != this)
       return;
    bool receiversLeft = false;
-@@ -1720,6 +1799,8 @@
+@@ -1705,6 +1784,8 @@
  
  void cDevice::DetachAll(int Pid)
  {
@@ -277,7 +277,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    if (Pid) {
       cMutexLock MutexLock(&mutexReceiver);
       for (int i = 0; i < MAXRECEIVERS; i++) {
-@@ -1804,3 +1885,25 @@
+@@ -1789,3 +1870,25 @@
       }
    return NULL;
  }
@@ -305,7 +305,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
 +}
 --- a/device.h
 +++ b/device.h
-@@ -171,7 +171,6 @@
+@@ -170,7 +170,6 @@
    static int nextCardIndex;
    int cardIndex;
  protected:
@@ -313,7 +313,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    virtual ~cDevice();
    virtual bool Ready(void);
           ///< Returns true if this device is ready. Devices with conditional
-@@ -198,9 +197,6 @@
+@@ -197,9 +196,6 @@
           ///< A derived class must call the MakePrimaryDevice() function of its
           ///< base class.
  public:
@@ -321,9 +321,9 @@ Author: Lars Hanisch <dvb@flensrocker.de>
 -  int CardIndex(void) const { return cardIndex; }
 -         ///< Returns the card index of this device (0 ... MAXDEVICES - 1).
    int DeviceNumber(void) const;
-          ///< Returns the number of this device (0 ... numDevices).
+          ///< Returns the number of this device (0 ... numDevices - 1).
    virtual cString DeviceType(void) const;
-@@ -426,9 +422,6 @@
+@@ -429,9 +425,6 @@
           ///< shall check whether the channel can be decrypted.
    void SetCamSlot(cCamSlot *CamSlot);
           ///< Sets the given CamSlot to be used with this device.
@@ -333,8 +333,8 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  
  // Image Grab facilities
  
-@@ -590,9 +583,6 @@
-   cTsToPes tsToPesTeletext;
+@@ -592,9 +585,6 @@
+   cTsToPes tsToPesSubtitle;
    bool isPlayingVideo;
  protected:
 -  const cPatPmtParser *PatPmtParser(void) const { return &patPmtParser; }
@@ -343,7 +343,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    virtual bool CanReplay(void) const;
         ///< Returns true if this device can currently start a replay session.
    virtual bool SetPlayMode(ePlayMode PlayMode);
-@@ -806,6 +796,38 @@
+@@ -808,6 +798,38 @@
         ///< Detaches all receivers from this device for this pid.
    virtual void DetachAllReceivers(void);
         ///< Detaches all receivers from this device.
@@ -382,7 +382,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    };
  
  /// Derived cDevice classes that can receive channels will have to provide
-@@ -829,4 +851,47 @@
+@@ -831,4 +853,47 @@
    uchar *Get(void);
    };
  
@@ -569,8 +569,8 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  #endif //__DVBCI_H
 --- a/dvbdevice.c
 +++ b/dvbdevice.c
-@@ -288,7 +288,7 @@
-   bool SendDiseqc;
+@@ -287,7 +287,7 @@
+   enum eTunerStatus { tsIdle, tsSet, tsPositioning, tsTuned, tsLocked };
    int frontendType;
    const cDvbDevice *device;
 -  int fd_frontend;
@@ -578,7 +578,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    int adapter, frontend;
    uint32_t subsystemId;
    int tuneTimeout;
-@@ -299,7 +299,7 @@
+@@ -301,7 +301,7 @@
    const cScr *scr;
    bool lnbPowerTurnedOn;
    eTunerStatus tunerStatus;
@@ -586,8 +586,8 @@ Author: Lars Hanisch <dvb@flensrocker.de>
 +  mutable cMutex mutex;
    cCondVar locked;
    cCondVar newSet;
-   dvb_diseqc_master_cmd diseqc_cmd;
-@@ -315,6 +315,10 @@
+   cDvbTuner *bondedTuner;
+@@ -317,6 +317,10 @@
    void ResetToneAndVoltage(void);
    bool SetFrontend(void);
    virtual void Action(void);
@@ -598,16 +598,16 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  public:
    cDvbTuner(const cDvbDevice *Device, int Fd_Frontend, int Adapter, int Frontend);
    virtual ~cDvbTuner();
-@@ -330,6 +334,8 @@
+@@ -332,6 +336,8 @@
+   const cPositioner *Positioner(void) const { return positioner; }
    int GetSignalStrength(void) const;
    int GetSignalQuality(void) const;
-   bool SendDiseqcCmd(dvb_diseqc_master_cmd cmd);
 +  bool SetIdle(bool Idle);
 +  bool IsIdle(void) const { return isIdle; }
- private:
-   int GetCurrentDeliverySystem(void);
    };
-@@ -354,6 +360,7 @@
+ 
+ cMutex cDvbTuner::bondMutex;
+@@ -356,6 +362,7 @@
    tunerStatus = tsIdle;
    bondedTuner = NULL;
    bondedMaster = false;
@@ -615,7 +615,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    SetDescription("tuner on frontend %d/%d", adapter, frontend);
    Start();
  }
-@@ -371,6 +378,8 @@
+@@ -373,6 +380,8 @@
       ExecuteDiseqc(lastDiseqc, &Frequency);
       }
    */
@@ -624,7 +624,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  }
  
  bool cDvbTuner::Bond(cDvbTuner *Tuner)
-@@ -515,6 +524,8 @@
+@@ -518,6 +527,8 @@
  
  void cDvbTuner::ClearEventQueue(void) const
  {
@@ -633,7 +633,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    cPoller Poller(fd_frontend);
    if (Poller.Poll(TUNER_POLL_TIMEOUT)) {
       dvb_frontend_event Event;
-@@ -754,6 +765,8 @@
+@@ -763,6 +774,8 @@
  
  bool cDvbTuner::SetFrontend(void)
  {
@@ -642,7 +642,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  #define MAXFRONTENDCMDS 16
  #define SETCMD(c, d) { Frontend[CmdSeq.num].cmd = (c);\
                         Frontend[CmdSeq.num].u.data = (d);\
-@@ -905,9 +918,11 @@
+@@ -915,9 +928,11 @@
    bool LostLock = false;
    fe_status_t Status = (fe_status_t)0;
    while (Running()) {
@@ -655,9 +655,9 @@ Author: Lars Hanisch <dvb@flensrocker.de>
 +              Status = NewStatus;
 +           }
          cMutexLock MutexLock(&mutex);
-         if (SendDiseqc) {
-            CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_MASTER_CMD, &diseqc_cmd));
-@@ -964,6 +979,40 @@
+         int WaitTime = 1000;
+         switch (tunerStatus) {
+@@ -987,6 +1002,40 @@
          }
  }
  
@@ -698,7 +698,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  // --- cDvbSourceParam -------------------------------------------------------
  
  class cDvbSourceParam : public cSourceParam {
-@@ -1049,7 +1098,8 @@
+@@ -1072,7 +1121,8 @@
    NULL
    };
  
@@ -708,7 +708,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  {
    adapter = Adapter;
    frontend = Frontend;
-@@ -1069,7 +1119,7 @@
+@@ -1092,7 +1142,7 @@
  
    fd_ca = DvbOpen(DEV_DVB_CA, adapter, frontend, O_RDWR);
    if (fd_ca >= 0)
@@ -717,7 +717,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  
    // The DVR device (will be opened and closed as needed):
  
-@@ -1313,7 +1363,11 @@
+@@ -1336,7 +1386,11 @@
           if (d >= 0) {
              int ErrorDevice = 0;
              if (cDevice *Device1 = cDevice::GetDevice(i)) {
@@ -729,7 +729,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
                    if (cDvbDevice *DvbDevice1 = dynamic_cast<cDvbDevice *>(Device1)) {
                       if (cDvbDevice *DvbDevice2 = dynamic_cast<cDvbDevice *>(Device2)) {
                          if (!DvbDevice1->Bond(DvbDevice2))
-@@ -1347,7 +1401,10 @@
+@@ -1370,7 +1424,10 @@
  void cDvbDevice::UnBondDevices(void)
  {
    for (int i = 0; i < cDevice::NumDevices(); i++) {
@@ -741,7 +741,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
           d->UnBond();
        }
  }
-@@ -1401,6 +1458,26 @@
+@@ -1424,6 +1481,26 @@
    return true;
  }
  
@@ -768,7 +768,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  bool cDvbDevice::HasCi(void)
  {
    return ciAdapter;
-@@ -1570,7 +1647,7 @@
+@@ -1593,7 +1670,7 @@
  
  bool cDvbDevice::ProvidesEIT(void) const
  {
