@@ -2,6 +2,8 @@
 06_default_svdrp_port_0.patch:a0e25c0e93fb69f3e76fc6b38c66ac19
 81_Make_config.patch:0c7ea8e353c4c4403290d39b7be7db5f
 99_ncursesw-include.patch:7a408b2f76b2d2d6e08caf47e91c469c
+opt-37-x_menuorg.patch:907bcbd535dd98abf9ca89760d1ff045
+opt-42-x_MainMenuHooks-v1.0.1.patch:4b602fa00cef3a4077b75aa1d6fb0371
 opt-56_eventdetails_v3.patch:e2ff963982af0673b0436d3f7f6c2048
-opt-57_vdr-remote_instant_recordings.patch:15d26e371067531c3ca7bf292f933b7c
+opt-57_vdr-remote_instant_recordings.patch:269a78f9cb87ee3778f6cb50517bb1ed
 opt-61_dynamite.patch:de2ff97c72b32f7904746d583585e657

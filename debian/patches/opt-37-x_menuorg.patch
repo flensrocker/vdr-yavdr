@@ -70,7 +70,7 @@ Author: Tobias Grimm <tg@e-tobi.net>
 +#endif //__MAINMENUITEMSPROVIDER_H
 --- a/menu.c
 +++ b/menu.c
-@@ -32,6 +32,7 @@
+@@ -31,6 +31,7 @@
  #include "timers.h"
  #include "transfer.h"
  #include "videodir.h"
@@ -78,8 +78,8 @@ Author: Tobias Grimm <tg@e-tobi.net>
  
  #define MAXWAIT4EPGINFO   3 // seconds
  #define MODETIMEOUT       3 // seconds
-@@ -3550,6 +3551,9 @@
-   cancelFileTransferItem = NULL;
+@@ -3762,6 +3763,9 @@
+   cancelEditingItem = NULL;
    stopRecordingItem = NULL;
    recordControlsState = 0;
 +
@@ -88,7 +88,7 @@ Author: Tobias Grimm <tg@e-tobi.net>
    Set();
  
    // Initial submenus:
-@@ -3578,6 +3582,29 @@
+@@ -3790,6 +3794,29 @@
    SetTitle("VDR");
    SetHasHotkeys();
  
@@ -118,7 +118,7 @@ Author: Tobias Grimm <tg@e-tobi.net>
    // Basic menu items:
  
    Add(new cOsdItem(hk(tr("Schedule")),   osSchedule));
-@@ -3604,6 +3631,8 @@
+@@ -3816,6 +3843,8 @@
    if (Commands.Count())
       Add(new cOsdItem(hk(tr("Commands")),  osCommands));
  
@@ -127,7 +127,7 @@ Author: Tobias Grimm <tg@e-tobi.net>
    Update(true);
  
    Display();
-@@ -3728,6 +3757,41 @@
+@@ -3921,6 +3950,41 @@
                           state = osEnd;
                         }
                         break;

@@ -22,13 +22,13 @@
 #opt-27_ttxtsubs.patch
 
 # Patch needed for the menuorg plugin.
-#opt-37-x_menuorg.patch
+opt-37-x_menuorg.patch
 
 # Patch to show an info, if it is possible to record an event in the timer-info.
 #opt-41-x_timer-info.patch
 
 # Patch to allow plugins to replace the VDR mainmenus
-#opt-42-x_MainMenuHooks-v1.0.1.patch
+opt-42-x_MainMenuHooks-v1.0.1.patch
 
 # Patch needed for the rotor plugin.
 #opt-44_rotor.patch
