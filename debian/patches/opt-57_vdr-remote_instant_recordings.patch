@@ -15,7 +15,7 @@ Origin: http://vdr.schmirler.de/
  #define LIVEPRIORITY      0                  // priority used when selecting a device for live viewing
 --- a/menu.c
 +++ b/menu.c
-@@ -31,6 +31,8 @@
+@@ -32,6 +32,8 @@
  #include "transfer.h"
  #include "videodir.h"
  
@@ -24,7 +24,7 @@ Origin: http://vdr.schmirler.de/
  #define MAXWAIT4EPGINFO   3 // seconds
  #define MODETIMEOUT       3 // seconds
  #define NEWTIMERLIMIT   120 // seconds until the start time of a new timer created from the Schedule menu,
-@@ -4695,6 +4697,50 @@
+@@ -4716,6 +4718,50 @@
  
  bool cRecordControls::Start(cTimer *Timer, bool Pause)
  {
