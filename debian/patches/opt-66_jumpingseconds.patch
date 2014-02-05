@@ -3,7 +3,7 @@ Author: ?
 
 --- a/config.c
 +++ b/config.c
-@@ -479,6 +479,8 @@
+@@ -483,6 +483,8 @@
    ChannelsWrap = 0;
    ShowChannelNamesWithSource = 0;
    EmergencyExit = 1;
@@ -12,7 +12,7 @@ Author: ?
  }
  
  cSetup& cSetup::operator= (const cSetup &s)
-@@ -690,6 +692,8 @@
+@@ -698,6 +700,8 @@
    else if (!strcasecmp(Name, "ShowChannelNamesWithSource")) ShowChannelNamesWithSource = atoi(Value);
    else if (!strcasecmp(Name, "EmergencyExit"))       EmergencyExit      = atoi(Value);
    else if (!strcasecmp(Name, "LastReplayed"))        cReplayControl::SetRecording(Value);
@@ -21,7 +21,7 @@ Author: ?
    else
       return false;
    return true;
-@@ -804,6 +808,8 @@
+@@ -816,6 +820,8 @@
    Store("ShowChannelNamesWithSource", ShowChannelNamesWithSource);
    Store("EmergencyExit",      EmergencyExit);
    Store("LastReplayed",       cReplayControl::LastReplayed());
@@ -32,7 +32,7 @@ Author: ?
  
 --- a/config.h
 +++ b/config.h
-@@ -348,6 +348,8 @@
+@@ -352,6 +352,8 @@
    int ChannelsWrap;
    int ShowChannelNamesWithSource;
    int EmergencyExit;
@@ -43,7 +43,7 @@ Author: ?
    cString DeviceBondings;
 --- a/menu.c
 +++ b/menu.c
-@@ -3541,6 +3541,8 @@
+@@ -3617,6 +3617,8 @@
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Jump&Play"), &data.JumpPlay));
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Play&Jump"), &data.PlayJump));
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Pause at last mark"), &data.PauseLastMark));
@@ -52,7 +52,7 @@ Author: ?
  }
  
  void cMenuSetupReplay::Store(void)
-@@ -5510,9 +5512,9 @@
+@@ -5574,9 +5576,9 @@
      case kRight:   Forward(); break;
      case kRed:     TimeSearch(); break;
      case kGreen|k_Repeat:
@@ -61,24 +61,6 @@ Author: ?
      case kYellow|k_Repeat:
 -    case kYellow:  SkipSeconds( 60); break;
 +    case kYellow:  SkipSeconds(Setup.JumpSeconds); break;
-     case kPrev|k_Repeat:
-     case kPrev:    if (lastSkipTimeout.TimedOut()) {
-                       lastSkipSeconds = REPLAYCONTROLSKIPSECONDS;
-@@ -5559,7 +5561,7 @@
-                                   marks.Save();
-                                   }
-                                else
--                                  SkipSeconds(-20);
-+                                  SkipSeconds(-Setup.JumpSecondsSlow);
-                                break;
-         case k3|k_Repeat:
-         case k3:               if (GetReplayMode(play, forward, speed) && !play && GetIndex(Current, Total) && (m = marks.Get(Current)) != NULL) {
-@@ -5572,7 +5574,7 @@
-                                   marks.Save();
-                                   }
-                                else
--                                  SkipSeconds(20);
-+                                  SkipSeconds(Setup.JumpSecondsSlow);
-                                break;
-         case kMarkToggle:      if (GetReplayMode(play, forward, speed) && play) {
-                                   displayFrames = true;
+     case kStop:
+     case kBlue:    Hide();
+                    Stop();

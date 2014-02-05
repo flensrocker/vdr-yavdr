@@ -3,7 +3,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
 
 --- a/device.c
 +++ b/device.c
-@@ -778,6 +778,7 @@
+@@ -782,6 +782,7 @@
       cChannel *channel;
       while ((channel = Channels.GetByNumber(n, Direction)) != NULL) {
             // try only channels which are currently available
@@ -11,7 +11,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
             if (GetDevice(channel, LIVEPRIORITY, true, true))
                break;
             n = channel->Number() + Direction;
-@@ -799,6 +800,12 @@
+@@ -803,6 +804,12 @@
  
  eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
  {
@@ -26,7 +26,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
    if (LiveView) {
 --- a/menu.c
 +++ b/menu.c
-@@ -911,6 +911,16 @@
+@@ -916,6 +916,18 @@
       Add(new cMenuEditBitItem( tr("VPS"),          &data.flags, tfVps));
       Add(new cMenuEditIntItem( tr("Priority"),     &data.priority, 0, MAXPRIORITY));
       Add(new cMenuEditIntItem( tr("Lifetime"),     &data.lifetime, 0, MAXLIFETIME));
@@ -35,7 +35,9 @@ Author: Jörg Wendel (horchi@vdr-portal)
 +     if (cOsd::pinValid || !data.fskProtection) Add(new cMenuEditBoolItem(tr("Childlock"),&data.fskProtection));
 +     else {
 +        char* buf = 0;
-+        asprintf(&buf, "%s\t%s", tr("Childlock"), data.fskProtection ? tr("yes") : tr("no"));
++        int res = 0;
++        res = asprintf(&buf, "%s\t%s", tr("Childlock"), data.fskProtection ? tr("yes") : tr("no"));
++        if (res < 0) ; // memory problems :o
 +        Add(new cOsdItem(buf));
 +        free(buf);
 +        }
@@ -43,7 +45,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
       Add(file = new cMenuEditStrItem( tr("File"),   data.file, sizeof(data.file)));
       SetFirstDayItem();
       }
-@@ -2635,7 +2645,8 @@
+@@ -2684,7 +2696,8 @@
                     }
                  }
              }
@@ -53,7 +55,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
              Add(Item);
              LastItem = Item;
              if (Item->IsDirectory())
-@@ -2686,6 +2697,9 @@
+@@ -2749,6 +2762,9 @@
  {
    cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
    if (ri) {
@@ -63,7 +65,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
       if (ri->IsDirectory())
          Open();
       else {
-@@ -3809,28 +3823,32 @@
+@@ -3882,28 +3898,32 @@
  
    // Basic menu items:
  
@@ -101,7 +103,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
       Add(new cOsdItem(hk(tr("Commands")),  osCommands));
  
    }
-@@ -3914,6 +3932,14 @@
+@@ -3974,6 +3994,14 @@
    eOSState state = cOsdMenu::ProcessKey(Key);
    HadSubMenu |= HasSubMenu();
  
@@ -116,7 +118,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
    cOsdObject *menu = NULL;
    switch (state) {
      case osSchedule:
-@@ -3966,6 +3992,7 @@
+@@ -4020,6 +4048,7 @@
                           if (item) {
                              cPlugin *p = cPluginManager::GetPlugin(item->PluginIndex());
                              if (p) {
@@ -124,7 +126,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
                                 cOsdObject *menu = p->MainMenuAction();
                                 if (menu) {
                                    if (menu->IsMenu())
-@@ -3977,6 +4004,7 @@
+@@ -4031,6 +4060,7 @@
                                    }
                                 }
                              }
@@ -132,7 +134,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
                           state = osEnd;
                         }
                         break;
-@@ -4188,6 +4216,7 @@
+@@ -4244,6 +4274,7 @@
             Channel = Direction > 0 ? Channels.Next(Channel) : Channels.Prev(Channel);
             if (!Channel && Setup.ChannelsWrap)
                Channel = Direction > 0 ? Channels.First() : Channels.Last();
@@ -140,7 +142,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
             if (Channel && !Channel->GroupSep() && cDevice::GetDevice(Channel, LIVEPRIORITY, true, true))
                return Channel;
             }
-@@ -4881,6 +4910,7 @@
+@@ -4948,6 +4979,7 @@
             for (int i = 0; i < MAXRECORDCONTROLS; i++) {
                 if (!RecordControls[i]) {
                    RecordControls[i] = new cRecordControl(device, Timer, Pause);
@@ -150,20 +152,20 @@ Author: Jörg Wendel (horchi@vdr-portal)
                 }
 --- a/osd.c
 +++ b/osd.c
-@@ -1623,6 +1623,7 @@
+@@ -1634,6 +1634,7 @@
  int cOsd::osdHeight = 0;
  cVector<cOsd *> cOsd::Osds;
  cMutex cOsd::mutex;
-+bool cOsd::pinValid = true;   // PIN PATCH
++bool cOsd::pinValid = false;   // PIN PATCH
  
  cOsd::cOsd(int Left, int Top, uint Level)
  {
 --- a/osd.h
 +++ b/osd.h
-@@ -927,6 +927,7 @@
+@@ -930,6 +930,7 @@
+        ///<        MyOsdDrawPixmap(Left() + pm->ViewPort().X(), Top() + pm->ViewPort().Y(), pm->Data(), w, h, h * d);
         ///<        delete pm;
         ///<        }
-   tArea vidWin;
 +  static bool pinValid;   // PIN PATCH
    };
  
@@ -236,10 +238,10 @@ Author: Jörg Wendel (horchi@vdr-portal)
  
  enum eTimerChange { tcMod, tcAdd, tcDel };
  
-@@ -92,6 +93,23 @@
+@@ -91,6 +92,22 @@
+                // report menu destruvtion
    virtual void OsdEventItem(const cEvent* Event, const char *Text, int Index, int Count) {}
                 // The OSD displays the given single line Event as menu item at Index.
- 
 +  virtual bool ChannelProtected(const cDevice *Device, const cChannel* Channel)  { return false; }         // PIN PATCH
 +               // Checks if a channel is protected.
 +  virtual bool ReplayProtected(const cRecording* Recording, const char* Name,
@@ -256,15 +258,13 @@ Author: Jörg Wendel (horchi@vdr-portal)
 +               // report user action
 +  virtual bool MenuItemProtected(const char* Name, int menuView = false)  { return false; }                // PIN PATCH
 +               // Checks if a menu entry is protected.
-+
+ 
  public:
    cStatus(void);
-   virtual ~cStatus();
-@@ -118,6 +136,15 @@
+@@ -118,6 +135,14 @@
    static void MsgOsdMenuDisplay(const char* kind);
    static void MsgOsdMenuDestroy();
    static void MsgOsdEventItem(const cEvent* Event, const char *Text, int Index, int Count);
-+
 +  static bool MsgChannelProtected(const cDevice* Device, const cChannel* Channel);                 // PIN PATCH
 +  static bool MsgReplayProtected(const cRecording* Recording, const char* Name,
 +                                 const char* Base, bool isDirectory, int menuView = false);        // PIN PATCH
@@ -380,7 +380,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
    bool HasFlags(uint Flags) const;
 --- a/vdr.c
 +++ b/vdr.c
-@@ -66,6 +66,7 @@
+@@ -65,6 +65,7 @@
  #include "tools.h"
  #include "transfer.h"
  #include "videodir.h"
@@ -388,7 +388,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
  
  #define MINCHANNELWAIT        10 // seconds to wait between failed channel switchings
  #define ACTIVITYTIMEOUT       60 // seconds before starting housekeeping
-@@ -1026,6 +1027,7 @@
+@@ -1021,6 +1022,7 @@
          cOsdObject *Interact = Menu ? Menu : cControl::Control();
          eKeys key = Interface->GetKey(!Interact || !Interact->NeedsFastResponse());
          if (ISREALKEY(key)) {
@@ -396,7 +396,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
             EITScanner.Activity();
             // Cancel shutdown countdown:
             if (ShutdownHandler.countdown)
-@@ -1098,10 +1100,12 @@
+@@ -1093,10 +1095,12 @@
                       cControl::Control()->Hide();
                    cPlugin *plugin = cPluginManager::GetPlugin(PluginName);
                    if (plugin) {
@@ -409,7 +409,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
                    else
                       esyslog("ERROR: unknown plugin '%s'", PluginName);
                    }
-@@ -1314,9 +1318,11 @@
+@@ -1309,9 +1313,11 @@
               // Instant resume of the last viewed recording:
               case kPlay:
                    if (cReplayControl::LastReplayed()) {

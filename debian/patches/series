@@ -16,7 +16,7 @@
 #opt-22-x_edit_marks.patch
 
 # The Jump patch allows automatic jumping over cutting marks.
-#opt-24_jumpplay.patch
+opt-24_jumpplay.patch
 
 # Patch needed for the ttxtsubs plugin.
 #opt-27_ttxtsubs.patch
@@ -37,7 +37,7 @@ opt-42-x_MainMenuHooks-v1.0.1.patch
 #opt-45_yaepg.patch
 
 # Patch required for the GraphTFT plugin
-#opt-50_graphtft.patch
+opt-50_graphtft.patch
 #opt-50_graphtft-liemikuutio.patch
 
 #opt-55_wareagleicon.patch
@@ -47,13 +47,14 @@ opt-57_vdr-remote_instant_recordings.patch
 opt-61_dynamite.patch
 
 ##opt-63_naludump.patch
-#opt-65_pin.patch
-#opt-66_jumpingseconds.patch
+opt-65_pin.patch
+opt-66_jumpingseconds.patch
 #opt-67_epgsearch-exttimeredit-0.0.2.patch
 
 #xprmtl-01_externalci.patch
-#xprmtl-02_permashift-0.5.4.patch
+xprmtl-02_permashift-0.5.4.patch
 #xprmtl-03_extra-video-directory.patch
+xprmtl-03_hide-first-recording-level-v3.patch
 
 #xprmtl-04_loglevel.patch
 

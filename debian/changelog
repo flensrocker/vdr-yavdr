@@ -1,3 +1,11 @@
+vdr (2.1.3-1yavdr0) precise; urgency=medium
+
+  * add following patches:
+    jumpplay, graphtft, pin, jumpingseconds, permashift,
+    hide-first-recording-level
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Wed, 05 Feb 2014 17:07:49 +0100
+
 vdr (2.1.3-0yavdr0) precise; urgency=medium
 
   * new upstream release

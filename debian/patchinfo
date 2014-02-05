@@ -23,6 +23,13 @@ Patches applied to vanilla vdr sources
 
     Use ncursesw header file
 
+opt-24_jumpplay.patch
+    Torsten Kunkel <vdr@tkunkel.de>, Thomas Günther <tom@toms-cafe.de>
+
+    Play after jump to next mark. Automatically jump over commercial breaks. See
+    README.jumpplay and MANUAL for details. 2011-03-19: Remove marks reloading
+    for VDR-1.7.17, by Udo Richter <udo_richter@gmx.de>
+
 opt-37-x_menuorg.patch
     Tobias Grimm <tg@e-tobi.net>
 
@@ -36,6 +43,11 @@ opt-42-x_MainMenuHooks-v1.0.1.patch
 
     This patch allows plugins to replace the VDR mainmenus "Schedule",
     "Channels", "Timers" and "Recordings" by a different implementation.
+
+opt-50_graphtft.patch
+    J�rg Wendel (Horchi)
+
+    Patch required for the GraphTFT plugin.
 
 opt-56_eventdetails_v3.patch
     Michael Eiler <eiler.mike@gmail.com>      
@@ -51,4 +63,25 @@ opt-61_dynamite.patch
     Lars Hanisch <dvb@flensrocker.de>
 
     Patch for VDR to support hotpluggable devices via the dynamite plugin.
+
+opt-65_pin.patch
+    Jörg Wendel (horchi@vdr-portal)
+
+    patch for the pin plugin
+
+opt-66_jumpingseconds.patch
+    ?
+
+    ?
+
+xprmtl-02_permashift-0.5.4.patch
+    Eike Sauer <eike@ein-eike.de>
+
+    patch for permashift plugin
+
+xprmtl-03_hide-first-recording-level-v3.patch
+    Lars Hanisch <dvb@flensrocker.de>
+
+    Hide the first level of directories in the recordings menu, all recordings
+    are stored at the "local" directory
 

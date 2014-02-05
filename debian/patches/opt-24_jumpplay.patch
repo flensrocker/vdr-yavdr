@@ -6,7 +6,7 @@ Origin: http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
 
 --- a/MANUAL
 +++ b/MANUAL
-@@ -902,6 +902,25 @@
+@@ -949,6 +949,25 @@
                           0 resulting in a file named 'resume', and any other
                           value resulting in 'resume.n'.
  
@@ -129,7 +129,7 @@ Origin: http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
 +    Added French language texts (thanks to Michaël Nival)
 --- a/config.c
 +++ b/config.c
-@@ -465,6 +465,9 @@
+@@ -471,6 +471,9 @@
    ProgressDisplayTime = 0;
    PauseOnMarkSet = 0;
    ResumeID = 0;
@@ -139,7 +139,7 @@ Origin: http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
    CurrentChannel = -1;
    CurrentVolume = MAXVOLUME;
    CurrentDolby = 0;
-@@ -670,6 +673,9 @@
+@@ -682,6 +685,9 @@
    else if (!strcasecmp(Name, "ProgressDisplayTime")) ProgressDisplayTime= atoi(Value);
    else if (!strcasecmp(Name, "PauseOnMarkSet"))      PauseOnMarkSet     = atoi(Value);
    else if (!strcasecmp(Name, "ResumeID"))            ResumeID           = atoi(Value);
@@ -149,7 +149,7 @@ Origin: http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
    else if (!strcasecmp(Name, "CurrentChannel"))      CurrentChannel     = atoi(Value);
    else if (!strcasecmp(Name, "CurrentVolume"))       CurrentVolume      = atoi(Value);
    else if (!strcasecmp(Name, "CurrentDolby"))        CurrentDolby       = atoi(Value);
-@@ -779,6 +785,9 @@
+@@ -797,6 +803,9 @@
    Store("ProgressDisplayTime",ProgressDisplayTime);
    Store("PauseOnMarkSet",     PauseOnMarkSet);
    Store("ResumeID",           ResumeID);
@@ -170,7 +170,7 @@ Origin: http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
  #define MAXPRIORITY       99
  #define MINPRIORITY       (-MAXPRIORITY)
  #define LIVEPRIORITY      0                  // priority used when selecting a device for live viewing
-@@ -328,6 +330,9 @@
+@@ -334,6 +336,9 @@
    int ProgressDisplayTime;
    int PauseOnMarkSet;
    int ResumeID;
@@ -206,10 +206,10 @@ Origin: http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
 +        if (Setup.PlayJump && marks.First() &&
 +            abs(Index - marks.First()->Position()) <= int(round(RESUMEBACKUP * framesPerSecond)))
 +           Index = 0;
-         int backup = int(round(RESUMEBACKUP * framesPerSecond));
-         if (Index >= index->Last() - backup)
-            Index = 0;
-@@ -405,11 +411,26 @@
+         Index -= int(round(RESUMEBACKUP * framesPerSecond));
+         if (Index > 0)
+            Index = index->GetNextIFrame(Index, false);
+@@ -400,11 +406,26 @@
  {
    uchar *p = NULL;
    int pc = 0;
@@ -236,7 +236,7 @@ Origin: http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
    nonBlockingFileReader = new cNonBlockingFileReader;
    int Length = 0;
    bool Sleep = false;
-@@ -436,7 +457,7 @@
+@@ -431,7 +452,7 @@
  
            // Read the next frame from the file:
  
@@ -245,7 +245,7 @@ Origin: http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
               if (!readFrame && (replayFile || readIndex >= 0)) {
                  if (!nonBlockingFileReader->Reading()) {
                     if (!SwitchToPlayFrame && (playMode == pmFast || (playMode == pmSlow && playDir == pdBackward))) {
-@@ -473,6 +494,44 @@
+@@ -468,6 +489,44 @@
                     else if (index) {
                        uint16_t FileNumber;
                        off_t FileOffset;
@@ -290,7 +290,7 @@ Origin: http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
                        if (index->Get(readIndex + 1, &FileNumber, &FileOffset, &readIndependent, &Length) && NextFile(FileNumber, FileOffset))
                           readIndex++;
                        else
-@@ -517,6 +576,13 @@
+@@ -512,6 +571,13 @@
               // Store the frame in the buffer:
  
               if (readFrame) {
@@ -304,7 +304,7 @@ Origin: http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
                  if (ringBuffer->Put(readFrame))
                     readFrame = NULL;
                  else
-@@ -583,8 +649,13 @@
+@@ -578,8 +644,13 @@
                  p = NULL;
                  }
               }
@@ -321,7 +321,7 @@ Origin: http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
  
 --- a/menu.c
 +++ b/menu.c
-@@ -3338,6 +3338,9 @@
+@@ -3555,6 +3555,9 @@
    Add(new cMenuEditIntItem( tr("Setup.Replay$Progress display time (s)"), &data.ProgressDisplayTime, 0, 60));
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Pause replay when setting mark"), &data.PauseOnMarkSet));
    Add(new cMenuEditIntItem(tr("Setup.Replay$Resume ID"), &data.ResumeID, 0, 99));
@@ -331,7 +331,7 @@ Origin: http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
  }
  
  void cMenuSetupReplay::Store(void)
-@@ -4992,8 +4995,17 @@
+@@ -5195,8 +5198,17 @@
    if (GetIndex(Current, Total)) {
       if (marks.Count()) {
          if (cMark *m = Forward ? marks.GetNext(Current) : marks.GetPrev(Current)) {
@@ -351,7 +351,7 @@ Origin: http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
             return;
             }
          }
-@@ -5054,7 +5066,7 @@
+@@ -5259,7 +5271,7 @@
       if (!m)
          m = marks.GetNext(Current);
       if (m) {
@@ -362,7 +362,7 @@ Origin: http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
             Goto(m->Position() - SecondsToFrames(3, FramesPerSecond()));
 --- a/po/de_DE.po
 +++ b/po/de_DE.po
-@@ -1095,6 +1095,15 @@
+@@ -1186,6 +1186,15 @@
  msgid "Replay"
  msgstr "Wiedergabe"
  
@@ -380,7 +380,7 @@ Origin: http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
  
 --- a/po/fr_FR.po
 +++ b/po/fr_FR.po
-@@ -1105,6 +1105,15 @@
+@@ -1196,6 +1196,15 @@
  msgid "Replay"
  msgstr "Lecture"
  
