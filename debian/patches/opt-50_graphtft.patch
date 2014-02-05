@@ -116,7 +116,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    if (recording->Info()->Description())
       cStatus::MsgOsdTextItem(recording->Info()->Description());
  }
-@@ -2919,6 +2954,7 @@
+@@ -2915,6 +2950,7 @@
    cMenuSetupOSD(void);
    virtual ~cMenuSetupOSD();
    virtual eOSState ProcessKey(eKeys Key);
@@ -124,7 +124,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    };
  
  cMenuSetupOSD::cMenuSetupOSD(void)
-@@ -3072,6 +3108,7 @@
+@@ -3068,6 +3104,7 @@
  public:
    cMenuSetupEPG(void);
    virtual eOSState ProcessKey(eKeys Key);
@@ -132,7 +132,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    };
  
  cMenuSetupEPG::cMenuSetupEPG(void)
-@@ -3169,6 +3206,7 @@
+@@ -3165,6 +3202,7 @@
  public:
    cMenuSetupDVB(void);
    virtual eOSState ProcessKey(eKeys Key);
@@ -140,7 +140,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    };
  
  cMenuSetupDVB::cMenuSetupDVB(void)
-@@ -3314,6 +3352,7 @@
+@@ -3310,6 +3348,7 @@
  public:
    cMenuSetupLNB(void);
    virtual eOSState ProcessKey(eKeys Key);
@@ -148,7 +148,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    };
  
  cMenuSetupLNB::cMenuSetupLNB(void)
-@@ -3428,6 +3467,7 @@
+@@ -3424,6 +3463,7 @@
  public:
    cMenuSetupCAM(void);
    virtual eOSState ProcessKey(eKeys Key);
@@ -156,7 +156,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    };
  
  cMenuSetupCAM::cMenuSetupCAM(void)
-@@ -3615,6 +3655,7 @@
+@@ -3611,6 +3651,7 @@
  public:
    cMenuSetupPlugins(void);
    virtual eOSState ProcessKey(eKeys Key);
@@ -164,7 +164,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    };
  
  cMenuSetupPlugins::cMenuSetupPlugins(void)
-@@ -3670,6 +3711,7 @@
+@@ -3666,6 +3707,7 @@
  public:
    cMenuSetup(void);
    virtual eOSState ProcessKey(eKeys Key);
@@ -264,7 +264,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    const char *Aux(void) const { return aux; }
 --- a/status.c
 +++ b/status.c
-@@ -124,3 +124,32 @@
+@@ -130,3 +130,32 @@
    for (cStatus *sm = statusMonitors.First(); sm; sm = statusMonitors.Next(sm))
        sm->OsdProgramme(PresentTime, PresentTitle, PresentSubtitle, FollowingTime, FollowingTitle, FollowingSubtitle);
  }
@@ -299,7 +299,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
 +}
 --- a/status.h
 +++ b/status.h
-@@ -81,6 +81,17 @@
+@@ -84,6 +84,17 @@
                 // The OSD displays the single line Text with the current channel information.
    virtual void OsdProgramme(time_t PresentTime, const char *PresentTitle, const char *PresentSubtitle, time_t FollowingTime, const char *FollowingTitle, const char *FollowingSubtitle) {}
                 // The OSD displays the given programme information.
@@ -317,7 +317,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
  public:
    cStatus(void);
    virtual ~cStatus();
-@@ -102,6 +113,11 @@
+@@ -106,6 +117,11 @@
    static void MsgOsdTextItem(const char *Text,  bool Scroll = false);
    static void MsgOsdChannel(const char *Text);
    static void MsgOsdProgramme(time_t PresentTime, const char *PresentTitle, const char *PresentSubtitle, time_t FollowingTime, const char *FollowingTitle, const char *FollowingSubtitle);

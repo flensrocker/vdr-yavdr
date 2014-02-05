@@ -134,7 +134,7 @@ Author: Eike Sauer <eike@ein-eike.de>
  
 --- a/menu.c
 +++ b/menu.c
-@@ -4901,7 +4901,7 @@
+@@ -4897,7 +4897,7 @@
  cRecordControl *cRecordControls::RecordControls[MAXRECORDCONTROLS] = { NULL };
  int cRecordControls::state = 0;
  
@@ -143,7 +143,7 @@ Author: Eike Sauer <eike@ein-eike.de>
  {
    if (!Timer) {
       cTimer *t = new cTimer(true, Pause);
-@@ -4964,6 +4964,13 @@
+@@ -4960,6 +4960,13 @@
       }
    LastNoDiskSpaceMessage = 0;
  
@@ -157,7 +157,7 @@ Author: Eike Sauer <eike@ein-eike.de>
    ChangeState();
    int ch = Timer ? Timer->Channel()->Number() : cDevice::CurrentChannel();
    cChannel *channel = Channels.GetByNumber(ch);
-@@ -5017,12 +5024,53 @@
+@@ -5013,12 +5020,53 @@
        }
  }
  
@@ -213,7 +213,7 @@ Author: Eike Sauer <eike@ein-eike.de>
       cControl::Launch(rc);
       cControl::Attach();
       Skins.Message(mtStatus, NULL);
-@@ -5065,6 +5113,23 @@
+@@ -5061,6 +5109,23 @@
    return NULL;
  }
  
@@ -237,7 +237,7 @@ Author: Eike Sauer <eike@ein-eike.de>
  void cRecordControls::Process(time_t t)
  {
    for (int i = 0; i < MAXRECORDCONTROLS; i++) {
-@@ -5094,12 +5159,13 @@
+@@ -5090,12 +5155,13 @@
        }
  }
  
@@ -255,7 +255,7 @@ Author: Eike Sauer <eike@ein-eike.de>
    return false;
  }
  
-@@ -5123,8 +5189,8 @@
+@@ -5119,8 +5185,8 @@
  cReplayControl *cReplayControl::currentReplayControl = NULL;
  cString cReplayControl::fileName;
  

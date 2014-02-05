@@ -321,7 +321,7 @@ Origin: http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
  
 --- a/menu.c
 +++ b/menu.c
-@@ -3555,6 +3555,9 @@
+@@ -3551,6 +3551,9 @@
    Add(new cMenuEditIntItem( tr("Setup.Replay$Progress display time (s)"), &data.ProgressDisplayTime, 0, 60));
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Pause replay when setting mark"), &data.PauseOnMarkSet));
    Add(new cMenuEditIntItem(tr("Setup.Replay$Resume ID"), &data.ResumeID, 0, 99));
@@ -331,7 +331,7 @@ Origin: http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
  }
  
  void cMenuSetupReplay::Store(void)
-@@ -5195,8 +5198,17 @@
+@@ -5191,8 +5194,17 @@
    if (GetIndex(Current, Total)) {
       if (marks.Count()) {
          if (cMark *m = Forward ? marks.GetNext(Current) : marks.GetPrev(Current)) {
@@ -351,7 +351,7 @@ Origin: http://toms-cafe.de/vdr/download/vdr-jumpplay-1.0-1.7.6.diff
             return;
             }
          }
-@@ -5259,7 +5271,7 @@
+@@ -5255,7 +5267,7 @@
       if (!m)
          m = marks.GetNext(Current);
       if (m) {

@@ -89,7 +89,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    int channel;
 --- a/vdr.c
 +++ b/vdr.c
-@@ -240,6 +240,7 @@
+@@ -241,6 +241,7 @@
        { "genindex", required_argument, NULL, 'g' | 0x100 },
        { "grab",     required_argument, NULL, 'g' },
        { "help",     no_argument,       NULL, 'h' },
@@ -97,7 +97,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
        { "instance", required_argument, NULL, 'i' },
        { "lib",      required_argument, NULL, 'L' },
        { "lirc",     optional_argument, NULL, 'l' | 0x100 },
-@@ -264,7 +265,7 @@
+@@ -265,7 +266,7 @@
      };
  
    int c;
@@ -106,7 +106,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
          switch (c) {
            case 'a': AudioCommand = optarg;
                      break;
-@@ -349,6 +350,8 @@
+@@ -350,6 +351,8 @@
                      break;
            case 'h': DisplayHelp = true;
                      break;
@@ -115,7 +115,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
            case 'i': if (isnumber(optarg)) {
                         InstanceId = atoi(optarg);
                         if (InstanceId >= 0)
-@@ -514,6 +517,13 @@
+@@ -515,6 +518,13 @@
                 "                           existing directory, without any \"..\", double '/'\n"
                 "                           or symlinks (default: none, same as -g-)\n"
                 "  -h,       --help         print this help and exit\n"
