@@ -1,3 +1,9 @@
+vdr (2.1.4-1yavdr0) precise; urgency=medium
+
+  * add conf.d patch
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Wed, 19 Mar 2014 22:30:00 +0100
+
 vdr (2.1.4-0yavdr0) precise; urgency=medium
 
   * new upstream release

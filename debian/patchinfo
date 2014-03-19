@@ -85,3 +85,8 @@ xprmtl-03_hide-first-recording-level-v3.patch
     Hide the first level of directories in the recordings menu, all recordings
     are stored at the "local" directory
 
+vdr-2.1.4-conf.d-v2.diff
+    Lars Hanisch <dvb@flensrocker.de>
+
+    Patch for VDR to support reading its arguments from files.
+

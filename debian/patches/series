@@ -62,3 +62,5 @@ xprmtl-03_hide-first-recording-level-v3.patch
 #xprmtl-05_epghandler-segment-transfer.patch
 
 #xprmtl-06_lirc-reconnect.patch
+vdr-2.1.4-conf.d-v2.diff
+
