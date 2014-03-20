@@ -81,7 +81,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
 +  {
 +    name = Name;
 +  };
-+  
++
 +  virtual ~cArgsSection(void)
 +  {
 +  };
@@ -248,7 +248,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
 +      }
 +  return result;
 +}
-+  
++
 +int cArgs::GetArgc(void) const
 +{
 +  return argc;
@@ -286,7 +286,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
 +  ~cArgs(void);
 +
 +  bool ReadDirectory(const char *Directory);
-+  
++
 +  int GetArgc(void) const;
 +  char **GetArgv(void) const;
 +  };
@@ -330,18 +330,19 @@ Author: Lars Hanisch <dvb@flensrocker.de>
        { "port",     required_argument, NULL, 'p' },
        { "record",   required_argument, NULL, 'r' },
        { "resdir",   required_argument, NULL, 'r' | 0x100 },
-+      { "showargs", no_argument,       NULL, 's' | 0x200 },
++      { "showargs", optional_argument, NULL, 's' | 0x200 },
        { "shutdown", required_argument, NULL, 's' },
        { "split",    no_argument,       NULL, 's' | 0x100 },
        { "terminal", required_argument, NULL, 't' },
-@@ -427,6 +439,18 @@
+@@ -427,6 +439,19 @@
            case 's' | 0x100:
                      Setup.SplitEditedFiles = 1;
                      break;
 +          case 's' | 0x200: {
++                    const char *argsdir = optarg ? optarg : DEFAULTARGSDIR;
 +                    cArgs a(argv[0]);
-+                    if (!a.ReadDirectory(DEFAULTARGSDIR)) {
-+                       fprintf(stderr, "vdr: can't read arguments from directory: %s\n", DEFAULTARGSDIR);
++                    if (!a.ReadDirectory(argsdir)) {
++                       fprintf(stderr, "vdr: can't read arguments from directory: %s\n", argsdir);
 +                       return 2;
 +                       }
 +                    int c = a.GetArgc();
@@ -353,15 +354,15 @@ Author: Lars Hanisch <dvb@flensrocker.de>
            case 't': Terminal = optarg;
                      if (access(Terminal, R_OK | W_OK) < 0) {
                         fprintf(stderr, "vdr: can't access terminal: %s\n", Terminal);
-@@ -547,6 +571,7 @@
+@@ -547,6 +572,7 @@
                 "  -s CMD,   --shutdown=CMD call CMD to shutdown the computer\n"
                 "            --split        split edited files at the editing marks (only\n"
                 "                           useful in conjunction with --edit)\n"
-+               "            --showargs     print the arguments read from %s and exit\n"
++               "            --showargs[=DIR] print the arguments read from DIR and exit (default: %s)\n"
                 "  -t TTY,   --terminal=TTY controlling tty\n"
                 "  -u USER,  --user=USER    run as user USER; only applicable if started as\n"
                 "                           root\n"
-@@ -569,6 +594,7 @@
+@@ -569,6 +595,7 @@
                 DEFAULTLOCDIR,
                 DEFAULTSVDRPPORT,
                 DEFAULTRESDIR,
