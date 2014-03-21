@@ -58,7 +58,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  
 --- /dev/null
 +++ b/args.c
-@@ -0,0 +1,133 @@
+@@ -0,0 +1,131 @@
 +/*
 + * args.c: Read arguments from files
 + *
@@ -130,7 +130,6 @@ Author: Lars Hanisch <dvb@flensrocker.de>
 +                     s++;
 +
 +                     if (*lastArg) {
-+                        lastArg = cString::sprintf("%s\"", *lastArg);
 +                        args.Append(strdup(*lastArg));
 +                        lastArg = NULL;
 +                        }
@@ -139,7 +138,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
 +                        inVdrSection = true;
 +                     else {
 +                        inVdrSection = false;
-+                        lastArg = cString::sprintf("--plugin=\"%s", s);
++                        lastArg = cString::sprintf("--plugin=%s", s);
 +                        }
 +                     }
 +                  else {
@@ -177,7 +176,6 @@ Author: Lars Hanisch <dvb@flensrocker.de>
 +          }
 +      }
 +  if (*lastArg) {
-+     lastArg = cString::sprintf("%s\"", *lastArg);
 +     args.Append(strdup(*lastArg));
 +     lastArg = NULL;
 +     }
