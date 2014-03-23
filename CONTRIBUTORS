@@ -2136,6 +2136,9 @@ Marko Mäkelä <marko.makela@hut.fi>
  pressed in string input fields
  for fixing missing ',' in the Italian and Polish OSD texts
  for pointing out that "Menu button closes" should actually be "Menu key closes"
+ for fixing a missing initialization in the c'tor of cSkinLCARSDisplayChannel
+ for reporting some uninitialized item area coordinates in cSkinLCARSDisplayMenu
+ for reporting a problem with the video directory not being set correctly with --edit
 
 Patrick Rother <krd-vdr@gulu.net>
  for reporting a bug in defining timers that only differ in the day of week
@@ -2847,6 +2850,11 @@ Lars Hanisch <dvb@flensrocker.de>
  for reporting an invalid line in channels.conf.terr
  for fixing handling '/' and '~' in recording file names in case DirectoryEncoding is
  used
+ for making the LIRC remote control connect to the socket even if it doesn't yet exist
+ when VDR is started
+ for reporting a possible crash if the recordings list is updated externally while the
+ Recordings menu is open
+ for reporting a missing closing ')' in the help entry of the --vfat option
 
 Alex Lasnier <alex@fepg.org>
  for adding tuning support for ATSC devices
