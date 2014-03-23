@@ -1,0 +1,309 @@
+Description: Patch for VDR to support reading its arguments from files.
+Origin: https://github.com/flensrocker/vdr/tree/conf.d-args
+Forwarded: no
+Author: Lars Hanisch <dvb@flensrocker.de>
+
+--- a/Make.config.template
++++ b/Make.config.template
+@@ -38,6 +38,7 @@
+ 
+ #VIDEODIR  = /srv/vdr/video
+ #CONFDIR   = /var/lib/vdr
++#ARGSDIR   = /etc/vdr/conf.d
+ #CACHEDIR  = /var/cache/vdr
+ 
+ # Overrides for preset/legacy configurations:
+--- a/Makefile
++++ b/Makefile
+@@ -31,6 +31,7 @@
+ DESTDIR   ?=
+ VIDEODIR  ?= /srv/vdr/video
+ CONFDIR   ?= /var/lib/vdr
++ARGSDIR   ?= /etc/vdr/conf.d
+ CACHEDIR  ?= /var/cache/vdr
+ 
+ PREFIX    ?= /usr/local
+@@ -66,7 +67,7 @@
+ 
+ SILIB    = $(LSIDIR)/libsi.a
+ 
+-OBJS = audio.o channels.o ci.o config.o cutter.o device.o diseqc.o dvbdevice.o dvbci.o\
++OBJS = args.o audio.o channels.o ci.o config.o cutter.o device.o diseqc.o dvbdevice.o dvbci.o\
+        dvbplayer.o dvbspu.o dvbsubtitle.o eit.o eitscan.o epg.o filetransfer.o filter.o font.o i18n.o\
+        interface.o keys.o lirc.o menu.o menuitems.o nit.o osdbase.o osd.o pat.o player.o plugin.o\
+        receiver.o recorder.o recording.o remote.o remux.o ringbuffer.o sdt.o sections.o shutdown.o\
+@@ -103,6 +104,7 @@
+ DEFINES += -DVIDEODIR=\"$(VIDEODIR)\"
+ DEFINES += -DCONFDIR=\"$(CONFDIR)\"
+ DEFINES += -DCACHEDIR=\"$(CACHEDIR)\"
++DEFINES += -DARGSDIR=\"$(ARGSDIR)\"
+ DEFINES += -DRESDIR=\"$(RESDIR)\"
+ DEFINES += -DPLUGINDIR=\"$(LIBDIR)\"
+ DEFINES += -DLOCDIR=\"$(LOCDIR)\"
+@@ -145,6 +147,7 @@
+ 	@echo "bindir=$(BINDIR)" > $@
+ 	@echo "mandir=$(MANDIR)" >> $@
+ 	@echo "configdir=$(CONFDIR)" >> $@
++	@echo "argsdir=$(ARGSDIR)" >> $@
+ 	@echo "videodir=$(VIDEODIR)" >> $@
+ 	@echo "cachedir=$(CACHEDIR)" >> $@
+ 	@echo "resdir=$(RESDIR)" >> $@
+@@ -263,6 +266,7 @@
+ install-dirs:
+ 	@mkdir -p $(DESTDIR)$(VIDEODIR)
+ 	@mkdir -p $(DESTDIR)$(CONFDIR)
++	@mkdir -p $(DESTDIR)$(ARGSDIR)
+ 	@mkdir -p $(DESTDIR)$(CACHEDIR)
+ 	@mkdir -p $(DESTDIR)$(RESDIR)
+ 
+--- /dev/null
++++ b/args.c
+@@ -0,0 +1,131 @@
++/*
++ * args.c: Read arguments from files
++ *
++ * See the main source file 'vdr.c' for copyright information and
++ * how to reach the author.
++ *
++ * $Id: $
++ */
++
++#include "args.h"
++#include <unistd.h>
++
++cArgs::cArgs(const char *Argv0)
++{
++  argv0 = Argv0;
++  argc = 0;
++  argv = NULL;
++}
++
++cArgs::~cArgs(void)
++{
++  if (argv != NULL)
++     delete [] argv;
++}
++
++bool cArgs::AddArg(const char *s)
++{
++  if (inVdrSection)
++     args.Append(strdup(s));
++  else if (*lastArg == NULL)
++     return false;
++  else
++     lastArg = cString::sprintf("%s %s", *lastArg, s);
++  return true;
++}
++
++bool cArgs::ReadDirectory(const char *Directory)
++{
++  if (argv != NULL)
++     delete [] argv;
++  argc = 0;
++  argv = NULL;
++  args.Clear();
++  lastArg = NULL;
++  inVdrSection = false;
++
++  cFileNameList files(Directory, false);
++  if (files.Size() == 0)
++     return false;
++
++  for (int i = 0; i < files.Size(); i++) {
++      cString fileName = AddDirectory(Directory, files.At(i));
++      struct stat fs;
++      if ((access(*fileName, F_OK) != 0) || (stat(*fileName, &fs) != 0) || S_ISDIR(fs.st_mode))
++         continue;
++
++      bool ok = true;
++      int line = 0;
++      FILE *f = fopen(*fileName, "r");
++      if (f) {
++         char *s;
++         cReadLine ReadLine;
++         while ((s = ReadLine.Read(f)) != NULL) {
++               line++;
++               s = stripspace(skipspace(s));
++               if (!isempty(s) && (s[0] != '#')) {
++                  if (startswith(s, "[") && endswith(s, "]")) {
++                     s[strlen(s) - 1] = 0;
++                     s++;
++
++                     if (*lastArg) {
++                        args.Append(strdup(*lastArg));
++                        lastArg = NULL;
++                        }
++
++                     if (strcmp(s, "vdr") == 0)
++                        inVdrSection = true;
++                     else {
++                        inVdrSection = false;
++                        lastArg = cString::sprintf("--plugin=%s", s);
++                        }
++                     }
++                  else {
++                     if ((strlen(s) > 2) && (s[0] == '-') && (s[1] != '-')) { // short option, split at first space
++                        char *p = strchr(s, ' ');
++                        if (p == NULL) {
++                           ok = AddArg(s);
++                           if (!ok)
++                              break;
++                           }
++                        else {
++                           *p = 0;
++                           p++;
++                           ok = AddArg(s);
++                           if (!ok)
++                              break;
++                           ok = AddArg(p);
++                           if (!ok)
++                              break;
++                           }
++                        }
++                     else {
++                        ok = AddArg(s);
++                        if (!ok)
++                           break;
++                        }
++                     }
++                  }
++               }
++         fclose(f);
++         }
++       if (!ok) {
++          esyslog("ERROR: args file %s, line %d", *fileName, line);
++          return false;
++          }
++      }
++  if (*lastArg) {
++     args.Append(strdup(*lastArg));
++     lastArg = NULL;
++     }
++
++  argv = new char*[args.Size() + 1];
++  argv[0] = strdup(*argv0);
++  argc = 1;
++  for (int i = 0; i < args.Size(); i++) {
++      argv[argc] = args.At(i);
++      argc++;
++      }
++  return true;
++}
++
+--- /dev/null
++++ b/args.h
+@@ -0,0 +1,36 @@
++/*
++ * args.h: Read arguments from files
++ *
++ * See the main source file 'vdr.c' for copyright information and
++ * how to reach the author.
++ *
++ * $Id: $
++ */
++
++#ifndef __ARGS_H
++#define __ARGS_H
++
++#include "tools.h"
++
++class cArgs {
++private:
++  cString     argv0;
++  cStringList args;
++  cString     lastArg;
++  bool        inVdrSection;
++  int         argc;
++  char      **argv;
++
++  bool AddArg(const char *s);
++
++public:
++  cArgs(const char *Argv0);
++  ~cArgs(void);
++
++  bool ReadDirectory(const char *Directory);
++
++  int GetArgc(void) const { return argc; };
++  char **GetArgv(void) const { return argv; };
++  };
++
++#endif //__ARGS_H
+--- a/vdr.c
++++ b/vdr.c
+@@ -36,6 +36,7 @@
+ #include <sys/prctl.h>
+ #include <termios.h>
+ #include <unistd.h>
++#include "args.h"
+ #include "audio.h"
+ #include "channels.h"
+ #include "config.h"
+@@ -188,6 +189,7 @@
+ #define DEFAULTWATCHDOG     0 // seconds
+ #define DEFAULTVIDEODIR VIDEODIR
+ #define DEFAULTCONFDIR dd(CONFDIR, VideoDirectory)
++#define DEFAULTARGSDIR dd(ARGSDIR, "/etc/vdr/conf.d")
+ #define DEFAULTCACHEDIR dd(CACHEDIR, VideoDirectory)
+ #define DEFAULTRESDIR dd(RESDIR, ConfigDirectory)
+ #define DEFAULTPLUGINDIR PLUGINDIR
+@@ -225,6 +227,15 @@
+   VdrUser = VDR_USER;
+ #endif
+ 
++  cArgs *args = NULL;
++  if (argc == 1) {
++     args = new cArgs(argv[0]);
++     if (args->ReadDirectory(DEFAULTARGSDIR)) {
++        argc = args->GetArgc();
++        argv = args->GetArgv();
++        }
++     }
++
+   SetVideoDirectory(VideoDirectory);
+   cPluginManager PluginManager(DEFAULTPLUGINDIR);
+ 
+@@ -256,6 +267,7 @@
+       { "port",     required_argument, NULL, 'p' },
+       { "record",   required_argument, NULL, 'r' },
+       { "resdir",   required_argument, NULL, 'r' | 0x100 },
++      { "showargs", optional_argument, NULL, 's' | 0x200 },
+       { "shutdown", required_argument, NULL, 's' },
+       { "split",    no_argument,       NULL, 's' | 0x100 },
+       { "terminal", required_argument, NULL, 't' },
+@@ -434,6 +446,19 @@
+           case 's' | 0x100:
+                     Setup.SplitEditedFiles = 1;
+                     break;
++          case 's' | 0x200: {
++                    const char *argsdir = optarg ? optarg : DEFAULTARGSDIR;
++                    cArgs a(argv[0]);
++                    if (!a.ReadDirectory(argsdir)) {
++                       fprintf(stderr, "vdr: can't read arguments from directory: %s\n", argsdir);
++                       return 2;
++                       }
++                    int c = a.GetArgc();
++                    char **v = a.GetArgv();
++                    for (int i = 1; i < c; i++)
++                        printf("%s\n", v[i]);
++                    return 0;
++                    }
+           case 't': Terminal = optarg;
+                     if (access(Terminal, R_OK | W_OK) < 0) {
+                        fprintf(stderr, "vdr: can't access terminal: %s\n", Terminal);
+@@ -557,6 +582,7 @@
+                "  -s CMD,   --shutdown=CMD call CMD to shutdown the computer\n"
+                "            --split        split edited files at the editing marks (only\n"
+                "                           useful in conjunction with --edit)\n"
++               "            --showargs[=DIR] print the arguments read from DIR and exit (default: %s)\n"
+                "  -t TTY,   --terminal=TTY controlling tty\n"
+                "  -u USER,  --user=USER    run as user USER; only applicable if started as\n"
+                "                           root\n"
+@@ -579,6 +605,7 @@
+                DEFAULTLOCDIR,
+                DEFAULTSVDRPPORT,
+                DEFAULTRESDIR,
++               DEFAULTARGSDIR,
+                DEFAULTVIDEODIR,
+                DEFAULTWATCHDOG
+                );

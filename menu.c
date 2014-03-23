@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 2.82.1.5 2013/10/16 09:46:24 kls Exp $
+ * $Id: menu.c 2.82.1.8 2014/02/26 11:42:28 kls Exp $
  */
 
 #include "menu.h"
@@ -181,9 +181,13 @@ cMenuEditChannel::cMenuEditChannel(cChannel *Channel, bool New)
      strn0cpy(name, data.name, sizeof(name));
      if (New) {
         channel = NULL;
+        // clear non-editable members:
         data.nid = 0;
         data.tid = 0;
         data.rid = 0;
+        *data.shortName  = 0;
+        *data.provider   = 0;
+        *data.portalName = 0;
         }
      }
   Setup();
@@ -2185,6 +2189,7 @@ public:
   const char *Name(void) { return name; }
   cRecording *Recording(void) { return recording; }
   bool IsDirectory(void) { return name != NULL; }
+  void SetRecording(cRecording *Recording) { recording = Recording; }
   virtual void SetMenuItem(cSkinDisplayMenu *DisplayMenu, int Index, bool Current, bool Selectable);
   };
 
@@ -2416,6 +2421,7 @@ eOSState cMenuRecordings::Delete(void)
            Display();
            if (!Count())
               return osBack;
+           return osUser2;
            }
         else
            Skins.Message(mtError, tr("Error while deleting recording!"));
@@ -2480,6 +2486,14 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
                      break;
        default: break;
        }
+     }
+  else if (state == osUser2) {
+     // a recording in a sub folder was deleted, so update the current item
+     cOsdMenu *m = HasSubMenu() ? SubMenu() : this;
+     if (cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current())) {
+        if (cMenuRecordingItem *riSub = (cMenuRecordingItem *)m->Get(m->Current()))
+           ri->SetRecording(riSub->Recording());
+        }
      }
   if (Key == kYellow && HadSubMenu && !HasSubMenu()) {
      // the last recording in a subdirectory was deleted, so let's go back up
@@ -2648,7 +2662,7 @@ eOSState cMenuSetupOSD::ProcessKey(eKeys Key)
         ModifiedAppearance = true;
      if (strcmp(data.FontFix, Setup.FontFix) || !DoubleEqual(data.FontFixSizeP, Setup.FontFixSizeP))
         ModifiedAppearance = true;
-     if (data.AlwaysSortFoldersFirst != Setup.AlwaysSortFoldersFirst)
+     if (data.AlwaysSortFoldersFirst != Setup.AlwaysSortFoldersFirst || data.RecordingDirs != Setup.RecordingDirs)
         Recordings.ClearSortNames();
      }
 

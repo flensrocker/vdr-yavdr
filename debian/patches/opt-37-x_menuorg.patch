@@ -78,7 +78,7 @@ Author: Tobias Grimm <tg@e-tobi.net>
  
  #define MAXWAIT4EPGINFO   3 // seconds
  #define MODETIMEOUT       3 // seconds
-@@ -3550,6 +3551,9 @@
+@@ -3564,6 +3565,9 @@
    cancelFileTransferItem = NULL;
    stopRecordingItem = NULL;
    recordControlsState = 0;
@@ -88,7 +88,7 @@ Author: Tobias Grimm <tg@e-tobi.net>
    Set();
  
    // Initial submenus:
-@@ -3578,6 +3582,29 @@
+@@ -3592,6 +3596,29 @@
    SetTitle("VDR");
    SetHasHotkeys();
  
@@ -118,7 +118,7 @@ Author: Tobias Grimm <tg@e-tobi.net>
    // Basic menu items:
  
    Add(new cOsdItem(hk(tr("Schedule")),   osSchedule));
-@@ -3604,6 +3631,8 @@
+@@ -3618,6 +3645,8 @@
    if (Commands.Count())
       Add(new cOsdItem(hk(tr("Commands")),  osCommands));
  
@@ -127,7 +127,7 @@ Author: Tobias Grimm <tg@e-tobi.net>
    Update(true);
  
    Display();
-@@ -3728,6 +3757,41 @@
+@@ -3742,6 +3771,41 @@
                           state = osEnd;
                         }
                         break;
@@ -149,7 +149,7 @@ Author: Tobias Grimm <tg@e-tobi.net>
 +                          }
 +                       }
 +                       break;
-+    case osUser1:      {
++    case osUser7:      {
 +                          if (MenuOrgPatch::IsCustomMenuAvailable()) {
 +                            MenuOrgPatch::EnterSubMenu(Get(Current()));
 +                            Set();
@@ -157,7 +157,7 @@ Author: Tobias Grimm <tg@e-tobi.net>
 +                          }
 +                       }
 +                       break;
-+    case osUser2:      {
++    case osUser8:      {
 +                          if (MenuOrgPatch::IsCustomMenuAvailable()) {
 +                            cOsdMenu* osdMenu = MenuOrgPatch::Execute(Get(Current()));
 +                            if (osdMenu)

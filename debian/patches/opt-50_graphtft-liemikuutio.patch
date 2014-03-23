@@ -4,7 +4,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
 
 --- a/menu.c
 +++ b/menu.c
-@@ -2395,6 +2395,7 @@
+@@ -2400,6 +2400,7 @@
  public:
    cMenuEditRecording(cRecording *Recording);
    virtual eOSState ProcessKey(eKeys Key);

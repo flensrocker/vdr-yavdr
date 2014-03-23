@@ -18,7 +18,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  #define LOG_ERROR_STR(s)  esyslog("ERROR (%s,%d): %s: %m", __FILE__, __LINE__, s)
 --- a/vdr.c
 +++ b/vdr.c
-@@ -371,7 +371,7 @@
+@@ -373,7 +373,7 @@
                         *p = 0;
                      if (isnumber(optarg)) {
                         int l = atoi(optarg);

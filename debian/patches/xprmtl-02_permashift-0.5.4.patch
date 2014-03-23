@@ -117,7 +117,7 @@ Author: Eike Sauer <eike@ein-eike.de>
 +  else if (pauseLive) {
 +    Goto(0, true);
 +  }
-+  
++
    while (Running()) {
          if (WaitingForData)
             WaitingForData = !nonBlockingFileReader->WaitForDataMs(3); // this keeps the CPU load low, but reacts immediately on new data
@@ -134,7 +134,7 @@ Author: Eike Sauer <eike@ein-eike.de>
  
 --- a/menu.c
 +++ b/menu.c
-@@ -4860,7 +4860,7 @@
+@@ -4874,7 +4874,7 @@
  cRecordControl *cRecordControls::RecordControls[MAXRECORDCONTROLS] = { NULL };
  int cRecordControls::state = 0;
  
@@ -143,7 +143,7 @@ Author: Eike Sauer <eike@ein-eike.de>
  {
    if (!Timer) {
       cTimer *t = new cTimer(true, Pause);
-@@ -4923,6 +4923,13 @@
+@@ -4937,6 +4937,13 @@
       }
    LastNoDiskSpaceMessage = 0;
  
@@ -153,11 +153,11 @@ Author: Eike Sauer <eike@ein-eike.de>
 +      return true;
 +      }
 +    }
-+  
++
    ChangeState();
    int ch = Timer ? Timer->Channel()->Number() : cDevice::CurrentChannel();
    cChannel *channel = Channels.GetByNumber(ch);
-@@ -4976,12 +4983,53 @@
+@@ -4990,12 +4997,53 @@
        }
  }
  
@@ -213,7 +213,7 @@ Author: Eike Sauer <eike@ein-eike.de>
       cControl::Launch(rc);
       cControl::Attach();
       Skins.Message(mtStatus, NULL);
-@@ -5024,6 +5072,23 @@
+@@ -5038,6 +5086,23 @@
    return NULL;
  }
  
@@ -237,7 +237,7 @@ Author: Eike Sauer <eike@ein-eike.de>
  void cRecordControls::Process(time_t t)
  {
    for (int i = 0; i < MAXRECORDCONTROLS; i++) {
-@@ -5053,12 +5118,13 @@
+@@ -5067,12 +5132,13 @@
        }
  }
  
@@ -255,7 +255,7 @@ Author: Eike Sauer <eike@ein-eike.de>
    return false;
  }
  
-@@ -5086,8 +5152,8 @@
+@@ -5100,8 +5166,8 @@
  cReplayControl *cReplayControl::currentReplayControl = NULL;
  cString cReplayControl::fileName;
  

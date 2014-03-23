@@ -1,0 +1,159 @@
+Description: Hide the first level of directories
+ in the recordings menu, all recordings are stored at
+ the "local" directory
+Origin: www.vdr-portal.de/board17-developer/board97-vdr-core/p1177898-/#post1177898
+Forwarded: no
+Author: Lars Hanisch <dvb@flensrocker.de>
+
+--- a/recording.c
++++ b/recording.c
+@@ -43,9 +43,9 @@
+ #define NAMEFORMAT   "%s/%s/" DATAFORMAT
+ */
+ #define DATAFORMATPES   "%4d-%02d-%02d.%02d%*c%02d.%02d.%02d" RECEXT
+-#define NAMEFORMATPES   "%s/%s/" "%4d-%02d-%02d.%02d.%02d.%02d.%02d" RECEXT
++#define NAMEFORMATPES   "%s/%s%s/" "%4d-%02d-%02d.%02d.%02d.%02d.%02d" RECEXT
+ #define DATAFORMATTS    "%4d-%02d-%02d.%02d.%02d.%d-%d" RECEXT
+-#define NAMEFORMATTS    "%s/%s/" DATAFORMATTS
++#define NAMEFORMATTS    "%s/%s%s/" DATAFORMATTS
+ 
+ #define RESUMEFILESUFFIX  "/resume%s%s"
+ #ifdef SUMMARYFALLBACK
+@@ -742,6 +742,9 @@
+   sortBufferName = sortBufferTime = NULL;
+   fileName = NULL;
+   name = NULL;
++  firstLevelFolderIfHidden = "";
++  if (HideFirstRecordingLevel())
++     firstLevelFolderIfHidden = "local/";
+   fileSizeMB = -1; // unknown
+   channel = Timer->Channel()->Number();
+   instanceId = InstanceId;
+@@ -813,6 +816,7 @@
+   if (strstr(FileName, VideoDirectory) == FileName)
+      FileName += strlen(VideoDirectory) + 1;
+   const char *p = strrchr(FileName, '/');
++  firstLevelFolderIfHidden = "";
+ 
+   name = NULL;
+   info = new cRecordingInfo(fileName);
+@@ -827,9 +831,18 @@
+         t.tm_mon--;
+         t.tm_sec = 0;
+         start = mktime(&t);
+-        name = MALLOC(char, p - FileName + 1);
+-        strncpy(name, FileName, p - FileName);
+-        name[p - FileName] = 0;
++        const char *copyFileName = FileName;
++        if (HideFirstRecordingLevel()) {
++           const char *f = strchr(FileName, '/');
++           if (f != NULL) {
++              copyFileName = f + 1;
++              firstLevelFolderIfHidden = FileName;
++              firstLevelFolderIfHidden.Truncate(f - FileName + 1);
++              }
++           }
++        name = MALLOC(char, p - copyFileName + 1);
++        strncpy(name, copyFileName, p - copyFileName);
++        name[p - copyFileName] = 0;
+         name = ExchangeChars(name, false);
+         isPesRecording = instanceId < 0;
+         }
+@@ -966,7 +979,7 @@
+         *sb = strdup(buf);
+         }
+      else {
+-        char *s = strdup(FileName() + strlen(VideoDirectory));
++        char *s = strdup(FileName() + strlen(VideoDirectory) + strlen(*firstLevelFolderIfHidden));
+         if (RecordingsSortMode != rsmName || Setup.AlwaysSortFoldersFirst)
+            s = StripEpisodeName(s, RecordingsSortMode != rsmName);
+         strreplace(s, '/', '0'); // some locales ignore '/' when sorting
+@@ -1013,6 +1026,7 @@
+         dsyslog("recording file name '%s' truncated to '%s'", name, Name);
+      Name = ExchangeChars(Name, true);
+      fileName = strdup(cString::sprintf(fmt, VideoDirectory, Name, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, ch, ri));
++     fileName = strdup(cString::sprintf(fmt, VideoDirectory, *firstLevelFolderIfHidden, Name, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, ch, ri));
+      free(Name);
+      }
+   return fileName;
+--- a/recording.h
++++ b/recording.h
+@@ -89,6 +89,7 @@
+   mutable char *sortBufferTime;
+   mutable char *fileName;
+   mutable char *name;
++  cString firstLevelFolderIfHidden;
+   mutable int fileSizeMB;
+   mutable int numFrames;
+   int channel;
+--- a/vdr.c
++++ b/vdr.c
+@@ -241,6 +241,7 @@
+       { "genindex", required_argument, NULL, 'g' | 0x100 },
+       { "grab",     required_argument, NULL, 'g' },
+       { "help",     no_argument,       NULL, 'h' },
++      { "hide-first-recording-level", no_argument, NULL, 'H' },
+       { "instance", required_argument, NULL, 'i' },
+ #ifdef VDRDEBUG
+       { "keep-plugins", no_argument,   NULL, 'k' },
+@@ -268,7 +269,7 @@
+     };
+ 
+   int c;
+-  while ((c = getopt_long(argc, argv, "a:c:dD:e:E:g:hi:kl:L:mp:P:r:s:t:u:v:Vw:", long_options, NULL)) != -1) {
++  while ((c = getopt_long(argc, argv, "a:c:dD:e:E:g:hHi:kl:L:mp:P:r:s:t:u:v:Vw:", long_options, NULL)) != -1) {
+         switch (c) {
+           case 'a': AudioCommand = optarg;
+                     break;
+@@ -353,6 +354,8 @@
+                     break;
+           case 'h': DisplayHelp = true;
+                     break;
++          case 'H': SetHideFirstRecordingLevel(true);
++                    break;
+           case 'i': if (isnumber(optarg)) {
+                        InstanceId = atoi(optarg);
+                        if (InstanceId >= 0)
+@@ -522,6 +525,13 @@
+                "                           existing directory, without any \"..\", double '/'\n"
+                "                           or symlinks (default: none, same as -g-)\n"
+                "  -h,       --help         print this help and exit\n"
++               "  -H,       --hide-first-recording-level\n"
++               "                           The first level directories in the video directory\n"
++               "                           will be ignored in the recordings menu.\n"
++               "                           All recordings will be placed in the directory 'local'.\n"
++               "                           You can mount/link other video directories inside the\n"
++               "                           video directory to display their contents side by side\n"
++               "                           with your local video directory\n"
+                "  -i ID,    --instance=ID  use ID as the id of this VDR instance (default: 0)\n"
+ #ifdef VDRDEBUG
+                "  -k        --keep-plugins Support valgrind by not unloading plugins\n"
+--- a/videodir.c
++++ b/videodir.c
+@@ -41,8 +41,14 @@
+   bool Next(void);
+   void Store(void);
+   const char *Adjust(const char *FileName);
++
++  static bool hide_first_recording_level;
+   };
+ 
++bool cVideoDirectory::hide_first_recording_level = false;
++void SetHideFirstRecordingLevel(bool Hide) { cVideoDirectory::hide_first_recording_level = Hide; };
++bool HideFirstRecordingLevel(void) { return cVideoDirectory::hide_first_recording_level; };
++
+ cVideoDirectory::cVideoDirectory(void)
+ {
+   length = strlen(VideoDirectory);
+--- a/videodir.h
++++ b/videodir.h
+@@ -27,6 +27,9 @@
+ void RemoveEmptyVideoDirectories(const char *IgnoreFiles[] = NULL);
+ bool IsOnVideoDirectoryFileSystem(const char *FileName);
+ 
++void SetHideFirstRecordingLevel(bool Hide);
++bool HideFirstRecordingLevel(void);
++
+ class cVideoDiskUsage {
+ private:
+   static int state;
