@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 2.91.1.3 2013/12/25 10:55:32 kls Exp $
+ * $Id: recording.c 2.91.1.7 2014/03/16 11:03:18 kls Exp $
  */
 
 #include "recording.h"
@@ -958,14 +958,22 @@ char *cRecording::SortName(void) const
 {
   char **sb = (RecordingsSortMode == rsmName) ? &sortBufferName : &sortBufferTime;
   if (!*sb) {
-     char *s = strdup(FileName() + strlen(VideoDirectory));
-     if (RecordingsSortMode != rsmName || Setup.AlwaysSortFoldersFirst)
-        s = StripEpisodeName(s, RecordingsSortMode != rsmName);
-     strreplace(s, '/', '0'); // some locales ignore '/' when sorting
-     int l = strxfrm(NULL, s, 0) + 1;
-     *sb = MALLOC(char, l);
-     strxfrm(*sb, s, l);
-     free(s);
+     if (RecordingsSortMode == rsmTime && !Setup.RecordingDirs) {
+        char buf[32];
+        struct tm tm_r;
+        strftime(buf, sizeof(buf), "%Y%m%d%H%I", localtime_r(&start, &tm_r));
+        *sb = strdup(buf);
+        }
+     else {
+        char *s = strdup(FileName() + strlen(VideoDirectory));
+        if (RecordingsSortMode != rsmName || Setup.AlwaysSortFoldersFirst)
+           s = StripEpisodeName(s, RecordingsSortMode != rsmName);
+        strreplace(s, '/', '0'); // some locales ignore '/' when sorting
+        int l = strxfrm(NULL, s, 0) + 1;
+        *sb = MALLOC(char, l);
+        strxfrm(*sb, s, l);
+        free(s);
+        }
      }
   return *sb;
 }
@@ -1300,6 +1308,7 @@ void cRecordings::ScanVideoDir(const char *DirName, bool Foreground, int LinkLev
                     if (r->Name()) {
                        r->NumFrames(); // initializes the numFrames member
                        r->FileSizeMB(); // initializes the fileSizeMB member
+                       r->IsOnVideoDirectoryFileSystem(); // initializes the isOnVideoDirectoryFileSystem member
                        if (deleted)
                           r->deleted = time(NULL);
                        Lock();

@@ -620,6 +620,8 @@ Helmut Auer <vdr@helmutauer.de>
  command line option to be left empty to use the default values if only ENC shall be set
  for reporting an inconsistent behavior between opening the Recordings menu manually
  via the main menu and by pressing the Recordings key
+ for helping to debug a problem with frame detection in MPEG-2 streams that have "bottom fields"
+ or varying GOP structures
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
@@ -704,6 +706,8 @@ Oliver Endriss <o.endriss@gmx.de>
  for reporting a problem with resuming replay of PES recordings
  for suggesting to make all bonded devices (except for the master) turn off their LNB
  power completely to avoid problems when receiving vertically polarized transponders
+ for reporting that there are channels that need even more than 10 TS packets in order
+ to detect the frame type
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -1171,6 +1175,9 @@ Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
  for fixing the call to ChannelString() in cSkinLCARSDisplayChannel::SetChannel()
  for a patch that was used to rename the "plp id" to a more general "stream id"
  and add support for DVB-S2 "Input Stream Identifier" (ISI)
+ for fixing clearing non-editable members in the channel editor
+ for reporting a problem with adding new source types in case they are already
+ registered
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -2487,6 +2494,7 @@ Anssi Hannula <anssi.hannula@gmail.com>
 Antti Hartikainen <ami+vdr@ah.fi>
  for updating 'S13E' in 'sources.conf'
  for adding maximum SNR value for PCTV Systems nanoStick T2 290e
+ for updating 'sources.conf'
 
 Bernd Melcher <bernd@bernd-melcher.de>
  for reporting a problem with the 'servicedemo' plugin having no PLUGIN macro
@@ -2855,6 +2863,7 @@ Lars Hanisch <dvb@flensrocker.de>
  for reporting a possible crash if the recordings list is updated externally while the
  Recordings menu is open
  for reporting a missing closing ')' in the help entry of the --vfat option
+ for fixing learning keyboard remote control codes
 
 Alex Lasnier <alex@fepg.org>
  for adding tuning support for ATSC devices
@@ -2882,7 +2891,7 @@ Luis Fernandes <telping@gmail.com>
  for suggesting to add handling MPEG audio type "ISO/IEC 14496-3 Audio with LATM
  transport syntax"
 
-Christopher Reimer <reimer.christopher@freenet.de>
+Christopher Reimer <vdr@creimer.net>
  for reporting a problem with external Dolby Digital processing via the '-a' option
  in live mode and with TS recordings
  for contributing to a patch that implements FHS support
@@ -2892,6 +2901,7 @@ Christopher Reimer <reimer.christopher@freenet.de>
  for making plugin Makefiles use DESTDIR and the 'install' program
  for suggesting to make sure that plugins include the VDR header files from the actual
  VDR source directory when doing "make plugins"
+ for reporting a possible crash in the OSD demo
 
 Stefan Huskamp <coca_cola1@gmx.de>
  for suggesting to make entering characters via the number keys
@@ -3187,3 +3197,20 @@ Thomas Maass <mase@setho.org>
 
 Eike Edener <eike@edener.de>
  for reporting a bug in writing group separators to channels.conf that contain a comma
+
+Eike Sauer <EikeSauer@t-online.de>
+ for reporting a problem with channels that need more than 5 TS packets for detecting
+ frame borders
+ for reporting a problem in handling the frame detection buffer length
+
+Christian Paulick <cpaulick@xeatre.tv>
+ for reporting a problem with frame detection in MPEG-2 streams that have "bottom fields"
+ or varying GOP structures
+
+Mariusz Bialonczyk <manio@skyboo.net>
+ for reporting that acquiring the CA descriptors takes way too long on transponders
+ with many PAT entries, and his help in debugging this
+
+Christian Winkler <winkler_chr@yahoo.de>
+ for reporting a problem with transfer mode on full featured DVB cards for encrypted
+ channels that have no audio pid
