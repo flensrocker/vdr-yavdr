@@ -165,7 +165,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
  #include <ctype.h>
  #include <limits.h>
  #include <math.h>
-@@ -319,6 +320,14 @@
+@@ -323,6 +324,14 @@
    if (!channel->GroupSep()) {
       if (sortMode == csmProvider)
          buffer = cString::sprintf("%d\t%s - %s", channel->Number(), channel->Provider(), channel->Name());
@@ -180,7 +180,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
       else
          buffer = cString::sprintf("%d\t%s", channel->Number(), channel->Name());
       }
-@@ -1053,9 +1062,9 @@
+@@ -1057,9 +1066,9 @@
       File = timer->File();
    cCharSetConv csc("ISO-8859-1", cCharSetConv::SystemCharacterTable());
    char diskStatusString[2] = { diskStatus, 0 };
@@ -192,7 +192,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
                      timer->Channel()->Number(),
                      *name,
                      *name && **name ? " " : "",
-@@ -1451,7 +1460,12 @@
+@@ -1455,7 +1464,12 @@
    return r;
  }
  
@@ -206,7 +206,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
  
  bool cMenuScheduleItem::Update(bool Force)
  {
-@@ -1460,17 +1474,17 @@
+@@ -1464,17 +1478,17 @@
    Timers.GetMatch(event, &timerMatch);
    if (Force || timerMatch != OldTimerMatch) {
       cString buffer;
@@ -230,7 +230,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
       SetText(buffer);
       result = true;
       }
-@@ -2920,6 +2934,7 @@
+@@ -2934,6 +2948,7 @@
    Add(new cMenuEditStraItem(tr("Setup.OSD$Skin"),                   &skinIndex, numSkins, skinDescriptions));
    if (themes.NumThemes())
    Add(new cMenuEditStraItem(tr("Setup.OSD$Theme"),                  &themeIndex, themes.NumThemes(), themes.Descriptions()));
@@ -248,7 +248,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
  #include <ctype.h>
  #include <dirent.h>
  #include <errno.h>
-@@ -1002,7 +1003,7 @@
+@@ -1019,7 +1020,7 @@
  
  const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level) const
  {
@@ -257,7 +257,7 @@ Author: Thomas Günther <tom@toms-cafe.de>
    free(titleBuffer);
    titleBuffer = NULL;
    if (Level < 0 || Level == HierarchyLevels()) {
-@@ -1022,7 +1023,7 @@
+@@ -1039,7 +1040,7 @@
                     Minutes % 60
                     );
          }

@@ -153,10 +153,11 @@ xprmtl-02_permashift-0.5.4.patch
 
     patch for permashift plugin
 
-xprmtl-03_extra-video-directory.patch
+xprmtl-03_hide-first-recording-level-v3.patch
     Lars Hanisch <dvb@flensrocker.de>
 
-    Add several video directories to vdr and display all recordings in one list
+    Hide the first level of directories in the recordings menu, all recordings
+    are stored at the "local" directory
 
 xprmtl-04_loglevel.patch
     Lars Hanisch <dvb@flensrocker.de>
@@ -170,8 +171,8 @@ xprmtl-05_epghandler-segment-transfer.patch
 
 
 
-xprmtl-06_lirc-reconnect.patch
+vdr-2.0.6-conf.d-v5.diff
     Lars Hanisch <dvb@flensrocker.de>
 
-    try to reconnect to lirc socket even if it's not present at startup
+    Patch for VDR to support reading its arguments from files.
 

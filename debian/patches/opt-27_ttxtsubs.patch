@@ -162,7 +162,7 @@ Origin: ttxsubs plugin
    void SetLinkChannels(cLinkChannels *LinkChannels);
 --- a/ci.c
 +++ b/ci.c
-@@ -1914,6 +1914,8 @@
+@@ -1916,6 +1916,8 @@
           AddPid(Channel->Sid(), *Dpid, STREAM_TYPE_PRIVATE);
       for (const int *Spid = Channel->Spids(); *Spid; Spid++)
           AddPid(Channel->Sid(), *Spid, STREAM_TYPE_PRIVATE);
@@ -171,7 +171,7 @@ Origin: ttxsubs plugin
       }
  }
  
-@@ -1937,6 +1939,8 @@
+@@ -1939,6 +1941,8 @@
           CaPmt.AddPid(*Dpid, STREAM_TYPE_PRIVATE);
       for (const int *Spid = Channel->Spids(); *Spid; Spid++)
           CaPmt.AddPid(*Spid, STREAM_TYPE_PRIVATE);
@@ -226,7 +226,7 @@ Origin: ttxsubs plugin
  
  // --- cLiveSubtitle ---------------------------------------------------------
  
-@@ -1313,6 +1314,13 @@
+@@ -1314,6 +1315,13 @@
                    }
                 break;
            case 0xBD: { // private stream 1
@@ -240,7 +240,7 @@ Origin: ttxsubs plugin
                 int PayloadOffset = Data[8] + 9;
  
                 // Compatibility mode for old subtitles plugin:
-@@ -1472,6 +1480,7 @@
+@@ -1473,6 +1481,7 @@
       tsToPesVideo.Reset();
       tsToPesAudio.Reset();
       tsToPesSubtitle.Reset();
@@ -248,7 +248,7 @@ Origin: ttxsubs plugin
       }
    else if (Length < TS_SIZE) {
       esyslog("ERROR: skipped %d bytes of TS fragment", Length);
-@@ -1516,6 +1525,17 @@
+@@ -1517,6 +1526,17 @@
                      if (!VideoOnly || HasIBPTrickSpeed())
                         PlayTsSubtitle(Data, TS_SIZE);
                      }
@@ -278,7 +278,7 @@ Origin: ttxsubs plugin
    const cPatPmtParser *PatPmtParser(void) const { return &patPmtParser; }
 --- a/menu.c
 +++ b/menu.c
-@@ -3013,6 +3013,7 @@
+@@ -3027,6 +3027,7 @@
       Add(new cMenuEditIntItem( tr("Setup.DVB$Subtitle foreground transparency"), &data.SubtitleFgTransparency, 0, 9));
       Add(new cMenuEditIntItem( tr("Setup.DVB$Subtitle background transparency"), &data.SubtitleBgTransparency, 0, 10));
       }
@@ -288,15 +288,15 @@ Origin: ttxsubs plugin
    Display();
 --- a/pat.c
 +++ b/pat.c
-@@ -13,6 +13,7 @@
+@@ -12,6 +12,7 @@
+ #include "channels.h"
  #include "libsi/section.h"
  #include "libsi/descriptor.h"
- #include "thread.h"
 +#include "vdrttxtsubshooks.h"
  
- #define PMT_SCAN_TIMEOUT  10 // seconds
+ #define PMT_SCAN_TIMEOUT  1000 // ms
  
-@@ -343,6 +344,8 @@
+@@ -363,6 +364,8 @@
          char DLangs[MAXDPIDS][MAXLANGCODE2] = { "" };
          char SLangs[MAXSPIDS][MAXLANGCODE2] = { "" };
          int Tpid = 0;
@@ -305,7 +305,7 @@ Origin: ttxsubs plugin
          int NumApids = 0;
          int NumDpids = 0;
          int NumSpids = 0;
-@@ -434,8 +437,21 @@
+@@ -454,8 +457,21 @@
                                      NumSpids++;
                                      }
                                   break;
@@ -328,7 +328,7 @@ Origin: ttxsubs plugin
                                   break;
                              case SI::ISO639LanguageDescriptorTag: {
                                   SI::ISO639LanguageDescriptor *ld = (SI::ISO639LanguageDescriptor *)d;
-@@ -547,6 +563,12 @@
+@@ -567,6 +583,12 @@
              }
          if (Setup.UpdateChannels >= 2) {
             Channel->SetPids(Vpid, Ppid, Vtype, Apids, Atypes, ALangs, Dpids, Dtypes, DLangs, Spids, SLangs, Tpid);
@@ -655,7 +655,7 @@ Origin: ttxsubs plugin
  }
 --- a/remux.c
 +++ b/remux.c
-@@ -385,6 +385,29 @@
+@@ -416,6 +416,29 @@
    return i;
  }
  
@@ -685,7 +685,7 @@ Origin: ttxsubs plugin
  int cPatPmtGenerator::MakeLanguageDescriptor(uchar *Target, const char *Language)
  {
    int i = 0;
-@@ -472,6 +495,7 @@
+@@ -503,6 +526,7 @@
    if (Channel) {
       int Vpid = Channel->Vpid();
       int Ppid = Channel->Ppid();
@@ -693,7 +693,7 @@ Origin: ttxsubs plugin
       uchar *p = buf;
       int i = 0;
       p[i++] = 0x02; // table id
-@@ -504,6 +528,10 @@
+@@ -535,6 +559,10 @@
           i += MakeStream(buf + i, 0x06, Channel->Spid(n));
           i += MakeSubtitlingDescriptor(buf + i, Channel->Slang(n), Channel->SubtitlingType(n), Channel->CompositionPageId(n), Channel->AncillaryPageId(n));
           }
@@ -704,7 +704,7 @@ Origin: ttxsubs plugin
  
       int sl = i - SectionLength - 2 + 4; // -2 = SectionLength storage, +4 = length of CRC
       buf[SectionLength] |= (sl >> 8) & 0x0F;
-@@ -577,6 +605,7 @@
+@@ -608,6 +636,7 @@
    pmtPids[0] = 0;
    vpid = vtype = 0;
    ppid = 0;
@@ -712,7 +712,7 @@ Origin: ttxsubs plugin
  }
  
  void cPatPmtParser::ParsePat(const uchar *Data, int Length)
-@@ -665,11 +694,13 @@
+@@ -696,11 +725,13 @@
       int NumSpids = 0;
       vpid = vtype = 0;
       ppid = 0;
@@ -726,7 +726,7 @@ Origin: ttxsubs plugin
       SI::PMT::Stream stream;
       for (SI::Loop::Iterator it; Pmt.streamLoop.getNext(stream, it); ) {
           dbgpatpmt("     stream type = %02X, pid = %d", stream.getStreamType(), stream.getPid());
-@@ -768,6 +799,28 @@
+@@ -799,6 +830,28 @@
                                      spids[NumSpids] = 0;
                                      }
                                   break;
@@ -757,7 +757,7 @@ Origin: ttxsubs plugin
                                   dbgpatpmt(" '%s'", ld->languageCode);
 --- a/remux.h
 +++ b/remux.h
-@@ -294,6 +294,7 @@
+@@ -301,6 +301,7 @@
    int MakeStream(uchar *Target, uchar Type, int Pid);
    int MakeAC3Descriptor(uchar *Target, uchar Type);
    int MakeSubtitlingDescriptor(uchar *Target, const char *Language, uchar SubtitlingType, uint16_t CompositionPageId, uint16_t AncillaryPageId);
@@ -765,7 +765,7 @@ Origin: ttxsubs plugin
    int MakeLanguageDescriptor(uchar *Target, const char *Language);
    int MakeCRC(uchar *Target, const uchar *Data, int Length);
    void GeneratePmtPid(const cChannel *Channel);
-@@ -341,6 +342,7 @@
+@@ -348,6 +349,7 @@
    int vpid;
    int ppid;
    int vtype;
@@ -773,7 +773,7 @@ Origin: ttxsubs plugin
    int apids[MAXAPIDS + 1]; // list is zero-terminated
    int atypes[MAXAPIDS + 1]; // list is zero-terminated
    char alangs[MAXAPIDS][MAXLANGCODE2];
-@@ -353,6 +355,8 @@
+@@ -360,6 +362,8 @@
    uint16_t compositionPageIds[MAXSPIDS];
    uint16_t ancillaryPageIds[MAXSPIDS];
    bool updatePrimaryDevice;
@@ -782,7 +782,7 @@ Origin: ttxsubs plugin
  protected:
    int SectionLength(const uchar *Data, int Length) { return (Length >= 3) ? ((int(Data[1]) & 0x0F) << 8)| Data[2] : 0; }
  public:
-@@ -389,6 +393,9 @@
+@@ -396,6 +400,9 @@
    int Vtype(void) const { return vtype; }
         ///< Returns the video stream type as defined by the current PMT, or 0 if no video
         ///< stream type has been detected, yet.
@@ -792,7 +792,7 @@ Origin: ttxsubs plugin
    const int *Apids(void) const { return apids; }
    const int *Dpids(void) const { return dpids; }
    const int *Spids(void) const { return spids; }
-@@ -403,6 +410,8 @@
+@@ -410,6 +417,8 @@
    uchar SubtitlingType(int i) const { return (0 <= i && i < MAXSPIDS) ? subtitlingTypes[i] : uchar(0); }
    uint16_t CompositionPageId(int i) const { return (0 <= i && i < MAXSPIDS) ? compositionPageIds[i] : uint16_t(0); }
    uint16_t AncillaryPageId(int i) const { return (0 <= i && i < MAXSPIDS) ? ancillaryPageIds[i] : uint16_t(0); }

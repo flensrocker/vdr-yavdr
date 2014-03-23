@@ -25,7 +25,7 @@ Last-Update: <YYYY-MM-DD>
 
 --- a/menu.c
 +++ b/menu.c
-@@ -1028,6 +1028,7 @@
+@@ -1032,6 +1032,7 @@
  class cMenuTimerItem : public cOsdItem {
  private:
    cTimer *timer;
@@ -33,7 +33,7 @@ Last-Update: <YYYY-MM-DD>
    char diskStatus;
  public:
    cMenuTimerItem(cTimer *Timer);
-@@ -1042,7 +1043,7 @@
+@@ -1046,7 +1047,7 @@
  {
    timer = Timer;
    diskStatus = ' ';
@@ -42,7 +42,7 @@ Last-Update: <YYYY-MM-DD>
  }
  
  int cMenuTimerItem::Compare(const cListObject &ListObject) const
-@@ -1052,6 +1053,18 @@
+@@ -1056,6 +1057,18 @@
  
  void cMenuTimerItem::Set(void)
  {
@@ -61,7 +61,7 @@ Last-Update: <YYYY-MM-DD>
    cString day, name("");
    if (timer->WeekDays())
       day = timer->PrintDay(0, timer->WeekDays(), false);
-@@ -1150,8 +1163,7 @@
+@@ -1154,8 +1167,7 @@
  class cMenuTimers : public cOsdMenu {
  private:
    int helpKeys;
@@ -71,7 +71,7 @@ Last-Update: <YYYY-MM-DD>
    eOSState Delete(void);
    eOSState OnOff(void);
    eOSState Info(void);
-@@ -1229,19 +1241,30 @@
+@@ -1233,19 +1245,30 @@
    return osContinue;
  }
  
@@ -112,7 +112,7 @@ Last-Update: <YYYY-MM-DD>
  }
  
  eOSState cMenuTimers::Delete(void)
-@@ -1349,7 +1372,7 @@
+@@ -1353,7 +1376,7 @@
         case kOk:     return Edit();
         case kRed:    actualiseDiskStatus = true;
                       state = OnOff(); break; // must go through SetHelpKeys()!
@@ -121,7 +121,7 @@ Last-Update: <YYYY-MM-DD>
         case kYellow: actualiseDiskStatus = true;
                       state = Delete(); break;
         case kInfo:
-@@ -1365,6 +1388,11 @@
+@@ -1369,6 +1392,11 @@
       actualiseDiskStatus = true;
       Display();
       }

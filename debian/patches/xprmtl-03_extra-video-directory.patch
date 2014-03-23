@@ -6,7 +6,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
 
 --- a/menu.c
 +++ b/menu.c
-@@ -2701,6 +2701,19 @@
+@@ -2706,6 +2706,19 @@
       char *s = ExchangeChars(strdup(base), true);
       d = AddDirectory(d, s);
       free(s);
@@ -26,7 +26,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
       }
    return d;
  }
-@@ -2731,7 +2744,7 @@
+@@ -2736,7 +2749,7 @@
       if (ri->IsDirectory())
          Open();
       else {
@@ -35,7 +35,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
          return osReplay;
          }
       }
-@@ -5151,6 +5164,7 @@
+@@ -5165,6 +5178,7 @@
  
  cReplayControl *cReplayControl::currentReplayControl = NULL;
  cString cReplayControl::fileName;
@@ -43,7 +43,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  
  cReplayControl::cReplayControl(bool PauseLive, bool ReusedPauseLive)
  :cDvbPlayerControl(fileName, PauseLive, ReusedPauseLive)
-@@ -5168,7 +5182,7 @@
+@@ -5182,7 +5196,7 @@
    lastSkipTimeout.Set(0);
    timeoutShow = 0;
    timeSearchActive = false;
@@ -52,7 +52,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    cStatus::MsgReplaying(this, Recording.Name(), Recording.FileName(), true);
    marks.Load(fileName, Recording.FramesPerSecond(), Recording.IsPesRecording());
    SetTrackDescriptions(false);
-@@ -5218,9 +5232,12 @@
+@@ -5232,9 +5246,12 @@
    cDvbPlayerControl::Stop();
  }
  
@@ -87,7 +87,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    static void ClearLastReplayed(const char *FileName);
 --- a/recording.c
 +++ b/recording.c
-@@ -731,6 +731,7 @@
+@@ -740,6 +740,7 @@
    resume = RESUME_NOT_INITIALIZED;
    titleBuffer = NULL;
    sortBufferName = sortBufferTime = NULL;
@@ -95,7 +95,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    fileName = NULL;
    name = NULL;
    fileSizeMB = -1; // unknown
-@@ -783,7 +784,7 @@
+@@ -792,7 +793,7 @@
    info->lifetime = lifetime;
  }
  
@@ -104,7 +104,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  {
    resume = RESUME_NOT_INITIALIZED;
    fileSizeMB = -1; // unknown
-@@ -798,11 +799,20 @@
+@@ -807,11 +808,20 @@
    deleted = 0;
    titleBuffer = NULL;
    sortBufferName = sortBufferTime = NULL;
@@ -127,7 +127,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    const char *p = strrchr(FileName, '/');
  
    name = NULL;
-@@ -909,6 +919,8 @@
+@@ -918,6 +928,8 @@
  
  cRecording::~cRecording()
  {
@@ -136,16 +136,16 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    free(titleBuffer);
    free(sortBufferName);
    free(sortBufferTime);
-@@ -950,7 +962,7 @@
- {
-   char **sb = (RecordingsSortMode == rsmName) ? &sortBufferName : &sortBufferTime;
-   if (!*sb) {
--     char *s = strdup(FileName() + strlen(VideoDirectory));
-+     char *s = strdup(FileName() + strlen(videoDir));
-      if (RecordingsSortMode != rsmName || Setup.AlwaysSortFoldersFirst)
-         s = StripEpisodeName(s, RecordingsSortMode != rsmName);
-      strreplace(s, '/', '0'); // some locales ignore '/' when sorting
-@@ -991,11 +1003,11 @@
+@@ -966,7 +978,7 @@
+         *sb = strdup(buf);
+         }
+      else {
+-        char *s = strdup(FileName() + strlen(VideoDirectory));
++        char *s = strdup(FileName() + strlen(videoDir));
+         if (RecordingsSortMode != rsmName || Setup.AlwaysSortFoldersFirst)
+            s = StripEpisodeName(s, RecordingsSortMode != rsmName);
+         strreplace(s, '/', '0'); // some locales ignore '/' when sorting
+@@ -1008,11 +1020,11 @@
       const char *fmt = isPesRecording ? NAMEFORMATPES : NAMEFORMATTS;
       int ch = isPesRecording ? priority : channel;
       int ri = isPesRecording ? lifetime : instanceId;
@@ -159,43 +159,43 @@ Author: Lars Hanisch <dvb@flensrocker.de>
       free(Name);
       }
    return fileName;
-@@ -1273,9 +1285,14 @@
+@@ -1291,9 +1303,14 @@
    ChangeState();
    Unlock();
    ScanVideoDir(VideoDirectory, Foreground);
 +  if (LockExtraVideoDirectories()) {
 +     for (int i = 0; i < ExtraVideoDirectories.Size(); i++)
-+         ScanVideoDir(ExtraVideoDirectories.At(i), Foreground, 0, ExtraVideoDirectories.At(i));
++         ScanVideoDir(ExtraVideoDirectories.At(i), Foreground, ExtraVideoDirectories.At(i));
 +     UnlockExtraVideoDirectories();
 +     }
  }
  
--void cRecordings::ScanVideoDir(const char *DirName, bool Foreground, int LinkLevel)
+-void cRecordings::ScanVideoDir(const char *DirName, bool Foreground, int LinkLevel, int DirLevel)
 +void cRecordings::ScanVideoDir(const char *DirName, bool Foreground, int LinkLevel, const char *BaseVideoDir)
  {
+   // Find any new recordings:
    cReadDir d(DirName);
-   struct dirent *e;
-@@ -1295,7 +1312,7 @@
-               }
+@@ -1315,7 +1332,7 @@
             if (S_ISDIR(st.st_mode)) {
                if (endswith(buffer, deleted ? DELEXT : RECEXT)) {
--                 cRecording *r = new cRecording(buffer);
-+                 cRecording *r = new cRecording(buffer, BaseVideoDir);
-                  if (r->Name()) {
-                     r->NumFrames(); // initializes the numFrames member
-                     r->FileSizeMB(); // initializes the fileSizeMB member
-@@ -1310,7 +1327,7 @@
-                     delete r;
+                  if (deleted || initial || !GetByName(buffer)) {
+-                    cRecording *r = new cRecording(buffer);
++                    cRecording *r = new cRecording(buffer, BaseVideoDir);
+                     if (r->Name()) {
+                        r->NumFrames(); // initializes the numFrames member
+                        r->FileSizeMB(); // initializes the fileSizeMB member
+@@ -1332,7 +1349,7 @@
+                     }
                   }
                else
--                 ScanVideoDir(buffer, Foreground, LinkLevel + Link);
+-                 ScanVideoDir(buffer, Foreground, LinkLevel + Link, DirLevel + 1);
 +                 ScanVideoDir(buffer, Foreground, LinkLevel + Link, BaseVideoDir);
                }
             }
          }
 --- a/recording.h
 +++ b/recording.h
-@@ -106,9 +106,10 @@
+@@ -107,9 +107,10 @@
    int priority;
    int lifetime;
    time_t deleted;
@@ -207,7 +207,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    virtual ~cRecording();
    time_t Start(void) const { return start; }
    int Priority(void) const { return priority; }
-@@ -117,6 +118,7 @@
+@@ -118,6 +119,7 @@
    virtual int Compare(const cListObject &ListObject) const;
    const char *Name(void) const { return name; }
    const char *FileName(void) const;
@@ -215,11 +215,11 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    const char *Title(char Delimiter = ' ', bool NewIndicator = false, int Level = -1) const;
    const cRecordingInfo *Info(void) const { return info; }
    const char *PrefixFileName(char Prefix);
-@@ -166,7 +168,7 @@
+@@ -168,7 +170,7 @@
    int state;
    const char *UpdateFileName(void);
    void Refresh(bool Foreground = false);
--  void ScanVideoDir(const char *DirName, bool Foreground = false, int LinkLevel = 0);
+-  void ScanVideoDir(const char *DirName, bool Foreground = false, int LinkLevel = 0, int DirLevel = 0);
 +  void ScanVideoDir(const char *DirName, bool Foreground = false, int LinkLevel = 0, const char *BaseVideoDir = NULL);
  protected:
    void Action(void);
@@ -378,7 +378,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    const char *ConfigDirectory = NULL;
    const char *CacheDirectory = NULL;
    const char *ResourceDirectory = NULL;
-@@ -262,6 +263,7 @@
+@@ -263,6 +264,7 @@
        { "version",  no_argument,       NULL, 'V' },
        { "vfat",     no_argument,       NULL, 'v' | 0x100 },
        { "video",    required_argument, NULL, 'v' },
@@ -386,9 +386,9 @@ Author: Lars Hanisch <dvb@flensrocker.de>
        { "watchdog", required_argument, NULL, 'w' },
        { NULL,       no_argument,       NULL,  0  }
      };
-@@ -453,6 +455,12 @@
-                     while (optarg && *optarg && optarg[strlen(optarg) - 1] == '/')
+@@ -455,6 +457,12 @@
                            optarg[strlen(optarg) - 1] = 0;
+                     SetVideoDirectory(VideoDirectory);
                      break;
 +          case 'v' | 0x200:
 +                    ExtraVideoDirectory = optarg;
@@ -399,7 +399,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
            case 'w': if (isnumber(optarg)) {
                         int t = atoi(optarg);
                         if (t >= 0) {
-@@ -550,6 +558,8 @@
+@@ -552,6 +560,8 @@
                 "                           root\n"
                 "            --userdump     allow coredumps if -u is given (debugging)\n"
                 "  -v DIR,   --video=DIR    use DIR as video directory (default: %s)\n"
@@ -407,7 +407,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
 +               "                           can be used multiple times\n"
                 "  -V,       --version      print version information and exit\n"
                 "            --vfat         for backwards compatibility (same as\n"
-                "                           --dirnames=250,40,1\n"
+                "                           --dirnames=250,40,1)\n"
 --- a/videodir.c
 +++ b/videodir.c
 @@ -19,6 +19,65 @@

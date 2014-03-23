@@ -26,7 +26,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
    if (LiveView) {
 --- a/menu.c
 +++ b/menu.c
-@@ -911,6 +911,16 @@
+@@ -915,6 +915,16 @@
       Add(new cMenuEditBitItem( tr("VPS"),          &data.flags, tfVps));
       Add(new cMenuEditIntItem( tr("Priority"),     &data.priority, 0, MAXPRIORITY));
       Add(new cMenuEditIntItem( tr("Lifetime"),     &data.lifetime, 0, MAXLIFETIME));
@@ -43,7 +43,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
       Add(file = new cMenuEditStrItem( tr("File"),   data.file, sizeof(data.file)));
       SetFirstDayItem();
       }
-@@ -2635,7 +2645,8 @@
+@@ -2640,7 +2650,8 @@
                     }
                  }
              }
@@ -53,7 +53,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
              Add(Item);
              LastItem = Item;
              if (Item->IsDirectory())
-@@ -2686,6 +2697,9 @@
+@@ -2691,6 +2702,9 @@
  {
    cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
    if (ri) {
@@ -63,7 +63,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
       if (ri->IsDirectory())
          Open();
       else {
-@@ -3809,28 +3823,32 @@
+@@ -3823,28 +3837,32 @@
  
    // Basic menu items:
  
@@ -101,7 +101,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
       Add(new cOsdItem(hk(tr("Commands")),  osCommands));
  
    }
-@@ -3914,6 +3932,14 @@
+@@ -3928,6 +3946,14 @@
    eOSState state = cOsdMenu::ProcessKey(Key);
    HadSubMenu |= HasSubMenu();
  
@@ -116,7 +116,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
    cOsdObject *menu = NULL;
    switch (state) {
      case osSchedule:
-@@ -3966,6 +3992,7 @@
+@@ -3980,6 +4006,7 @@
                           if (item) {
                              cPlugin *p = cPluginManager::GetPlugin(item->PluginIndex());
                              if (p) {
@@ -124,7 +124,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
                                 cOsdObject *menu = p->MainMenuAction();
                                 if (menu) {
                                    if (menu->IsMenu())
-@@ -3977,6 +4004,7 @@
+@@ -3991,6 +4018,7 @@
                                    }
                                 }
                              }
@@ -132,7 +132,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
                           state = osEnd;
                         }
                         break;
-@@ -4188,6 +4216,7 @@
+@@ -4202,6 +4230,7 @@
             Channel = Direction > 0 ? Channels.Next(Channel) : Channels.Prev(Channel);
             if (!Channel && Setup.ChannelsWrap)
                Channel = Direction > 0 ? Channels.First() : Channels.Last();
@@ -140,7 +140,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
             if (Channel && !Channel->GroupSep() && cDevice::GetDevice(Channel, LIVEPRIORITY, true, true))
                return Channel;
             }
-@@ -4881,6 +4910,7 @@
+@@ -4895,6 +4924,7 @@
             for (int i = 0; i < MAXRECORDCONTROLS; i++) {
                 if (!RecordControls[i]) {
                    RecordControls[i] = new cRecordControl(device, Timer, Pause);
@@ -388,7 +388,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
  
  #define MINCHANNELWAIT        10 // seconds to wait between failed channel switchings
  #define ACTIVITYTIMEOUT       60 // seconds before starting housekeeping
-@@ -1026,6 +1027,7 @@
+@@ -1027,6 +1028,7 @@
          cOsdObject *Interact = Menu ? Menu : cControl::Control();
          eKeys key = Interface->GetKey(!Interact || !Interact->NeedsFastResponse());
          if (ISREALKEY(key)) {
@@ -396,7 +396,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
             EITScanner.Activity();
             // Cancel shutdown countdown:
             if (ShutdownHandler.countdown)
-@@ -1098,10 +1100,12 @@
+@@ -1099,10 +1101,12 @@
                       cControl::Control()->Hide();
                    cPlugin *plugin = cPluginManager::GetPlugin(PluginName);
                    if (plugin) {
@@ -409,7 +409,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
                    else
                       esyslog("ERROR: unknown plugin '%s'", PluginName);
                    }
-@@ -1314,9 +1318,11 @@
+@@ -1315,9 +1319,11 @@
               // Instant resume of the last viewed recording:
               case kPlay:
                    if (cReplayControl::LastReplayed()) {

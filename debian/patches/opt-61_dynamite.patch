@@ -6,7 +6,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
 
 --- a/ci.c
 +++ b/ci.c
-@@ -1571,6 +1571,8 @@
+@@ -1573,6 +1573,8 @@
  
  cCamSlot::~cCamSlot()
  {
@@ -169,7 +169,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
       // Tell the camSlot about the channel switch and add all PIDs of this
       // channel to it, for possible later decryption:
       if (camSlot)
-@@ -825,19 +880,27 @@
+@@ -826,19 +881,27 @@
  {
    if (!cTransferControl::ReceiverDevice()) {
       cChannel *Channel = Channels.GetByNumber(CurrentChannel());
@@ -198,7 +198,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    if (Seconds >= 0)
       occupiedTimeout = time(NULL) + min(Seconds, MAXOCCUPIEDTIMEOUT);
  }
-@@ -1218,7 +1281,10 @@
+@@ -1219,7 +1282,10 @@
  
  bool cDevice::AttachPlayer(cPlayer *Player)
  {
@@ -209,7 +209,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
       if (player)
          Detach(player);
       DELETENULL(liveSubtitle);
-@@ -1237,6 +1303,8 @@
+@@ -1238,6 +1304,8 @@
  
  void cDevice::Detach(cPlayer *Player)
  {
@@ -218,7 +218,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    if (Player && player == Player) {
       cPlayer *p = player;
       player = NULL; // avoids recursive calls to Detach()
-@@ -1256,6 +1324,8 @@
+@@ -1257,6 +1325,8 @@
  
  void cDevice::StopReplay(void)
  {
@@ -227,7 +227,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    if (player) {
       Detach(player);
       if (IsPrimaryDevice())
-@@ -1555,6 +1625,8 @@
+@@ -1556,6 +1626,8 @@
  
  int cDevice::Priority(void) const
  {
@@ -236,7 +236,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    int priority = IDLEPRIORITY;
    if (IsPrimaryDevice() && !Replaying() && HasProgramme())
       priority = TRANSFERPRIORITY; // we use the same value here, no matter whether it's actual Transfer Mode or real live viewing
-@@ -1573,6 +1645,8 @@
+@@ -1574,6 +1646,8 @@
  
  bool cDevice::Receiving(bool Dummy) const
  {
@@ -245,7 +245,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    cMutexLock MutexLock(&mutexReceiver);
    for (int i = 0; i < MAXRECEIVERS; i++) {
        if (receiver[i])
-@@ -1653,10 +1727,13 @@
+@@ -1654,10 +1728,13 @@
  
  bool cDevice::AttachReceiver(cReceiver *Receiver)
  {
@@ -259,7 +259,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  // activate the following line if you need it - actually the driver should be fixed!
  //#define WAIT_FOR_TUNER_LOCK
  #ifdef WAIT_FOR_TUNER_LOCK
-@@ -1695,6 +1772,8 @@
+@@ -1696,6 +1773,8 @@
  
  void cDevice::Detach(cReceiver *Receiver)
  {
@@ -268,7 +268,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    if (!Receiver || Receiver->device != this)
       return;
    bool receiversLeft = false;
-@@ -1720,6 +1799,8 @@
+@@ -1721,6 +1800,8 @@
  
  void cDevice::DetachAll(int Pid)
  {
@@ -277,7 +277,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    if (Pid) {
       cMutexLock MutexLock(&mutexReceiver);
       for (int i = 0; i < MAXRECEIVERS; i++) {
-@@ -1804,3 +1885,25 @@
+@@ -1805,3 +1886,25 @@
       }
    return NULL;
  }
