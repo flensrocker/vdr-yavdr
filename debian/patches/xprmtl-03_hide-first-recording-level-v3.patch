@@ -68,10 +68,11 @@ Author: Lars Hanisch <dvb@flensrocker.de>
          if (RecordingsSortMode != rsmName || Setup.AlwaysSortFoldersFirst)
             s = StripEpisodeName(s, RecordingsSortMode != rsmName);
          strreplace(s, '/', '0'); // some locales ignore '/' when sorting
-@@ -1013,6 +1026,7 @@
+@@ -1012,7 +1025,7 @@
+      if (strcmp(Name, name) != 0)
          dsyslog("recording file name '%s' truncated to '%s'", name, Name);
       Name = ExchangeChars(Name, true);
-      fileName = strdup(cString::sprintf(fmt, VideoDirectory, Name, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, ch, ri));
+-     fileName = strdup(cString::sprintf(fmt, VideoDirectory, Name, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, ch, ri));
 +     fileName = strdup(cString::sprintf(fmt, VideoDirectory, *firstLevelFolderIfHidden, Name, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, ch, ri));
       free(Name);
       }
