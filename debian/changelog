@@ -1,4 +1,16 @@
-vdr (2.0.6-0yavdr0~0.5) precise; urgency=medium
+vdr (2.0.6-2yavdr0~0.5) precise; urgency=medium
+
+  * correct hide-first-recording-level patch
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Wed, 26 Mar 2014 20:21:08 +0100
+
+vdr (2.0.6-1yavdr0) precise; urgency=medium
+
+  * revoke changes from menuorg patch
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Mon, 24 Mar 2014 20:13:21 +0100
+
+vdr (2.0.6-0yavdr0) precise; urgency=medium
 
   * new upstream release
   * add conf.d patch
