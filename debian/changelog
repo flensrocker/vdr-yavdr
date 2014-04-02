@@ -1,3 +1,9 @@
+vdr (2.1.6-1yavdr0) precise; urgency=medium
+
+  * increase abi-version
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Wed, 02 Apr 2014 21:21:22 +0200
+
 vdr (2.1.6-0yavdr0) precise; urgency=medium
 
   * new upstream release
