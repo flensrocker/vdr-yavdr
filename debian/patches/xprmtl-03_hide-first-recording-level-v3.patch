@@ -59,16 +59,16 @@ Author: Lars Hanisch <dvb@flensrocker.de>
          name = ExchangeChars(name, false);
          isPesRecording = instanceId < 0;
          }
-@@ -969,7 +982,7 @@
- {
-   char **sb = (RecordingsSortMode == rsmName) ? &sortBufferName : &sortBufferTime;
-   if (!*sb) {
--     char *s = strdup(FileName() + strlen(cVideoDirectory::Name()));
-+     char *s = strdup(FileName() + strlen(cVideoDirectory::Name()) + strlen(*firstLevelFolderIfHidden));
-      if (RecordingsSortMode != rsmName || Setup.AlwaysSortFoldersFirst)
-         s = StripEpisodeName(s, RecordingsSortMode != rsmName);
-      strreplace(s, '/', '0'); // some locales ignore '/' when sorting
-@@ -1037,7 +1050,7 @@
+@@ -976,7 +989,7 @@
+         *sb = strdup(buf);
+         }
+      else {
+-        char *s = strdup(FileName() + strlen(cVideoDirectory::Name()));
++        char *s = strdup(FileName() + strlen(cVideoDirectory::Name()) + strlen(*firstLevelFolderIfHidden));
+         if (RecordingsSortMode != rsmName || Setup.AlwaysSortFoldersFirst)
+            s = StripEpisodeName(s, RecordingsSortMode != rsmName);
+         strreplace(s, '/', '0'); // some locales ignore '/' when sorting
+@@ -1045,7 +1058,7 @@
       if (strcmp(Name, name) != 0)
          dsyslog("recording file name '%s' truncated to '%s'", name, Name);
       Name = ExchangeChars(Name, true);
@@ -89,7 +89,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    int channel;
 --- a/vdr.c
 +++ b/vdr.c
-@@ -241,6 +241,7 @@
+@@ -244,6 +244,7 @@
        { "genindex", required_argument, NULL, 'g' | 0x100 },
        { "grab",     required_argument, NULL, 'g' },
        { "help",     no_argument,       NULL, 'h' },
@@ -97,7 +97,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
        { "instance", required_argument, NULL, 'i' },
        { "lib",      required_argument, NULL, 'L' },
        { "lirc",     optional_argument, NULL, 'l' | 0x100 },
-@@ -265,7 +266,7 @@
+@@ -268,7 +269,7 @@
      };
  
    int c;
@@ -106,7 +106,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
          switch (c) {
            case 'a': AudioCommand = optarg;
                      break;
-@@ -350,6 +351,8 @@
+@@ -353,6 +354,8 @@
                      break;
            case 'h': DisplayHelp = true;
                      break;
@@ -115,7 +115,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
            case 'i': if (isnumber(optarg)) {
                         InstanceId = atoi(optarg);
                         if (InstanceId >= 0)
-@@ -515,6 +518,13 @@
+@@ -518,6 +521,13 @@
                 "                           existing directory, without any \"..\", double '/'\n"
                 "                           or symlinks (default: none, same as -g-)\n"
                 "  -h,       --help         print this help and exit\n"

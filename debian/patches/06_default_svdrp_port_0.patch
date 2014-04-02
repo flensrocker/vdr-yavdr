@@ -5,7 +5,7 @@ Author: Thomas Schmidt <tschmidt@debian.org>
 
 --- a/vdr.c
 +++ b/vdr.c
-@@ -183,7 +183,7 @@
+@@ -186,7 +186,7 @@
    // Command line options:
  
  #define dd(a, b) (*a ? a : b)

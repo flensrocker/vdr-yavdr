@@ -1,3 +1,9 @@
+vdr (2.1.6-0yavdr0) precise; urgency=medium
+
+  * new upstream release
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Wed, 02 Apr 2014 20:02:41 +0200
+
 vdr (2.1.4-4yavdr0) precise; urgency=medium
 
   * correct quoting of plugin parameter

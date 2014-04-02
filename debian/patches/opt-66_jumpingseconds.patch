@@ -43,7 +43,7 @@ Author: ?
    cString DeviceBondings;
 --- a/menu.c
 +++ b/menu.c
-@@ -3613,6 +3613,8 @@
+@@ -3630,6 +3630,8 @@
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Jump&Play"), &data.JumpPlay));
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Play&Jump"), &data.PlayJump));
    Add(new cMenuEditBoolItem(tr("Setup.Replay$Pause at last mark"), &data.PauseLastMark));
@@ -52,7 +52,7 @@ Author: ?
  }
  
  void cMenuSetupReplay::Store(void)
-@@ -5570,9 +5572,9 @@
+@@ -5588,9 +5590,9 @@
      case kRight:   Forward(); break;
      case kRed:     TimeSearch(); break;
      case kGreen|k_Repeat:
