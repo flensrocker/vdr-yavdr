@@ -27,4 +27,4 @@ xprmtl-02_permashift-0.5.4.patch:815e54966e2de633241df9ffc2d4df6a
 xprmtl-03_hide-first-recording-level-v3.patch:87a845247a3ad34267c6866eebff62de
 xprmtl-04_loglevel.patch:cd98e9c5f1b64824809fd15ce3783b0a
 xprmtl-05_epghandler-segment-transfer.patch:1550bf6361d8ab29d9ec11f9d6f20490
-vdr-2.0.6-conf.d-v5.diff:693a917ee7421ad51e5f96eb048674ba
+vdr-2.0.6-conf.d-v6.diff:2d732f3424ff4ce259d658aedc872621
