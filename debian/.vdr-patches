@@ -13,4 +13,4 @@ opt-65_pin.patch:f0177e4b789ad269cb696aa6c05be4d9
 opt-66_jumpingseconds.patch:6735eb7409071cbd24780a6c12674ac2
 xprmtl-02_permashift-0.5.4.patch:3b89f9f556623ed6ec96b1a58a91a13a
 xprmtl-03_hide-first-recording-level-v3.patch:e19a0f222dbc7e98da497da3f63d0ffe
-vdr-2.1.4-conf.d-v5.diff:ae563d1699d75b7209a6ff486dc2b69c
+vdr-2.1.6-conf.d-v6.diff:49e4d191dc83a121ce585323d65144fe
