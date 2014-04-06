@@ -171,7 +171,7 @@ xprmtl-05_epghandler-segment-transfer.patch
 
 
 
-vdr-2.0.6-conf.d-v5.diff
+vdr-2.0.6-conf.d-v6.diff
     Lars Hanisch <dvb@flensrocker.de>
 
     Patch for VDR to support reading its arguments from files.
