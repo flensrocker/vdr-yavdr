@@ -176,3 +176,9 @@ vdr-2.0.6-conf.d-v6.diff
 
     Patch for VDR to support reading its arguments from files.
 
+vdr-2.1.6-recordinghook-started.diff
+    Klaus Schmidinger <vdr@tvdr.de>
+
+    Backport-Patch from vdr 2.1.x Adds the new recording hook call "started"
+    right after the info file has been written and the recording has started.
+

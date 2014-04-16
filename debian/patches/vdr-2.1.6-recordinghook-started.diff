@@ -1,0 +1,46 @@
+Description: Backport-Patch from vdr 2.1.x
+ Adds the new recording hook call "started" right after
+ the info file has been written and the recording has started.
+Origin: http://www.tvdr.de
+Author: Klaus Schmidinger <vdr@tvdr.de>
+
+--- a/INSTALL
++++ b/INSTALL
+@@ -254,6 +254,7 @@
+ parameters. The first parameter is one of
+ 
+   before      if this is *before* a recording starts
++  started     if this is after a recording has *started*
+   after       if this is *after* a recording has finished
+   edited      if this is after a recording has been *edited*
+   deleted     if this is after a recording has been *deleted*
+@@ -279,6 +280,9 @@
+      before)
+             echo "Before recording $2"
+             ;;
++     started)
++            echo "Started recording $2"
++            ;;
+      after)
+             echo "After recording $2"
+             ;;
+--- a/recorder.c
++++ b/recorder.c
+@@ -139,6 +139,7 @@
+                           }
+                        }
+                     InfoWritten = true;
++                    cRecordingUserCommand::InvokeCommand(RUC_STARTRECORDING, recordingName);
+                     }
+                  if (FirstIframeSeen || frameDetector->IndependentFrame()) {
+                     FirstIframeSeen = true; // start recording with the first I-frame
+--- a/recording.h
++++ b/recording.h
+@@ -264,6 +264,7 @@
+   };
+ 
+ #define RUC_BEFORERECORDING "before"
++#define RUC_STARTRECORDING  "started"
+ #define RUC_AFTERRECORDING  "after"
+ #define RUC_EDITEDRECORDING "edited"
+ #define RUC_DELETERECORDING "deleted"

@@ -1,3 +1,9 @@
+vdr (2.0.6-5yavdr0~0.5) precise; urgency=medium
+
+  * vdr 2.1.x backport: recording hook "started"
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Wed, 16 Apr 2014 21:01:49 +0200
+
 vdr (2.0.6-4yavdr0~0.5) precise; urgency=medium
 
   * bugfix in hide-first-recording-level patch

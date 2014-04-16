@@ -28,3 +28,4 @@ xprmtl-03_hide-first-recording-level-v3.patch:d51a7b41ef90771a2242841930645244
 xprmtl-04_loglevel.patch:cd98e9c5f1b64824809fd15ce3783b0a
 xprmtl-05_epghandler-segment-transfer.patch:1550bf6361d8ab29d9ec11f9d6f20490
 vdr-2.0.6-conf.d-v6.diff:2d732f3424ff4ce259d658aedc872621
+vdr-2.1.6-recordinghook-started.diff:f2735ad6bd5bd06062a2dbfc8fc3d9f6
