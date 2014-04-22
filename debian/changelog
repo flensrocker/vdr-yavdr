@@ -1,3 +1,10 @@
+vdr (2.1.6-5yavdr0) precise; urgency=medium
+
+  * add a dpkg-divert for the Upstart conf-file
+    for better compatibility with testing
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Tue, 22 Apr 2014 19:26:34 +0200
+
 vdr (2.1.6-4yavdr0) precise; urgency=medium
 
   * bugfix in hide-first-recording-level patch
