@@ -1,3 +1,9 @@
+vdr (2.0.6-6yavdr0~0.5) precise; urgency=medium
+
+  * adjust menuorg patch to use osUser7/8
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Tue, 22 Apr 2014 22:21:02 +0200
+
 vdr (2.0.6-5yavdr0~0.5) precise; urgency=medium
 
   * vdr 2.1.x backport: recording hook "started"
