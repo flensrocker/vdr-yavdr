@@ -2,7 +2,7 @@ Description: This patch is required by the MenuOrg plugin. It adds a service
  interface, that can be implemented by plugins to reorganize 
  VDR's main menu entries with the ability to create custom sub
  menus.
- This is version 0.4.s of the patch
+ This is version 0.5.s of the patch
 Author: Tobias Grimm <tg@e-tobi.net>
 
 --- /dev/null
@@ -149,7 +149,7 @@ Author: Tobias Grimm <tg@e-tobi.net>
 +                          }
 +                       }
 +                       break;
-+    case osUser1:      {
++    case osUser7:      {
 +                          if (MenuOrgPatch::IsCustomMenuAvailable()) {
 +                            MenuOrgPatch::EnterSubMenu(Get(Current()));
 +                            Set();
@@ -157,7 +157,7 @@ Author: Tobias Grimm <tg@e-tobi.net>
 +                          }
 +                       }
 +                       break;
-+    case osUser2:      {
++    case osUser8:      {
 +                          if (MenuOrgPatch::IsCustomMenuAvailable()) {
 +                            cOsdMenu* osdMenu = MenuOrgPatch::Execute(Get(Current()));
 +                            if (osdMenu)

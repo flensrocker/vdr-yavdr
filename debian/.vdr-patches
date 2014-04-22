@@ -3,7 +3,7 @@
 81_Make_config.patch:0c7ea8e353c4c4403290d39b7be7db5f
 99_ncursesw-include.patch:7a408b2f76b2d2d6e08caf47e91c469c
 opt-24_jumpplay.patch:4361b7bb723b11fc6a7fbe5042038384
-opt-37-x_menuorg.patch:db445014cceedb0c8964b435032f3bc5
+opt-37-x_menuorg.patch:65581c86a52f534d23c1046887d49544
 opt-42-x_MainMenuHooks-v1.0.1.patch:6e9893507448c563fc1a515f6fefd424
 opt-50_graphtft.patch:5107c4989569cb4b7646e4b6fc2edb43
 opt-56_eventdetails_v3.patch:e2ff963982af0673b0436d3f7f6c2048

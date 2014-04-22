@@ -35,7 +35,7 @@ opt-37-x_menuorg.patch
 
     This patch is required by the MenuOrg plugin. It adds a service interface,
     that can be implemented by plugins to reorganize  VDR's main menu entries
-    with the ability to create custom sub menus. This is version 0.4.s of the
+    with the ability to create custom sub menus. This is version 0.5.s of the
     patch
 
 opt-42-x_MainMenuHooks-v1.0.1.patch
