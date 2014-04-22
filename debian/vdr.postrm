@@ -30,7 +30,9 @@ case "$1" in
         rm -f /var/lib/vdr/setup.conf > /dev/null 2>&1 || true
         rm -f /var/lib/vdr/timers.conf > /dev/null 2>&1 || true
     ;;
-    remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+    upgrade)
+    ;;
+    remove|failed-upgrade|abort-install|abort-upgrade|disappear)
         dpkg-divert --package vdr --remove --rename \
           --divert /etc/init/vdr.conf.dontremove /etc/init/vdr.conf
     ;;
