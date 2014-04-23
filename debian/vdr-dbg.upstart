@@ -54,4 +54,7 @@ for CORE in $(find /var/log/vdr -name 'core.*') ; do
     rm -f $CORE
 done  
 
+# workaround for yavdr 0.5
+start vdr
+
 end script
