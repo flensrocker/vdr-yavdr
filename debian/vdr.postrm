@@ -32,10 +32,10 @@ case "$1" in
     ;;
     upgrade)
     ;;
-    remove|failed-upgrade|abort-install|abort-upgrade|disappear)
-        dpkg-divert --package vdr --remove --rename \
-          --divert /etc/init/vdr.conf.dontremove /etc/init/vdr.conf
-    ;;
+#    remove|failed-upgrade|abort-install|abort-upgrade|disappear)
+#        dpkg-divert --package vdr --remove --rename \
+#          --divert /etc/init/vdr.conf.dontremove /etc/init/vdr.conf
+#    ;;
     *)
         echo "postrm called with unknown argument \`$1'" >&2
         exit 1
