@@ -1,3 +1,9 @@
+vdr (2.1.6-6yavdr2~precise) precise; urgency=medium
+
+  * sync build number with trusty
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Wed, 21 May 2014 15:03:24 +0200
+
 vdr (2.1.6-6yavdr1~precise) precise; urgency=medium
 
   * re-add series to version
