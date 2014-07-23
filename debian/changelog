@@ -1,3 +1,9 @@
+vdr (2.1.6-7yavdr0~trusty) trusty; urgency=medium
+
+  * correct vdr.postrm
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Wed, 23 Jul 2014 19:29:07 +0200
+
 vdr (2.1.6-6yavdr2~precise) precise; urgency=medium
 
   * sync build number with trusty
