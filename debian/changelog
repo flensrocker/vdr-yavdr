@@ -1,3 +1,9 @@
+vdr (2.1.6-8yavdr0~trusty) trusty; urgency=medium
+
+  * add gdb to vdr-dbg dependencies for generating backtraces
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Wed, 12 Nov 2014 21:11:19 +0100
+
 vdr (2.1.6-7yavdr0~trusty) trusty; urgency=medium
 
   * correct vdr.postrm
