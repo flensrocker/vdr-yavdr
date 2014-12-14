@@ -66,3 +66,6 @@ xprmtl-05_epghandler-segment-transfer.patch
 vdr-2.0.6-conf.d-v6.diff
 
 vdr-2.1.6-recordinghook-started.diff
+
+xprmtl-07-permashift-update-1.0.0.patch
+

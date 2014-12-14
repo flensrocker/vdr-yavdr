@@ -1,0 +1,715 @@
+Description: patch for permashift plugin 1.0.0
+Origin: http://ein-eike.de/vdr-plugin-permashift/
+Forwarded: no
+Author: Eike Sauer <eike@ein-eike.de>
+
+--- yavdr-source-original-vdr-2.0.6//device.h	2014-11-11 13:59:01.000000000 +0100
++++ yavdr-source-gepatcht-vdr-2.0.6//device.h	2014-11-12 15:10:35.417067866 +0100
+@@ -89,6 +89,7 @@ struct tTrackId {
+
+ class cPlayer;
+ class cReceiver;
++class cRecorder;
+ class cLiveSubtitle;
+
+ class cDeviceHook : public cListObject {
+@@ -790,6 +791,8 @@ public:
+        ///< Returns true if we are currently receiving. The parameter has no meaning (for backwards compatibility only).
+   bool AttachReceiver(cReceiver *Receiver);
+        ///< Attaches the given receiver to this device.
++  cRecorder* GetPreRecording(const cChannel *Channel);
++       ///< Get precocious recording for the channel if there is one.
+   void Detach(cReceiver *Receiver);
+        ///< Detaches the given receiver from this device.
+   void DetachAll(int Pid);
+--- yavdr-source-original-vdr-2.0.6//device.c	2014-11-11 13:59:01.000000000 +0100
++++ yavdr-source-gepatcht-vdr-2.0.6//device.c	2014-11-12 15:10:35.421067855 +0100
+@@ -1826,6 +1826,17 @@ void cDevice::DetachAllReceivers(void)
+       Detach(receiver[i]);
+ }
+
++cRecorder* cDevice::GetPreRecording(const cChannel *Channel)
++{
++  cMutexLock MutexLock(&mutexReceiver);
++  for (int i = 0; i < MAXRECEIVERS; i++) {
++      if (receiver[i])
++    	  if (receiver[i]->IsPreRecording(Channel))
++    		  return (cRecorder*)receiver[i];
++      }
++  return NULL;
++}
++
+ // --- cTSBuffer -------------------------------------------------------------
+
+ cTSBuffer::cTSBuffer(int File, int Size, int CardIndex)
+--- yavdr-source-original-vdr-2.0.6//dvbplayer.h	2014-11-11 13:59:01.000000000 +0100
++++ yavdr-source-gepatcht-vdr-2.0.6//dvbplayer.h	2014-11-12 15:24:24.066335365 +0100
+@@ -15,6 +15,14 @@
+
+ class cDvbPlayer;
+
++enum ReplayState
++{
++	restNormal,
++	restPauseLive,
++	restReusePause,
++	restReuseRewind
++};
++
+ class cDvbPlayerControl : public cControl {
+ private:
+   cDvbPlayer *player;
+@@ -24,6 +32,8 @@ public:
+        // If PauseLive is true, special care is taken to make sure the index
+        // file of the recording is long enough to allow the player to display
+        // the first frame in still picture mode.
++  cDvbPlayerControl(const char *FileName, ReplayState replayState);
++       // Sets up a player for the given file. replayState represents the initial state.
+   virtual ~cDvbPlayerControl();
+   bool Active(void);
+   void Stop(void);
+--- yavdr-source-original-vdr-2.0.6//dvbplayer.c	2014-11-11 13:59:01.000000000 +0100
++++ yavdr-source-gepatcht-vdr-2.0.6//dvbplayer.c	2014-11-12 18:04:40.332250011 +0100
+@@ -217,14 +217,14 @@ private:
+   cUnbufferedFile *replayFile;
+   double framesPerSecond;
+   bool isPesRecording;
+-  bool pauseLive;
+-  bool reusedPauseLive;
++  ReplayState replayState;
+   bool eof;
+   bool firstPacket;
+   ePlayModes playMode;
+   ePlayDirs playDir;
+   int trickSpeed;
+   int readIndex;
++  int startIndex;
+   bool readIndependent;
+   cFrame *readFrame;
+   cFrame *playFrame;
+@@ -240,6 +240,8 @@ protected:
+   virtual void Action(void);
+ public:
+   cDvbPlayer(const char *FileName, bool PauseLive, bool ReusedPauseLive = false);
++  cDvbPlayer(const char *FileName, ReplayState newReplayState);
++  void Construct(const char *FileName, ReplayState newReplayState);
+   virtual ~cDvbPlayer();
+   bool Active(void) { return cThread::Running(); }
+   void Pause(void);
+@@ -264,14 +266,25 @@ int cDvbPlayer::Speeds[] = { 0, -2, -4,
+ cDvbPlayer::cDvbPlayer(const char *FileName, bool PauseLive, bool ReusedPauseLive)
+ :cThread("dvbplayer")
+ {
++  Construct(FileName, ReusedPauseLive? restReusePause : PauseLive? restPauseLive : restNormal);
++}
++
++cDvbPlayer::cDvbPlayer(const char *FileName, ReplayState newReplayState)
++:cThread("dvbplayer")
++{
++  Construct(FileName, newReplayState);
++}
++
++void cDvbPlayer::Construct(const char *FileName, ReplayState newReplayState)
++{
+   nonBlockingFileReader = NULL;
+   ringBuffer = NULL;
+   index = NULL;
+   cRecording Recording(FileName);
+   framesPerSecond = Recording.FramesPerSecond();
+   isPesRecording = Recording.IsPesRecording();
+-  pauseLive = PauseLive;
+-  reusedPauseLive = ReusedPauseLive;
++  replayState = newReplayState;
++  bool reuse = (replayState == restReusePause || replayState == restReuseRewind);
+   eof = false;
+   firstPacket = true;
+   playMode = pmPlay;
+@@ -290,15 +303,23 @@ cDvbPlayer::cDvbPlayer(const char *FileN
+      return;
+   ringBuffer = new cRingBufferFrame(PLAYERBUFSIZE);
+   // Create the index file:
+-  index = new cIndexFile(FileName, false, isPesRecording, pauseLive);
++  index = new cIndexFile(FileName, false, isPesRecording, replayState == restPauseLive);
+   if (!index)
+      esyslog("ERROR: can't allocate index");
+   else if (!index->Ok()) {
+      delete index;
+      index = NULL;
+      }
+-  else if (PauseLive)
++  else if (reuse)
+      framesPerSecond = cRecording(FileName).FramesPerSecond(); // the fps rate might have changed from the default
++
++  startIndex = 0;
++  if (replayState == restReuseRewind || replayState == restReusePause) {
++	  int Current, Total;
++	  GetIndex(Current, Total, false);
++	  startIndex = max(Total - 1, 0);
++      }
++
+   marks.Load(FileName, framesPerSecond, isPesRecording);
+ }
+
+@@ -442,17 +463,21 @@ void cDvbPlayer::Action(void)
+   int LastReadIFrame = -1;
+   int SwitchToPlayFrame = 0;
+
+-  if (reusedPauseLive) {
+-    int Current, Total;
+-    GetIndex(Current, Total, false);
+-    readIndex = max(Total - 1, 0);
++  if (replayState == restPauseLive) {
++    Goto(0, true);
++    }
++  else if (replayState == restReuseRewind || replayState == restReusePause) {
++    readIndex = startIndex;
+     Goto(readIndex, true);
+-    playMode = pmStill;
++    playMode = pmPlay;
++    if (replayState == restReuseRewind) {
++    	Backward();
++        }
++    else if (replayState == restReusePause) {
++    	Pause();
++        }
+     }
+-  else if (pauseLive) {
+-    Goto(0, true);
+-  }
+-
++
+   while (Running()) {
+         if (WaitingForData)
+            WaitingForData = !nonBlockingFileReader->WaitForDataMs(3); // this keeps the CPU load low, but reacts immediately on new data
+@@ -946,8 +971,13 @@ bool cDvbPlayer::GetReplayMode(bool &Pla
+
+ // --- cDvbPlayerControl -----------------------------------------------------
+
+-cDvbPlayerControl::cDvbPlayerControl(const char *FileName, bool PauseLive, bool ReusedPauseLive)
+-:cControl(player = new cDvbPlayer(FileName, PauseLive, ReusedPauseLive))
++cDvbPlayerControl::cDvbPlayerControl(const char *FileName, bool PauseLive /* = false */, bool ReusedPauseLive /* = false */)
++:cControl(player = new cDvbPlayer(FileName, ReusedPauseLive ? restReusePause : PauseLive? restPauseLive : restNormal))
++{
++}
++
++cDvbPlayerControl::cDvbPlayerControl(const char *FileName, ReplayState replayState)
++:cControl(player = new cDvbPlayer(FileName, replayState))
+ {
+ }
+
+--- yavdr-source-original-vdr-2.0.6//menu.h	2014-11-11 13:59:01.000000000 +0100
++++ yavdr-source-gepatcht-vdr-2.0.6//menu.h	2014-11-12 15:43:28.638945759 +0100
+@@ -233,6 +233,8 @@ private:
+   bool GetEvent(void);
+ public:
+   cRecordControl(cDevice *Device, cTimer *Timer = NULL, bool Pause = false);
++  cRecordControl(cDevice *Device, cTimer *Timer, bool Pause, bool* reused);
++  void Construct(cDevice *Device, cTimer *Timer, bool Pause, bool* reused);
+   virtual ~cRecordControl();
+   bool Process(time_t t);
+   cDevice *Device(void) { return device; }
+@@ -246,24 +248,20 @@ class cRecordControls {
+ private:
+   static cRecordControl *RecordControls[];
+   static int state;
+-  static bool TryReuseRecording(bool Pause);
+-         ///< Tries to reuse an existing recording instead of creating a second one in parallel.
+-         ///< Returns true if successful.
+ public:
+   static bool Start(cTimer *Timer = NULL, bool Pause = false, bool* reused = NULL);
+   static void Stop(const char *InstantId);
+   static bool PauseLiveVideo(void);
++  static bool PauseLiveVideo(bool rewind);
+   static const char *GetInstantId(const char *LastInstantId);
+   static cRecordControl *GetRecordControl(const char *FileName);
+   static cRecordControl *GetRecordControl(const cTimer *Timer);
+          ///< Returns the cRecordControl for the given Timer.
+          ///< If there is no cRecordControl for Timer, NULL is returned.
+-  static cRecordControl *GetRecordControl(int channelNo);
+-         ///< Returns the cRecordControl for the given channel number.
+-         ///< If there is no cRecordControl, NULL is returned.
+   static void Process(time_t t);
+   static void ChannelDataModified(cChannel *Channel);
+-  static bool Active(int minimumPriority = MINPRIORITY);
++  static bool Active(void);
++  static bool Active(int minimumPriority);
+          ///< Only recordings with at least minimumPriority are considered active.
+          ///< Default value of parameter considers every recording as "activity".
+   static void Shutdown(void);
+@@ -301,6 +299,8 @@ private:
+   void EditTest(void);
+ public:
+   cReplayControl(bool PauseLive = false, bool ReusedPauseLive = false);
++  cReplayControl(ReplayState replayState);
++  void Construct(ReplayState replayState);
+   virtual ~cReplayControl();
+   void Stop(void);
+   virtual cOsdObject *GetInfo(void);
+--- yavdr-source-original-vdr-2.0.6//menu.c	2014-11-11 13:59:01.000000000 +0100
++++ yavdr-source-gepatcht-vdr-2.0.6//menu.c	2014-11-12 15:43:26.558951162 +0100
+@@ -4727,6 +4727,16 @@ eOSState cDisplaySubtitleTracks::Process
+
+ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
+ {
++  Construct(Device, Timer, Pause, NULL);
++}
++
++cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause, bool* reused)
++{
++  Construct(Device, Timer, Pause, reused);
++}
++
++void cRecordControl::Construct(cDevice *Device, cTimer *Timer, bool Pause, bool* reused)
++{
+   // Whatever happens here, the timers will be modified in some way...
+   Timers.SetModified();
+   // We're going to manipulate an event here, so we need to prevent
+@@ -4748,6 +4758,7 @@ cRecordControl::cRecordControl(cDevice *
+   timer->SetPending(true);
+   timer->SetRecording(true);
+   event = timer->Event();
++  if (reused != NULL) *reused = false;
+
+   if (event || GetEvent())
+      dsyslog("Title: '%s' Subtitle: '%s'", event->Title(), event->ShortText());
+@@ -4775,8 +4786,21 @@ cRecordControl::cRecordControl(cDevice *
+   isyslog("record %s", fileName);
+   if (MakeDirs(fileName, true)) {
+      const cChannel *ch = timer->Channel();
+-     recorder = new cRecorder(fileName, ch, timer->Priority());
+-     if (device->AttachReceiver(recorder)) {
++
++     if (!Timer) {
++    	 recorder = device->GetPreRecording(ch);
++    	 if (recorder != NULL) {
++    		 recorder->ActivatePreRecording(fileName, timer->Priority());
++    		 if (reused != NULL) *reused = true;
++    	     }
++         }
++
++     if (recorder == NULL) {
++    	 recorder = new cRecorder(fileName, ch, timer->Priority());
++    	 if (!device->AttachReceiver(recorder)) DELETENULL(recorder);
++     	 }
++
++     if (recorder != NULL) {
+         Recording.WriteInfo();
+         cStatus::MsgRecording(device, Recording.Name(), Recording.FileName(), true);
+         if (!Timer && !cReplayControl::LastReplayed()) // an instant recording, maybe from cRecordControls::PauseLiveVideo()
+@@ -4798,8 +4822,6 @@ cRecordControl::cRecordControl(cDevice *
+            }
+         return;
+         }
+-     else
+-        DELETENULL(recorder);
+      }
+   else
+      timer->SetDeferred(DEFERTIMER);
+@@ -4937,13 +4959,6 @@ bool cRecordControls::Start(cTimer *Time
+      }
+   LastNoDiskSpaceMessage = 0;
+
+-  if (Timer == NULL) {
+-    if (TryReuseRecording(Pause)) {
+-      if (reused != NULL) *reused = true;
+-      return true;
+-      }
+-    }
+-
+   ChangeState();
+   int ch = Timer ? Timer->Channel()->Number() : cDevice::CurrentChannel();
+   cChannel *channel = Channels.GetByNumber(ch);
+@@ -4960,7 +4975,7 @@ bool cRecordControls::Start(cTimer *Time
+         if (!Timer || Timer->Matches()) {
+            for (int i = 0; i < MAXRECORDCONTROLS; i++) {
+                if (!RecordControls[i]) {
+-                  RecordControls[i] = new cRecordControl(device, Timer, Pause);
++                  RecordControls[i] = new cRecordControl(device, Timer, Pause, reused);
+                   cStatus::MsgRecordingFile(RecordControls[i]->FileName());  // PIN PATCH
+                   return RecordControls[i]->Process(time(NULL));
+                   }
+@@ -4997,53 +5012,18 @@ void cRecordControls::Stop(const char *I
+       }
+ }
+
+-bool cRecordControls::TryReuseRecording(bool Pause)
++bool cRecordControls::PauseLiveVideo(void)
+ {
+-  cRecordControl* runningRecording = cRecordControls::GetRecordControl(cDevice::CurrentChannel());
+-  if (runningRecording != NULL && runningRecording->Timer() != NULL) {
+-    cTimer *reuseTimer = runningRecording->Timer();
+-    // calculate length from current time
+-    time_t t = time(NULL);
+-    struct tm *tmNow = localtime(&t);
+-    int now = tmNow->tm_hour * 60 + tmNow->tm_min;
+-    int stop = reuseTimer->Stop();
+-    stop = stop / 100 * 60 + stop % 100;
+-    int lengthFromNow = stop - now;
+-    if (lengthFromNow < 0)
+-      lengthFromNow += 24 * 60;
+-    // Only use low priority recordings or, for pause, recordings which are long enough.
+-    if (runningRecording->Timer()->Priority() <= LIVEPRIORITY || (Pause && lengthFromNow >= Setup.InstantRecordTime)) {
+-      // always adapt recording time for instant recording, only raise stop time for pause
+-      if (!Pause || lengthFromNow < Setup.InstantRecordTime) {
+-        int stop = now + Setup.InstantRecordTime;
+-        stop = (stop / 60) * 100 + (stop % 60);
+-        if (stop >= 2400) stop -= 2400;
+-        reuseTimer->SetStop(stop);
+-        }
+-      ChangeState();
+-      // for pause, set replay to the recording
+-      if (Pause) {
+-        cReplayControl::SetRecording(runningRecording->FileName());
+-        }
+-      // for instant recording, raise priority and lifetime
+-      else {
+-        reuseTimer->SetPriority(max(Setup.DefaultPriority, reuseTimer->Priority()));
+-        reuseTimer->SetLifetime(max(Setup.DefaultLifetime, reuseTimer->Lifetime()));
+-        }
+-      // We found a usable recording, don't create a new one.
+-      return true;
+-      }
+-    }
+-  return false;
++  return PauseLiveVideo(false);
+ }
+
+-bool cRecordControls::PauseLiveVideo(void)
++bool cRecordControls::PauseLiveVideo(bool rewind)
+ {
+   Skins.Message(mtStatus, tr("Pausing live video..."));
+   bool reused = false;
+   cReplayControl::SetRecording(NULL); // make sure the new cRecordControl will set cReplayControl::LastReplayed()
+   if (Start(NULL, true, &reused)) {
+-     cReplayControl *rc = new cReplayControl(true, reused);
++     cReplayControl *rc = new cReplayControl(rewind? restReuseRewind : reused? restReusePause : restPauseLive);
+      cControl::Launch(rc);
+      cControl::Attach();
+      Skins.Message(mtStatus, NULL);
+@@ -5086,23 +5066,6 @@ cRecordControl *cRecordControls::GetReco
+   return NULL;
+ }
+
+-cRecordControl *cRecordControls::GetRecordControl(int channelNo)
+-{
+-  for (int i = 0; i < MAXRECORDCONTROLS; i++) {
+-    if (RecordControls[i] != NULL) {
+-      cTimer* existentTimer = RecordControls[i]->Timer();
+-      if (existentTimer != NULL && existentTimer->Channel() != NULL) {
+-        if (RecordControls[i]->Timer()->Channel()->Number() == channelNo) {
+-          if (existentTimer->Recording()) {
+-            return RecordControls[i];
+-            }
+-          }
+-        }
+-      }
+-    }
+-  return NULL;
+-}
+-
+ void cRecordControls::Process(time_t t)
+ {
+   for (int i = 0; i < MAXRECORDCONTROLS; i++) {
+@@ -5132,13 +5095,17 @@ void cRecordControls::ChannelDataModifie
+       }
+ }
+
+-bool cRecordControls::Active(int minimumPriority /* = MINPRIORITY */)
++bool cRecordControls::Active(void)
+ {
+-  for (int i = 0; i < MAXRECORDCONTROLS; i++)
+-    if (RecordControls[i])
+-      if (RecordControls[i]->Timer() == NULL || RecordControls[i]->Timer()->Priority() >= minimumPriority)
+-         return true;
++  return Active(MINPRIORITY);
++}
+
++bool cRecordControls::Active(int minimumPriority)
++{
++  for (int i = 0; i < MAXRECORDCONTROLS; i++) {
++      if (RecordControls[i])
++         return true;
++      }
+   return false;
+ }
+
+@@ -5166,10 +5133,21 @@ bool cRecordControls::StateChanged(int &
+ cReplayControl *cReplayControl::currentReplayControl = NULL;
+ cString cReplayControl::fileName;
+
+-cReplayControl::cReplayControl(bool PauseLive, bool ReusedPauseLive)
+-:cDvbPlayerControl(fileName, PauseLive, ReusedPauseLive)
++cReplayControl::cReplayControl(bool PauseLive /* = false */, bool ReusedPauseLive /* = false */)
++:cDvbPlayerControl(fileName, PauseLive)
++{
++  Construct(PauseLive? restPauseLive : restNormal);
++}
++
++cReplayControl::cReplayControl(ReplayState replayState)
++:cDvbPlayerControl(fileName, replayState)
++{
++  Construct(replayState);
++}
++
++void cReplayControl::Construct(ReplayState replayState)
+ {
+-  cDevice::PrimaryDevice()->SetKeepTracks(PauseLive);
++  cDevice::PrimaryDevice()->SetKeepTracks(replayState == restPauseLive);
+   currentReplayControl = this;
+   displayReplay = NULL;
+   marksModified = false;
+--- yavdr-source-original-vdr-2.0.6//receiver.h	2012-09-02 11:27:20.000000000 +0200
++++ yavdr-source-gepatcht-vdr-2.0.6//receiver.h	2014-11-12 15:10:35.421067855 +0100
+@@ -71,6 +71,12 @@ public:
+                ///< case the device is needed otherwise, so code that uses a cReceiver
+                ///< should repeatedly check whether it is still attached, and if
+                ///< it isn't, delete it (or take any other appropriate measures).
++  void SetReceivePriority(int Priority) { priority = Priority; }
++               ///< Changes receiver priority while in action.
++  virtual bool IsPreRecording(const cChannel *Channel) { return false; }
++               ///< prerecords given channel; may be turned into a disc recording.
++  virtual bool ActivatePreRecording(const char* fileName, int Priority) { return false; }
++  	  	  	   ///< turn prerecording into a disc recording
+   };
+
+ #endif //__RECEIVER_H
+--- yavdr-source-original-vdr-2.0.6//recorder.h	2010-12-27 12:17:04.000000000 +0100
++++ yavdr-source-gepatcht-vdr-2.0.6//recorder.h	2014-11-12 15:10:35.421067855 +0100
+@@ -16,8 +16,8 @@
+ #include "ringbuffer.h"
+ #include "thread.h"
+
+-class cRecorder : public cReceiver, cThread {
+-private:
++class cRecorder : public cReceiver, protected cThread {
++protected:
+   cRingBufferLinear *ringBuffer;
+   cFrameDetector *frameDetector;
+   cPatPmtGenerator patPmtGenerator;
+@@ -33,11 +33,16 @@ protected:
+   virtual void Activate(bool On);
+   virtual void Receive(uchar *Data, int Length);
+   virtual void Action(void);
++  void InitializeFile(const char *FileName, const cChannel *Channel);
++               ///< Starts recording to file.
++               ///< Called in constructor if file name has been given.
++
+ public:
+   cRecorder(const char *FileName, const cChannel *Channel, int Priority);
+-               // Creates a new recorder for the given Channel and
+-               // the given Priority that will record into the file FileName.
++               ///< Creates a new recorder for the given Channel and
++               ///< the given Priority that will record into the file FileName.
+   virtual ~cRecorder();
++
+   };
+
+ #endif //__RECORDER_H
+--- yavdr-source-original-vdr-2.0.6//recorder.c	2014-11-11 13:59:01.000000000 +0100
++++ yavdr-source-gepatcht-vdr-2.0.6//recorder.c	2014-11-12 15:10:35.421067855 +0100
+@@ -24,44 +24,55 @@
+ cRecorder::cRecorder(const char *FileName, const cChannel *Channel, int Priority)
+ :cReceiver(Channel, Priority)
+ ,cThread("recording")
++,ringBuffer(NULL), frameDetector(NULL), fileName(NULL), index(NULL), recordFile(NULL), recordingName(NULL)
+ {
+-  recordingName = strdup(FileName);
++	if (FileName != NULL)
++	{
++		InitializeFile(FileName, Channel);
++	}
++}
++
++void cRecorder::InitializeFile(const char *FileName, const cChannel *Channel)
++{
++	recordingName = strdup(FileName);
++
++	// Make sure the disk is up and running:
+
+-  // Make sure the disk is up and running:
++	SpinUpDisk(FileName);
+
+-  SpinUpDisk(FileName);
++	ringBuffer = new cRingBufferLinear(RECORDERBUFSIZE, MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE, true, "Recorder");
++	ringBuffer->SetTimeouts(0, 100);
++	ringBuffer->SetIoThrottle();
+
+-  ringBuffer = new cRingBufferLinear(RECORDERBUFSIZE, MIN_TS_PACKETS_FOR_FRAME_DETECTOR * TS_SIZE, true, "Recorder");
+-  ringBuffer->SetTimeouts(0, 100);
+-  ringBuffer->SetIoThrottle();
+-
+-  int Pid = Channel->Vpid();
+-  int Type = Channel->Vtype();
+-  if (!Pid && Channel->Apid(0)) {
+-     Pid = Channel->Apid(0);
+-     Type = 0x04;
+-     }
+-  if (!Pid && Channel->Dpid(0)) {
+-     Pid = Channel->Dpid(0);
+-     Type = 0x06;
+-     }
+-  frameDetector = new cFrameDetector(Pid, Type);
+-  index = NULL;
+-  fileSize = 0;
+-  lastDiskSpaceCheck = time(NULL);
+-  fileName = new cFileName(FileName, true);
+-  int PatVersion, PmtVersion;
+-  if (fileName->GetLastPatPmtVersions(PatVersion, PmtVersion))
+-     patPmtGenerator.SetVersions(PatVersion + 1, PmtVersion + 1);
+-  patPmtGenerator.SetChannel(Channel);
+-  recordFile = fileName->Open();
+-  if (!recordFile)
+-     return;
+-  // Create the index file:
+-  index = new cIndexFile(FileName, true);
+-  if (!index)
+-     esyslog("ERROR: can't allocate index");
+-     // let's continue without index, so we'll at least have the recording
++	int Pid = Channel->Vpid();
++	int Type = Channel->Vtype();
++	if (!Pid && Channel->Apid(0)) {
++		Pid = Channel->Apid(0);
++		Type = 0x04;
++		}
++	if (!Pid && Channel->Dpid(0)) {
++		Pid = Channel->Dpid(0);
++		Type = 0x06;
++		}
++	if (frameDetector == NULL) {
++		frameDetector = new cFrameDetector(Pid, Type);
++		}
++	index = NULL;
++	fileSize = 0;
++	lastDiskSpaceCheck = time(NULL);
++	fileName = new cFileName(FileName, true);
++	int PatVersion, PmtVersion;
++	if (fileName->GetLastPatPmtVersions(PatVersion, PmtVersion))
++		patPmtGenerator.SetVersions(PatVersion + 1, PmtVersion + 1);
++	patPmtGenerator.SetChannel(Channel);
++	recordFile = fileName->Open();
++	if (!recordFile)
++		return;
++	// Create the index file:
++	index = new cIndexFile(FileName, true);
++	if (!index)
++		esyslog("ERROR: can't allocate index");
++	// let's continue without index, so we'll at least have the recording
+ }
+
+ cRecorder::~cRecorder()
+--- yavdr-source-original-vdr-2.0.6//ringbuffer.h	2013-02-16 16:20:37.000000000 +0100
++++ yavdr-source-gepatcht-vdr-2.0.6//ringbuffer.h	2014-11-12 15:10:35.421067855 +0100
+@@ -96,6 +96,12 @@ public:
+     ///< The data will remain in the buffer until a call to Del() deletes it.
+     ///< Returns a pointer to the data, and stores the number of bytes
+     ///< actually available in Count. If the returned pointer is NULL, Count has no meaning.
++  uchar *GetRest(int &Count);
++  ///< Gets data from the ring buffer disregarding the margin.
++  ///< Might have to be called several times to get all data.
++  ///< The data will remain in the buffer until a call to Del() deletes it.
++  ///< Returns a pointer to the data, and stores the number of bytes
++  ///< actually available in Count. If the returned pointer is NULL, Count has no meaning.
+   void Del(int Count);
+     ///< Deletes at most Count bytes from the ring buffer.
+     ///< Count must be less or equal to the number that was returned by a previous
+--- yavdr-source-original-vdr-2.0.6//ringbuffer.c	2012-09-22 13:26:49.000000000 +0200
++++ yavdr-source-gepatcht-vdr-2.0.6//ringbuffer.c	2014-11-12 15:10:35.421067855 +0100
+@@ -367,6 +367,25 @@ uchar *cRingBufferLinear::Get(int &Count
+   return NULL;
+ }
+
++uchar *cRingBufferLinear::GetRest(int &Count)
++{
++  int Head = head;
++  if (getThreadTid <= 0)
++     getThreadTid = cThread::ThreadId();
++  int rest = Size() - tail;
++  int diff = Head - tail;
++  int cont = (diff >= 0) ? diff : Size() + diff - margin;
++  if (cont > rest)
++     cont = rest;
++  uchar *p = buffer + tail;
++  if (cont > 0) {
++     Count = gotten = cont;
++     return p;
++     }
++  WaitForGet();
++  return NULL;
++}
++
+ void cRingBufferLinear::Del(int Count)
+ {
+   if (Count > gotten) {
+--- yavdr-source-original-vdr-2.0.6//vdr.c	2014-11-11 13:59:01.000000000 +0100
++++ yavdr-source-gepatcht-vdr-2.0.6//vdr.c	2014-11-12 15:10:35.421067855 +0100
+@@ -1209,16 +1209,20 @@ int main(int argc, char *argv[])
+                key = kNone;
+                break;
+           // Pausing live video:
++          case kFastRew:
++        	  // test if there's a live buffer to rewind into...
++        	  if (cDevice::ActualDevice()->GetPreRecording(Channels.GetByNumber(cDevice::CurrentChannel())) == NULL) {
++        		  break;
++        	      }
++        	  // fall through to pause
+           case kPlayPause:
+           case kPause:
+                if (!cControl::Control()) {
+                   DELETE_MENU;
+-                  if (Setup.PauseKeyHandling) {
+-                     if (Setup.PauseKeyHandling > 1 || Interface->Confirm(tr("Pause live video?"))) {
+-                        if (!cRecordControls::PauseLiveVideo())
+-                           Skins.QueueMessage(mtError, tr("No free DVB device to record!"));
+-                        }
+-                     }
++                  if (Setup.PauseKeyHandling)
++                     if (Setup.PauseKeyHandling > 1 || Interface->Confirm(tr("Pause live video?")))
++                        if (!cRecordControls::PauseLiveVideo(int(key) == kFastRew))
++                            Skins.QueueMessage(mtError, tr("No free DVB device to record!"));
+                   key = kNone; // nobody else needs to see this key
+                   }
+                break;
+--- yavdr-source-original-vdr-2.0.6//shutdown.c	2014-11-11 13:59:01.000000000 +0100
++++ yavdr-source-gepatcht-vdr-2.0.6//shutdown.c	2014-11-12 15:10:09.005144589 +0100
+@@ -177,11 +177,11 @@ bool cShutdownHandler::ConfirmShutdown(b
+         return false;
+      }
+
+-  cTimer *timer = Timers.GetNextActiveTimer(TRANSFERPRIORITY);
++  cTimer *timer = Timers.GetNextActiveTimer();
+   time_t Next = timer ? timer->StartTime() : 0;
+   time_t Delta = timer ? Next - time(NULL) : 0;
+
+-  if (cRecordControls::Active(TRANSFERPRIORITY) || (Next && Delta <= 0)) {
++  if (cRecordControls::Active() || (Next && Delta <= 0)) {
+      // VPS recordings in timer end margin may cause Delta <= 0
+      if (!Interactive || !Interface->Confirm(tr("Recording - shut down anyway?")))
+         return false;
+--- yavdr-source-original-vdr-2.0.6//timers.h	2014-11-11 13:59:01.000000000 +0100
++++ yavdr-source-gepatcht-vdr-2.0.6//timers.h	2014-11-12 15:16:49.563929584 +0100
+@@ -120,7 +120,8 @@ public:
+   cTimer *GetTimer(cTimer *Timer);
+   cTimer *GetMatch(time_t t);
+   cTimer *GetMatch(const cEvent *Event, eTimerMatch *Match = NULL);
+-  cTimer *GetNextActiveTimer(int minimumPriority = MINPRIORITY);
++  cTimer *GetNextActiveTimer(void);
++  cTimer *GetNextActiveTimer(int minimumPriority);
+   int BeingEdited(void) { return beingEdited; }
+   void IncBeingEdited(void) { beingEdited++; }
+   void DecBeingEdited(void) { if (!--beingEdited) lastSetEvents = 0; }
+--- yavdr-source-original-vdr-2.0.6//timers.c	2014-11-11 13:59:01.000000000 +0100
++++ yavdr-source-gepatcht-vdr-2.0.6//timers.c	2014-11-12 15:16:51.751921801 +0100
+@@ -789,7 +789,12 @@ cTimer *cTimers::GetMatch(const cEvent *
+   return t;
+ }
+
+-cTimer *cTimers::GetNextActiveTimer(int minimumPriority /* = MINPRIORITY */)
++cTimer *cTimers::GetNextActiveTimer()
++{
++  return GetNextActiveTimer(MINPRIORITY);
++}
++
++cTimer *cTimers::GetNextActiveTimer(int minimumPriority)
+ {
+   cTimer *t0 = NULL;
+   for (cTimer *ti = First(); ti; ti = Next(ti)) {
