@@ -48,9 +48,10 @@ opt-61_dynamite.patch
 
 ##opt-63_naludump.patch
 opt-65_pin.patch
-opt-66_jumpingseconds.patch
+#opt-66_jumpingseconds.patch
 #opt-67_epgsearch-exttimeredit-0.0.2.patch
 
 #xprmtl-02_permashift-0.5.4.patch
 xprmtl-03_hide-first-recording-level-v3.patch
 
+vdr-2.1.7-eit-memory-leak.patch
