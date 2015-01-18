@@ -8,7 +8,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
  public:
    cMenuEditChannel(cChannel *Channel, bool New = false);
    virtual eOSState ProcessKey(eKeys Key);
-+  virtual const char* MenuKind() { return "MenuEditChannel"; } 
++  virtual const char* MenuKind() { return "MenuEditChannel"; }
    };
  
  cMenuEditChannel::cMenuEditChannel(cChannel *Channel, bool New)
@@ -20,7 +20,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    };
  
  cMenuChannels::cMenuChannels(void)
-@@ -1098,6 +1100,7 @@
+@@ -1101,6 +1103,7 @@
    cMenuTimers(void);
    virtual ~cMenuTimers();
    virtual eOSState ProcessKey(eKeys Key);
@@ -28,7 +28,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    };
  
  cMenuTimers::cMenuTimers(void)
-@@ -1260,6 +1263,7 @@
+@@ -1263,6 +1266,7 @@
  {
    cOsdMenu::Display();
    DisplayMenu()->SetEvent(event);
@@ -36,7 +36,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    if (event->Description())
       cStatus::MsgOsdTextItem(event->Description());
  }
-@@ -1389,6 +1393,8 @@
+@@ -1392,6 +1396,8 @@
    static void SetCurrentChannel(int ChannelNr) { currentChannel = ChannelNr; }
    static const cEvent *ScheduleEvent(void);
    virtual eOSState ProcessKey(eKeys Key);
@@ -45,14 +45,14 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    };
  
  int cMenuWhatsOn::currentChannel = 0;
-@@ -1417,6 +1423,18 @@
+@@ -1420,6 +1426,18 @@
    SetHelpKeys();
  }
  
 +void cMenuWhatsOn::Display(void)
 +{
 +   cOsdMenu::Display();
-+   
++
 +   if (Count() > 0) {
 +      int ni = 0;
 +      for (cOsdItem *item = First(); item; item = Next(item)) {
@@ -64,7 +64,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
  bool cMenuWhatsOn::Update(void)
  {
    bool result = false;
-@@ -1557,6 +1575,8 @@
+@@ -1560,6 +1578,8 @@
    cMenuSchedule(void);
    virtual ~cMenuSchedule();
    virtual eOSState ProcessKey(eKeys Key);
@@ -73,14 +73,14 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    };
  
  cMenuSchedule::cMenuSchedule(void)
-@@ -1583,6 +1603,18 @@
+@@ -1586,6 +1606,18 @@
    cMenuWhatsOn::ScheduleEvent(); // makes sure any posted data is cleared
  }
  
 +void cMenuSchedule::Display(void)
 +{
 +   cOsdMenu::Display();
-+   
++
 +   if (Count() > 0) {
 +      int ni = 0;
 +      for (cOsdItem *item = First(); item; item = Next(item)) {
@@ -92,7 +92,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
  void cMenuSchedule::PrepareScheduleAllThis(const cEvent *Event, const cChannel *Channel)
  {
    Clear();
-@@ -1947,6 +1979,7 @@
+@@ -1950,6 +1982,7 @@
    cMenuCam(cCamSlot *CamSlot);
    virtual ~cMenuCam();
    virtual eOSState ProcessKey(eKeys Key);
@@ -100,7 +100,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    };
  
  cMenuCam::cMenuCam(cCamSlot *CamSlot)
-@@ -2437,6 +2470,7 @@
+@@ -2440,6 +2473,7 @@
    cMenuRecording(cRecording *Recording, bool WithButtons = false);
    virtual void Display(void);
    virtual eOSState ProcessKey(eKeys Key);
@@ -108,7 +108,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
  };
  
  cMenuRecording::cMenuRecording(cRecording *Recording, bool WithButtons)
-@@ -2472,6 +2506,7 @@
+@@ -2475,6 +2509,7 @@
       }
    cOsdMenu::Display();
    DisplayMenu()->SetRecording(recording);
@@ -116,7 +116,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    if (recording->Info()->Description())
       cStatus::MsgOsdTextItem(recording->Info()->Description());
  }
-@@ -2932,6 +2967,7 @@
+@@ -2936,6 +2971,7 @@
    cMenuSetupOSD(void);
    virtual ~cMenuSetupOSD();
    virtual eOSState ProcessKey(eKeys Key);
@@ -124,7 +124,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    };
  
  cMenuSetupOSD::cMenuSetupOSD(void)
-@@ -3085,6 +3121,7 @@
+@@ -3089,6 +3125,7 @@
  public:
    cMenuSetupEPG(void);
    virtual eOSState ProcessKey(eKeys Key);
@@ -132,7 +132,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    };
  
  cMenuSetupEPG::cMenuSetupEPG(void)
-@@ -3182,6 +3219,7 @@
+@@ -3186,6 +3223,7 @@
  public:
    cMenuSetupDVB(void);
    virtual eOSState ProcessKey(eKeys Key);
@@ -140,7 +140,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    };
  
  cMenuSetupDVB::cMenuSetupDVB(void)
-@@ -3327,6 +3365,7 @@
+@@ -3331,6 +3369,7 @@
  public:
    cMenuSetupLNB(void);
    virtual eOSState ProcessKey(eKeys Key);
@@ -148,7 +148,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    };
  
  cMenuSetupLNB::cMenuSetupLNB(void)
-@@ -3441,6 +3480,7 @@
+@@ -3445,6 +3484,7 @@
  public:
    cMenuSetupCAM(void);
    virtual eOSState ProcessKey(eKeys Key);
@@ -156,7 +156,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    };
  
  cMenuSetupCAM::cMenuSetupCAM(void)
-@@ -3628,6 +3668,7 @@
+@@ -3631,6 +3671,7 @@
  public:
    cMenuSetupPlugins(void);
    virtual eOSState ProcessKey(eKeys Key);
@@ -164,7 +164,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    };
  
  cMenuSetupPlugins::cMenuSetupPlugins(void)
-@@ -3683,6 +3724,7 @@
+@@ -3686,6 +3727,7 @@
  public:
    cMenuSetup(void);
    virtual eOSState ProcessKey(eKeys Key);
@@ -206,7 +206,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    };
  
  class cDisplayChannel : public cOsdObject {
-@@ -226,6 +230,7 @@
+@@ -227,6 +231,7 @@
    virtual eOSState ProcessKey(eKeys Key);
    static void SetPath(const char *Path);
    static void SetRecording(const char *FileName);
@@ -226,7 +226,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
  #endif //__MENUITEMS_H
 --- a/osdbase.c
 +++ b/osdbase.c
-@@ -105,6 +105,7 @@
+@@ -106,6 +106,7 @@
    free(status);
    displayMenu->Clear();
    cStatus::MsgOsdClear();
@@ -234,17 +234,17 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    if (!--displayMenuCount)
       DELETENULL(displayMenu);
  }
-@@ -224,6 +225,7 @@
+@@ -230,6 +231,7 @@
    cStatus::MsgOsdClear();
    if (menuCategory != displayMenu->MenuCategory())
       displayMenu->SetMenuCategory(menuCategory);
 +  cStatus::MsgOsdMenuDisplay(MenuKind());
+   displayMenu->SetMenuSortMode(menuSortMode);
    displayMenuItems = displayMenu->MaxItems();
    displayMenu->SetTabs(cols[0], cols[1], cols[2], cols[3], cols[4]);//XXX
-   displayMenu->SetTitle(title);
 --- a/osdbase.h
 +++ b/osdbase.h
-@@ -136,6 +136,7 @@
+@@ -138,6 +138,7 @@
    void Ins(cOsdItem *Item, bool Current = false, cOsdItem *Before = NULL);
    virtual void Display(void);
    virtual eOSState ProcessKey(eKeys Key);

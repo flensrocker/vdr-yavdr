@@ -6,7 +6,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
 
 --- a/ci.h
 +++ b/ci.h
-@@ -113,6 +113,8 @@
+@@ -116,6 +116,8 @@
    cCiAdapter(void);
    virtual ~cCiAdapter();
         ///< The derived class must call Cancel(3) in its destructor.
@@ -17,7 +17,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  class cTPDU;
 --- a/device.c
 +++ b/device.c
-@@ -69,12 +69,22 @@
+@@ -70,12 +70,22 @@
  cDevice *cDevice::device[MAXDEVICES] = { NULL };
  cDevice *cDevice::primaryDevice = NULL;
  cList<cDeviceHook> cDevice::deviceHooks;
@@ -42,9 +42,9 @@ Author: Lars Hanisch <dvb@flensrocker.de>
 +     cardIndex = nextCardIndex++;
 +  dsyslog("new %sdevice number %d", parentDevice ? "sub-" : "", CardIndex() + 1);
  
-   SetDescription("receiver on device %d", CardIndex() + 1);
+   SetDescription("device %d receiver", CardIndex() + 1);
  
-@@ -106,10 +116,14 @@
+@@ -107,10 +117,14 @@
    for (int i = 0; i < MAXRECEIVERS; i++)
        receiver[i] = NULL;
  
@@ -62,7 +62,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  }
  
  cDevice::~cDevice()
-@@ -120,6 +134,29 @@
+@@ -121,6 +135,29 @@
    delete dvbSubtitleConverter;
    if (this == primaryDevice)
       primaryDevice = NULL;
@@ -92,7 +92,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  }
  
  bool cDevice::WaitForAllDevicesReady(int Timeout)
-@@ -158,6 +195,8 @@
+@@ -159,6 +196,8 @@
  
  int cDevice::DeviceNumber(void) const
  {
@@ -101,7 +101,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    for (int i = 0; i < numDevices; i++) {
        if (device[i] == this)
           return i;
-@@ -358,6 +397,8 @@
+@@ -359,6 +398,8 @@
  
  void cDevice::SetCamSlot(cCamSlot *CamSlot)
  {
@@ -110,7 +110,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    LOCK_THREAD;
    camSlot = CamSlot;
  }
-@@ -565,6 +606,10 @@
+@@ -566,6 +607,10 @@
  
  void cDevice::StartSectionHandler(void)
  {
@@ -121,7 +121,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    if (!sectionHandler) {
       sectionHandler = new cSectionHandler(this);
       AttachFilter(eitFilter = new cEitFilter);
-@@ -576,6 +621,10 @@
+@@ -577,6 +622,10 @@
  
  void cDevice::StopSectionHandler(void)
  {
@@ -132,7 +132,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    if (sectionHandler) {
       delete nitFilter;
       delete sdtFilter;
-@@ -607,12 +656,17 @@
+@@ -608,12 +657,17 @@
  
  void cDevice::AttachFilter(cFilter *Filter)
  {
@@ -150,7 +150,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    if (sectionHandler)
       sectionHandler->Detach(Filter);
  }
-@@ -782,6 +836,7 @@
+@@ -783,6 +837,7 @@
          sectionHandler->SetStatus(false);
          sectionHandler->SetChannel(NULL);
          }
@@ -158,7 +158,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
       // Tell the camSlot about the channel switch and add all PIDs of this
       // channel to it, for possible later decryption:
       if (camSlot)
-@@ -829,19 +884,27 @@
+@@ -830,19 +885,27 @@
  {
    if (!cTransferControl::ReceiverDevice()) {
       cChannel *Channel = Channels.GetByNumber(CurrentChannel());
@@ -187,7 +187,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    if (Seconds >= 0)
       occupiedTimeout = time(NULL) + min(Seconds, MAXOCCUPIEDTIMEOUT);
  }
-@@ -1222,7 +1285,10 @@
+@@ -1225,7 +1288,10 @@
  
  bool cDevice::AttachPlayer(cPlayer *Player)
  {
@@ -198,7 +198,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
       if (player)
          Detach(player);
       DELETENULL(liveSubtitle);
-@@ -1241,6 +1307,8 @@
+@@ -1244,6 +1310,8 @@
  
  void cDevice::Detach(cPlayer *Player)
  {
@@ -207,7 +207,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    if (Player && player == Player) {
       cPlayer *p = player;
       player = NULL; // avoids recursive calls to Detach()
-@@ -1260,6 +1328,8 @@
+@@ -1263,6 +1331,8 @@
  
  void cDevice::StopReplay(void)
  {
@@ -216,7 +216,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    if (player) {
       Detach(player);
       if (IsPrimaryDevice())
-@@ -1540,6 +1610,8 @@
+@@ -1543,6 +1613,8 @@
  
  int cDevice::Priority(void) const
  {
@@ -225,7 +225,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    int priority = IDLEPRIORITY;
    if (IsPrimaryDevice() && !Replaying() && HasProgramme())
       priority = TRANSFERPRIORITY; // we use the same value here, no matter whether it's actual Transfer Mode or real live viewing
-@@ -1558,6 +1630,8 @@
+@@ -1561,6 +1633,8 @@
  
  bool cDevice::Receiving(bool Dummy) const
  {
@@ -234,7 +234,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    cMutexLock MutexLock(&mutexReceiver);
    for (int i = 0; i < MAXRECEIVERS; i++) {
        if (receiver[i])
-@@ -1639,10 +1713,13 @@
+@@ -1642,10 +1716,13 @@
  
  bool cDevice::AttachReceiver(cReceiver *Receiver)
  {
@@ -248,7 +248,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
  // activate the following line if you need it - actually the driver should be fixed!
  //#define WAIT_FOR_TUNER_LOCK
  #ifdef WAIT_FOR_TUNER_LOCK
-@@ -1681,6 +1758,8 @@
+@@ -1684,6 +1761,8 @@
  
  void cDevice::Detach(cReceiver *Receiver)
  {
@@ -257,7 +257,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    if (!Receiver || Receiver->device != this)
       return;
    bool receiversLeft = false;
-@@ -1710,6 +1789,8 @@
+@@ -1714,6 +1793,8 @@
  
  void cDevice::DetachAll(int Pid)
  {
@@ -266,7 +266,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    if (Pid) {
       cMutexLock MutexLock(&mutexReceiver);
       for (int i = 0; i < MAXRECEIVERS; i++) {
-@@ -1802,3 +1883,25 @@
+@@ -1806,3 +1887,25 @@
    ringBuffer->Del(Count);
    delivered = false;
  }
@@ -434,7 +434,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
 +cDvbCiAdapter::cDvbCiAdapter(cDevice *Device, int Fd, int Adapter, int Frontend)
  {
    device = Device;
-   SetDescription("CI adapter on device %d", device->DeviceNumber());
+   SetDescription("device %d CI adapter", device->DeviceNumber());
    fd = Fd;
 +  adapter = Adapter;
 +  frontend = Frontend;
@@ -601,7 +601,7 @@ Author: Lars Hanisch <dvb@flensrocker.de>
    bondedTuner = NULL;
    bondedMaster = false;
 +  isIdle = false;
-   SetDescription("tuner on frontend %d/%d", adapter, frontend);
+   SetDescription("frontend %d/%d tuner", adapter, frontend);
    Start();
  }
 @@ -389,6 +396,8 @@

@@ -16,7 +16,7 @@
 #opt-22-x_edit_marks.patch
 
 # The Jump patch allows automatic jumping over cutting marks.
-opt-24_jumpplay.patch
+#opt-24_jumpplay.patch
 
 # Patch needed for the ttxtsubs plugin.
 #opt-27_ttxtsubs.patch
@@ -51,16 +51,6 @@ opt-65_pin.patch
 opt-66_jumpingseconds.patch
 #opt-67_epgsearch-exttimeredit-0.0.2.patch
 
-#xprmtl-01_externalci.patch
-xprmtl-02_permashift-0.5.4.patch
-#xprmtl-03_extra-video-directory.patch
+#xprmtl-02_permashift-0.5.4.patch
 xprmtl-03_hide-first-recording-level-v3.patch
-
-#xprmtl-04_loglevel.patch
-
-#backports from vdr 2.1.x
-#xprmtl-05_epghandler-segment-transfer.patch
-
-#xprmtl-06_lirc-reconnect.patch
-vdr-2.1.6-conf.d-v6.diff
 
