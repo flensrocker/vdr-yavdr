@@ -1,3 +1,9 @@
+vdr (2.1.8-0yavdr0~trusty) trusty; urgency=medium
+
+  * new upstream version
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Sun, 01 Feb 2015 15:35:49 +0100
+
 vdr (2.1.7-0yavdr0~trusty) trusty; urgency=medium
 
   * new upstream version

@@ -4,7 +4,7 @@ Re-Authored: Lars Hanisch <dvb@flensrocker.de>
 
 --- /dev/null
 +++ b/Make.config
-@@ -0,0 +1,78 @@
+@@ -0,0 +1,79 @@
 +#
 +# User defined Makefile options for the Video Disk Recorder
 +#
@@ -64,6 +64,7 @@ Re-Authored: Lars Hanisch <dvb@flensrocker.de>
 +VIDEODIR     = /video
 +CACHEDIR     = $(VIDEODIR)
 +CONFDIR      = $(VIDEODIR)
++ARGSDIR      = $(VIDEODIR)/conf.d
 +RESDIR       = $(VIDEODIR)
 +endif
 +
