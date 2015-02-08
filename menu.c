@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 3.23 2014/03/16 10:38:31 kls Exp $
+ * $Id: menu.c 3.35 2015/02/01 10:42:11 kls Exp $
  */
 
 #include "menu.h"
@@ -387,6 +387,9 @@ void cMenuChannels::Setup(void)
             currentItem = item;
          }
       }
+  SetMenuSortMode(cMenuChannelItem::SortMode() == cMenuChannelItem::csmName ? msmName :
+                  cMenuChannelItem::SortMode() == cMenuChannelItem::csmProvider ? msmProvider :
+                  msmNumber);
   if (cMenuChannelItem::SortMode() != cMenuChannelItem::csmNumber)
      Sort();
   SetCurrent(currentItem);
@@ -2670,6 +2673,7 @@ void cMenuRecordings::Set(bool Refresh)
             LastDir->IncrementCounter(recording->IsNew());
          }
       }
+  SetMenuSortMode(RecordingsSortMode == rsmName ? msmName : msmTime);
   if (Refresh)
      Display();
 }
@@ -3415,7 +3419,7 @@ cMenuSetupCAMItem::cMenuSetupCAMItem(cCamSlot *CamSlot)
 
 bool cMenuSetupCAMItem::Changed(void)
 {
-  char buffer[32];
+  const char *Activating = "";
   const char *CamName = camSlot->GetCamName();
   if (!CamName) {
      switch (camSlot->ModuleStatus()) {
@@ -3425,7 +3429,10 @@ bool cMenuSetupCAMItem::Changed(void)
        default:        CamName = "-"; break;
        }
      }
-  snprintf(buffer, sizeof(buffer), " %d %s", camSlot->SlotNumber(), CamName);
+  else if (camSlot->IsActivating())
+     // TRANSLATORS: note the leading blank!
+     Activating = tr(" (activating)");
+  cString buffer = cString::sprintf(" %d %s%s", camSlot->SlotNumber(), CamName, Activating);
   if (strcmp(buffer, Text()) != 0) {
      SetText(buffer);
      return true;
@@ -3435,8 +3442,11 @@ bool cMenuSetupCAMItem::Changed(void)
 
 class cMenuSetupCAM : public cMenuSetupBase {
 private:
+  const char *activationHelp;
   eOSState Menu(void);
   eOSState Reset(void);
+  eOSState Activate(void);
+  void SetHelpKeys(void);
 public:
   cMenuSetupCAM(void);
   virtual eOSState ProcessKey(eKeys Key);
@@ -3444,13 +3454,33 @@ public:
 
 cMenuSetupCAM::cMenuSetupCAM(void)
 {
+  activationHelp = NULL;
   SetMenuCategory(mcSetupCam);
   SetSection(tr("CAM"));
   SetCols(15);
   SetHasHotkeys();
   for (cCamSlot *CamSlot = CamSlots.First(); CamSlot; CamSlot = CamSlots.Next(CamSlot))
       Add(new cMenuSetupCAMItem(CamSlot));
-  SetHelp(tr("Button$Menu"), tr("Button$Reset"));
+  SetHelpKeys();
+}
+
+void cMenuSetupCAM::SetHelpKeys(void)
+{
+  if (HasSubMenu())
+     return;
+  cMenuSetupCAMItem *item = (cMenuSetupCAMItem *)Get(Current());
+  const char *NewActivationHelp = "";
+  if (item) {
+     cCamSlot *CamSlot = item->CamSlot();
+     if (CamSlot->IsActivating())
+        NewActivationHelp = tr("Button$Cancel activation");
+     else if (CamSlot->CanActivate())
+        NewActivationHelp = tr("Button$Activate");
+     }
+  if (NewActivationHelp != activationHelp) {
+     activationHelp = NewActivationHelp;
+     SetHelp(tr("Button$Menu"), tr("Button$Reset"), activationHelp);
+     }
 }
 
 eOSState cMenuSetupCAM::Menu(void)
@@ -3480,6 +3510,43 @@ eOSState cMenuSetupCAM::Menu(void)
   return osContinue;
 }
 
+eOSState cMenuSetupCAM::Activate(void)
+{
+  cMenuSetupCAMItem *item = (cMenuSetupCAMItem *)Get(Current());
+  if (item) {
+     cCamSlot *CamSlot = item->CamSlot();
+     if (CamSlot->IsActivating())
+        CamSlot->CancelActivation();
+     else if (CamSlot->CanActivate()) {
+        if (CamSlot->Priority() < LIVEPRIORITY) { // don't interrupt recordings
+           if (cChannel *Channel = Channels.GetByNumber(cDevice::CurrentChannel())) {
+              for (int i = 0; i < cDevice::NumDevices(); i++) {
+                  if (cDevice *Device = cDevice::GetDevice(i)) {
+                     if (Device->ProvidesChannel(Channel)) {
+                        if (Device->Priority() < LIVEPRIORITY) { // don't interrupt recordings
+                           if (CamSlot->CanActivate()) {
+                              if (CamSlot->Assign(Device, true)) { // query
+                                 cControl::Shutdown(); // must end transfer mode before assigning CAM, otherwise it might be unassigned again
+                                 if (CamSlot->Assign(Device)) {
+                                    if (Device->SwitchChannel(Channel, true)) {
+                                       CamSlot->StartActivation();
+                                       return osContinue;
+                                       }
+                                    }
+                                 }
+                              }
+                           }
+                        }
+                     }
+                  }
+              }
+           }
+        Skins.Message(mtError, tr("Can't activate CAM!"));
+        }
+     }
+  return osContinue;
+}
+
 eOSState cMenuSetupCAM::Reset(void)
 {
   cMenuSetupCAMItem *item = (cMenuSetupCAMItem *)Get(Current());
@@ -3501,12 +3568,14 @@ eOSState cMenuSetupCAM::ProcessKey(eKeys Key)
        case kOk:
        case kRed:    return Menu();
        case kGreen:  state = Reset(); break;
+       case kYellow: state = Activate(); break;
        default: break;
        }
      for (cMenuSetupCAMItem *ci = (cMenuSetupCAMItem *)First(); ci; ci = (cMenuSetupCAMItem *)ci->Next()) {
          if (ci->Changed())
             DisplayItem(ci);
          }
+     SetHelpKeys();
      }
   return state;
 }
@@ -3567,6 +3636,11 @@ cMenuSetupReplay::cMenuSetupReplay(void)
   Add(new cMenuEditBoolItem(tr("Setup.Replay$Show remaining time"), &data.ShowRemainingTime));
   Add(new cMenuEditIntItem( tr("Setup.Replay$Progress display time (s)"), &data.ProgressDisplayTime, 0, 60));
   Add(new cMenuEditBoolItem(tr("Setup.Replay$Pause replay when setting mark"), &data.PauseOnMarkSet));
+  Add(new cMenuEditBoolItem(tr("Setup.Replay$Pause replay when jumping to a mark"), &data.PauseOnMarkJump));
+  Add(new cMenuEditBoolItem(tr("Setup.Replay$Skip edited parts"), &data.SkipEdited));
+  Add(new cMenuEditBoolItem(tr("Setup.Replay$Pause replay at last mark"), &data.PauseAtLastMark));
+  Add(new cMenuEditIntItem( tr("Setup.Replay$Binary skip initial value (s)"), &data.BinarySkipInitial, 10, 600));
+  Add(new cMenuEditIntItem( tr("Setup.Replay$Binary skip timeout (s)"), &data.BinarySkipTimeout, 0, 10));
   Add(new cMenuEditIntItem(tr("Setup.Replay$Resume ID"), &data.ResumeID, 0, 99));
 }
 
@@ -3597,6 +3671,8 @@ cMenuSetupMisc::cMenuSetupMisc(void)
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Remote control repeat delta (ms)"), &data.RcRepeatDelta, 0));
   Add(new cMenuEditChanItem(tr("Setup.Miscellaneous$Initial channel"),            &data.InitialChannel, tr("Setup.Miscellaneous$as before")));
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Initial volume"),             &data.InitialVolume, -1, 255, tr("Setup.Miscellaneous$as before")));
+  Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Volume steps"),               &data.VolumeSteps, 5, 255));
+  Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Volume linearize"),           &data.VolumeLinearize, -20, 20));
   Add(new cMenuEditBoolItem(tr("Setup.Miscellaneous$Channels wrap"),              &data.ChannelsWrap));
   Add(new cMenuEditBoolItem(tr("Setup.Miscellaneous$Show channel names with source"), &data.ShowChannelNamesWithSource));
   Add(new cMenuEditBoolItem(tr("Setup.Miscellaneous$Emergency exit"),             &data.EmergencyExit));
@@ -4027,6 +4103,7 @@ cDisplayChannel::cDisplayChannel(int Number, bool Switched)
   displayChannel = Skins.Current()->DisplayChannel(withInfo);
   number = 0;
   timeout = Switched || Setup.TimeoutRequChInfo;
+  cOsdProvider::OsdSizeChanged(osdState); // just to get the current state
   positioner = NULL;
   channel = Channels.GetByNumber(Number);
   lastPresent = lastFollowing = NULL;
@@ -4112,6 +4189,10 @@ cChannel *cDisplayChannel::NextAvailableChannel(cChannel *Channel, int Direction
 
 eOSState cDisplayChannel::ProcessKey(eKeys Key)
 {
+  if (cOsdProvider::OsdSizeChanged(osdState)) {
+     delete displayChannel;
+     displayChannel = Skins.Current()->DisplayChannel(withInfo);
+     }
   cChannel *NewChannel = NULL;
   if (Key != kNone)
      lastTime.Set();
@@ -4754,7 +4835,7 @@ bool cRecordControls::Start(cTimer *Timer, bool Pause)
      int Priority = Timer ? Timer->Priority() : Pause ? Setup.PausePriority : Setup.DefaultPriority;
      cDevice *device = cDevice::GetDevice(channel, Priority, false);
      if (device) {
-        dsyslog("switching device %d to channel %d", device->DeviceNumber() + 1, channel->Number());
+        dsyslog("switching device %d to channel %d (%s)", device->DeviceNumber() + 1, channel->Number(), channel->Name());
         if (!device->SwitchChannel(channel, false)) {
            ShutdownHandler.RequestEmergencyExit();
            return false;
@@ -4769,7 +4850,7 @@ bool cRecordControls::Start(cTimer *Timer, bool Pause)
            }
         }
      else if (!Timer || !Timer->Pending()) {
-        isyslog("no free DVB device to record channel %d!", ch);
+        isyslog("no free DVB device to record channel %d (%s)!", ch, channel->Name());
         Skins.Message(mtError, tr("No free DVB device to record!"));
         }
      }
@@ -4864,7 +4945,7 @@ void cRecordControls::ChannelDataModified(cChannel *Channel)
       if (RecordControls[i]) {
          if (RecordControls[i]->Timer() && RecordControls[i]->Timer()->Channel() == Channel) {
             if (RecordControls[i]->Device()->ProvidesTransponder(Channel)) { // avoids retune on devices that don't really access the transponder
-               isyslog("stopping recording due to modification of channel %d", Channel->Number());
+               isyslog("stopping recording due to modification of channel %d (%s)", Channel->Number(), Channel->Name());
                RecordControls[i]->Stop();
                // This will restart the recording, maybe even from a different
                // device in case conditional access has changed.
@@ -4899,6 +4980,39 @@ bool cRecordControls::StateChanged(int &State)
   return Result;
 }
 
+// --- cBinarySkipper --------------------------------------------------------
+
+cBinarySkipper::cBinarySkipper(void)
+{
+  initialValue = NULL;
+  currentValue = 0;
+  framesPerSecond = 0;
+  lastKey = kNone;
+}
+
+void cBinarySkipper::Initialize(int *InitialValue, double FramesPerSecond)
+{
+  initialValue = InitialValue;
+  framesPerSecond = FramesPerSecond;
+  currentValue = 0;
+}
+
+int cBinarySkipper::GetValue(eKeys Key)
+{
+  if (!initialValue)
+     return 0;
+  if (timeout.TimedOut()) {
+     currentValue = int(round(*initialValue * framesPerSecond));
+     lastKey = Key;
+     }
+  else if (Key != lastKey) {
+     currentValue /= 2;
+     lastKey = kNone; // once the direction has changed, every further call halves the value
+     }
+  timeout.Set(Setup.BinarySkipTimeout * 1000);
+  return max(currentValue, 1);
+}
+
 // --- cReplayControl --------------------------------------------------------
 
 cReplayControl *cReplayControl::currentReplayControl = NULL;
@@ -4920,6 +5034,7 @@ cReplayControl::cReplayControl(bool PauseLive)
   cRecording Recording(fileName);
   cStatus::MsgReplaying(this, Recording.Name(), Recording.FileName(), true);
   marks.Load(fileName, Recording.FramesPerSecond(), Recording.IsPesRecording());
+  binarySkipper.Initialize(&Setup.BinarySkipInitial, Recording.FramesPerSecond());
   SetTrackDescriptions(false);
   if (Setup.ProgressDisplayTime)
      ShowTimed(Setup.ProgressDisplayTime);
@@ -5145,7 +5260,8 @@ void cReplayControl::TimeSearchProcess(eKeys Key)
     case kOk:
          if (timeSearchPos > 0) {
             Seconds = min(Total - STAY_SECONDS_OFF_END, Seconds);
-            Goto(SecondsToFrames(Seconds, FramesPerSecond()), Key == kDown || Key == kPause || Key == kOk);
+            bool Still = Key == kDown || Key == kPause || Key == kOk;
+            Goto(SecondsToFrames(Seconds, FramesPerSecond()), Still);
             }
          timeSearchActive = false;
          break;
@@ -5209,6 +5325,14 @@ void cReplayControl::MarkJump(bool Forward)
   if (GetIndex(Current, Total)) {
      if (marks.Count()) {
         if (cMark *m = Forward ? marks.GetNext(Current) : marks.GetPrev(Current)) {
+           if (!Setup.PauseOnMarkJump) {
+              bool Playing, Fwd;
+              int Speed;
+              if (GetReplayMode(Playing, Fwd, Speed) && Playing && Forward && m->Position() < Total - SecondsToFrames(3, FramesPerSecond())) {
+                 Goto(m->Position());
+                 return;
+                 }
+              }
            Goto(m->Position(), true);
            displayFrames = true;
            return;
@@ -5220,26 +5344,40 @@ void cReplayControl::MarkJump(bool Forward)
      }
 }
 
-void cReplayControl::MarkMove(bool Forward)
+void cReplayControl::MarkMove(int Frames, bool MarkRequired)
 {
   int Current, Total;
   if (GetIndex(Current, Total)) {
-     if (cMark *m = marks.Get(Current)) {
+     bool Play, Forward;
+     int Speed;
+     GetReplayMode(Play, Forward, Speed);
+     cMark *m = marks.Get(Current);
+     if (!Play && m) {
         displayFrames = true;
-        int p = SkipFrames(Forward ? 1 : -1);
         cMark *m2;
-        if (Forward) {
+        if (Frames > 0) {
+           // Handle marks at the same offset:
            while ((m2 = marks.Next(m)) != NULL && m2->Position() == m->Position())
                  m = m2;
+           // Don't skip the next mark:
+           if ((m2 = marks.Next(m)) != NULL)
+              Frames = min(Frames, m2->Position() - m->Position() - 1);
            }
         else {
+           // Handle marks at the same offset:
            while ((m2 = marks.Prev(m)) != NULL && m2->Position() == m->Position())
                  m = m2;
+           // Don't skip the next mark:
+           if ((m2 = marks.Prev(m)) != NULL)
+              Frames = -min(-Frames, m->Position() - m2->Position() - 1);
            }
+        int p = SkipFrames(Frames);
         m->SetPosition(p);
         Goto(m->Position(), true);
         marksModified = true;
         }
+     else if (!MarkRequired)
+        Goto(SkipFrames(Frames), !Play);
      }
 }
 
@@ -5273,12 +5411,10 @@ void cReplayControl::EditTest(void)
      if (!m)
         m = marks.GetNext(Current);
      if (m) {
-        if ((m->Index() & 0x01) != 0)
+        if ((m->Index() & 0x01) != 0 && !Setup.SkipEdited) // when skipping edited parts we also need to jump to end marks
            m = marks.Next(m);
-        if (m) {
+        if (m)
            Goto(m->Position() - SecondsToFrames(3, FramesPerSecond()));
-           Play();
-           }
         }
      }
 }
@@ -5370,9 +5506,13 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
         case kMarkJumpForward|k_Repeat:
         case kMarkJumpForward: MarkJump(true); break;
         case kMarkMoveBack|k_Repeat:
-        case kMarkMoveBack:    MarkMove(false); break;
+        case kMarkMoveBack:    MarkMove(-1, true); break;
         case kMarkMoveForward|k_Repeat:
-        case kMarkMoveForward: MarkMove(true); break;
+        case kMarkMoveForward: MarkMove(+1, true); break;
+        case kMarkSkipBack|k_Repeat:
+        case kMarkSkipBack:    MarkMove(-binarySkipper.GetValue(RAWKEY(Key)), false); break;
+        case kMarkSkipForward|k_Repeat:
+        case kMarkSkipForward: MarkMove(+binarySkipper.GetValue(RAWKEY(Key)), false); break;
         case kEditCut:         EditCut(); break;
         case kEditTest:        EditTest(); break;
         default: {

@@ -11,30 +11,14 @@
 # http://www.saunalahti.fi/~rahrenbe/vdr/patches/index.php
 #opt-10_vdr-2.0.3-vasarajanauloja.patch
 
-# Easy editing of cutting marks
-# (Requires opt-10_vasarajanauloja!)
-#opt-22-x_edit_marks.patch
-
-# The Jump patch allows automatic jumping over cutting marks.
-opt-24_jumpplay.patch
-
 # Patch needed for the ttxtsubs plugin.
 #opt-27_ttxtsubs.patch
 
 # Patch needed for the menuorg plugin.
 opt-37-x_menuorg.patch
 
-# Patch to show an info, if it is possible to record an event in the timer-info.
-#opt-41-x_timer-info.patch
-
 # Patch to allow plugins to replace the VDR mainmenus
 opt-42-x_MainMenuHooks-v1.0.1.patch
-
-# Patch needed for the rotor plugin.
-#opt-44_rotor.patch
-
-# Patch needed for the yaepg plugin.
-#opt-45_yaepg.patch
 
 # Patch required for the GraphTFT plugin
 opt-50_graphtft.patch
@@ -48,19 +32,10 @@ opt-61_dynamite.patch
 
 ##opt-63_naludump.patch
 opt-65_pin.patch
-opt-66_jumpingseconds.patch
 #opt-67_epgsearch-exttimeredit-0.0.2.patch
 
-#xprmtl-01_externalci.patch
-xprmtl-02_permashift-0.5.4.patch
-#xprmtl-03_extra-video-directory.patch
+#xprmtl-02_permashift-0.5.4.patch
 xprmtl-03_hide-first-recording-level-v3.patch
 
-#xprmtl-04_loglevel.patch
-
-#backports from vdr 2.1.x
-#xprmtl-05_epghandler-segment-transfer.patch
-
-#xprmtl-06_lirc-reconnect.patch
-vdr-2.1.6-conf.d-v6.diff
+vdr-2.1.7-eit-memory-leak.patch
 

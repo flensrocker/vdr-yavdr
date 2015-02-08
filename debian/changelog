@@ -1,3 +1,52 @@
+vdr (2.1.8-0yavdr0~trusty) trusty; urgency=medium
+
+  * new upstream version
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Sun, 01 Feb 2015 15:35:49 +0100
+
+vdr (2.1.7-0yavdr0~trusty) trusty; urgency=medium
+
+  * new upstream version
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Sun, 18 Jan 2015 14:05:32 +0100
+
+vdr (2.1.6-10yavdr0~trusty) trusty; urgency=medium
+
+  * create /var/run/vdr in Upstart job and init script
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Wed, 14 Jan 2015 18:50:37 +0100
+
+vdr (2.1.6-9yavdr0~trusty) trusty; urgency=medium
+
+  * simplify Upstart start on condition
+    sometimes vdr doesn't respond to svdrp or dbus requests
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Sat, 10 Jan 2015 12:26:42 +0100
+
+vdr (2.1.6-8yavdr0~trusty) trusty; urgency=medium
+
+  * add gdb to vdr-dbg dependencies for generating backtraces
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Wed, 12 Nov 2014 21:11:19 +0100
+
+vdr (2.1.6-7yavdr0~trusty) trusty; urgency=medium
+
+  * correct vdr.postrm
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Wed, 23 Jul 2014 19:29:07 +0200
+
+vdr (2.1.6-6yavdr2~precise) precise; urgency=medium
+
+  * sync build number with trusty
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Wed, 21 May 2014 15:03:24 +0200
+
+vdr (2.1.6-6yavdr1~precise) precise; urgency=medium
+
+  * re-add series to version
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Wed, 21 May 2014 14:49:43 +0200
+
 vdr (2.1.6-6yavdr0) precise; urgency=medium
 
   * remove the dpkg-divert, compatibility with

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 3.12 2014/02/25 09:59:55 kls Exp $
+ * $Id: ci.c 3.18 2015/01/30 12:24:53 kls Exp $
  */
 
 #include "ci.h"
@@ -20,6 +20,9 @@
 #include "device.h"
 #include "pat.h"
 #include "receiver.h"
+#include "remux.h"
+#include "libsi/si.h"
+#include "skins.h"
 #include "tools.h"
 
 // Set these to 'true' for debug output:
@@ -105,13 +108,181 @@ static char *GetString(int &Length, const uint8_t **Data)
 
 // --- cCaPidReceiver --------------------------------------------------------
 
-// A dummy receiver, just used to make the device receive the CA pids.
+// A receiver that is used to make the device receive the ECM pids, as well as the
+// CAT and the EMM pids.
 
 class cCaPidReceiver : public cReceiver {
+private:
+  int catVersion;
+  cVector<int> emmPids;
+  uchar buffer[2048]; // 11 bit length, max. 2048 byte
+  uchar *bufp;
+  int length;
+  void AddEmmPid(int Pid);
+  void DelEmmPids(void);
+protected:
+  virtual void Activate(bool On);
 public:
+  cCaPidReceiver(void);
   virtual ~cCaPidReceiver() { Detach(); }
-  virtual void Receive(uchar *Data, int Length) {}
+  virtual void Receive(uchar *Data, int Length);
+  bool HasCaPids(void) { return NumPids() - emmPids.Size() - 1 > 0; }
+  void Reset(void) { DelEmmPids(); catVersion = -1; }
   };
+
+cCaPidReceiver::cCaPidReceiver(void)
+{
+  catVersion = -1;
+  bufp = NULL;
+  length = 0;
+  AddPid(CATPID);
+}
+
+void cCaPidReceiver::AddEmmPid(int Pid)
+{
+  for (int i = 0; i < emmPids.Size(); i++) {
+      if (emmPids[i] == Pid)
+         return;
+      }
+  emmPids.Append(Pid);
+  AddPid(Pid);
+}
+
+void cCaPidReceiver::DelEmmPids(void)
+{
+  for (int i = 0; i < emmPids.Size(); i++)
+      DelPid(emmPids[i]);
+  emmPids.Clear();
+}
+
+void cCaPidReceiver::Activate(bool On)
+{
+  catVersion = -1; // can be done independent of 'On'
+}
+
+void cCaPidReceiver::Receive(uchar *Data, int Length)
+{
+  if (TsPid(Data) == CATPID) {
+     uchar *p = NULL;
+     if (TsPayloadStart(Data)) {
+        if (Data[5] == SI::TableIdCAT) {
+           length = (int(Data[6] & 0x03) << 8) | Data[7]; // section length
+           if (length > 5) {
+              int v = (Data[10] & 0x3E) >> 1; // version number
+              if (v != catVersion) {
+                 if (Data[11] == 0 && Data[12] == 0) { // section number, last section number
+                    if (length > TS_SIZE - 8) {
+                       int n = TS_SIZE - 13;
+                       memcpy(buffer, Data + 13, n);
+                       bufp = buffer + n;
+                       length -= n + 5; // 5 = header
+                       }
+                    else {
+                       p = Data + 13; // no need to copy the data
+                       length -= 5; // header
+                       }
+                    }
+                 else
+                    dsyslog("multi table CAT section - unhandled!");
+                 catVersion = v;
+                 }
+              }
+           }
+        }
+     else if (bufp && length > 0) {
+        int n = min(length, TS_SIZE - 4);
+        if (bufp + n - buffer <= int(sizeof(buffer))) {
+           memcpy(bufp, Data + 4, n);
+           bufp += n;
+           length -= n;
+           if (length <= 0) {
+              p = buffer;
+              length = bufp - buffer;
+              }
+           }
+        else {
+           esyslog("ERROR: buffer overflow in cCaPidReceiver::Receive()");
+           bufp = 0;
+           length = 0;
+           }
+        }
+     if (p) {
+        int OldCatVersion = catVersion; // must preserve the current version number
+        cDevice *AttachedDevice = Device();
+        if (AttachedDevice)
+           AttachedDevice->Detach(this);
+        DelEmmPids();
+        for (int i = 0; i < length - 4; i++) { // -4 = checksum
+            if (p[i] == 0x09) {
+               int CaId = int(p[i + 2] << 8) | p[i + 3];
+               int EmmPid = int(((p[i + 4] & 0x1F) << 8)) | p[i + 5];
+               AddEmmPid(EmmPid);
+               switch (CaId >> 8) {
+                 case 0x01: for (int j = i + 7; j < p[i + 1] + 2; j += 4) {
+                                EmmPid = (int(p[j] & 0x0F) << 8) | p[j + 1];
+                                AddEmmPid(EmmPid);
+                                }
+                            break;
+                 }
+               i += p[i + 1] + 2 - 1; // -1 to compensate for the loop increment
+               }
+            }
+        if (AttachedDevice)
+           AttachedDevice->AttachReceiver(this);
+        catVersion = OldCatVersion;
+        p = NULL;
+        bufp = 0;
+        length = 0;
+        }
+     }
+}
+
+// --- cCaActivationReceiver -------------------------------------------------
+
+// A receiver that is used to make the device stay on a given channel and
+// keep the CAM slot assigned.
+
+#define UNSCRAMBLE_TIME     5 // seconds of receiving purely unscrambled data before considering the smart card "activated"
+#define TS_PACKET_FACTOR 1024 // only process every TS_PACKET_FACTORth packet to keep the load down
+
+class cCaActivationReceiver : public cReceiver {
+private:
+  cCamSlot *camSlot;
+  time_t lastScrambledTime;
+  int numTsPackets;
+protected:
+  virtual void Receive(uchar *Data, int Length);
+public:
+  cCaActivationReceiver(const cChannel *Channel, cCamSlot *CamSlot);
+  virtual ~cCaActivationReceiver();
+  };
+
+cCaActivationReceiver::cCaActivationReceiver(const cChannel *Channel, cCamSlot *CamSlot)
+:cReceiver(Channel, MINPRIORITY + 1)
+{
+  camSlot = CamSlot;
+  lastScrambledTime = time(NULL);
+  numTsPackets = 0;
+}
+
+cCaActivationReceiver::~cCaActivationReceiver()
+{
+  Detach();
+}
+
+void cCaActivationReceiver::Receive(uchar *Data, int Length)
+{
+  if (numTsPackets++ % TS_PACKET_FACTOR == 0) {
+     time_t Now = time(NULL);
+     if (TsIsScrambled(Data))
+        lastScrambledTime = Now;
+     else if (Now - lastScrambledTime > UNSCRAMBLE_TIME) {
+        dsyslog("CAM %d: activated!", camSlot->SlotNumber());
+        Skins.QueueMessage(mtInfo, tr("CAM activated!"));
+        Detach();
+        }
+     }
+}
 
 // --- cTPDU -----------------------------------------------------------------
 
@@ -1508,7 +1679,6 @@ public:
 cCiAdapter::cCiAdapter(void)
 :cThread("CI adapter")
 {
-  assignedDevice = NULL;
   for (int i = 0; i < MAX_CAM_SLOTS_PER_ADAPTER; i++)
       camSlots[i] = NULL;
 }
@@ -1532,6 +1702,17 @@ void cCiAdapter::AddCamSlot(cCamSlot *CamSlot)
         }
      esyslog("ERROR: no free CAM slot in CI adapter");
      }
+}
+
+cCamSlot *cCiAdapter::ItCamSlot(int &Iter)
+{
+  if (Iter >= 0) {
+     for (; Iter < MAX_CAM_SLOTS_PER_ADAPTER; ) {
+         if (cCamSlot *Found = camSlots[Iter++])
+            return Found;
+         }
+     }
+  return NULL;
 }
 
 void cCiAdapter::Action(void)
@@ -1561,7 +1742,9 @@ void cCiAdapter::Action(void)
 cCamSlot::cCamSlot(cCiAdapter *CiAdapter, bool ReceiveCaPids)
 {
   ciAdapter = CiAdapter;
+  assignedDevice = NULL;
   caPidReceiver = ReceiveCaPids ? new cCaPidReceiver : NULL;
+  caActivationReceiver = NULL;
   slotIndex = -1;
   lastModuleStatus = msReset; // avoids initial reset log message
   resetTime = 0;
@@ -1578,9 +1761,10 @@ cCamSlot::cCamSlot(cCiAdapter *CiAdapter, bool ReceiveCaPids)
 
 cCamSlot::~cCamSlot()
 {
-  if (ciAdapter && ciAdapter->assignedDevice)
-     ciAdapter->assignedDevice->SetCamSlot(NULL);
+  if (assignedDevice)
+     assignedDevice->SetCamSlot(NULL);
   delete caPidReceiver;
+  delete caActivationReceiver;
   CamSlots.Del(this, false);
   DeleteAllConnections();
 }
@@ -1590,19 +1774,21 @@ bool cCamSlot::Assign(cDevice *Device, bool Query)
   cMutexLock MutexLock(&mutex);
   if (ciAdapter) {
      if (ciAdapter->Assign(Device, true)) {
-        if (!Device && ciAdapter->assignedDevice)
-           ciAdapter->assignedDevice->SetCamSlot(NULL);
+        if (!Device && assignedDevice)
+           assignedDevice->SetCamSlot(NULL);
         if (!Query) {
            StopDecrypting();
            source = transponder = 0;
            if (ciAdapter->Assign(Device)) {
-              ciAdapter->assignedDevice = Device;
+              assignedDevice = Device;
               if (Device) {
                  Device->SetCamSlot(this);
                  dsyslog("CAM %d: assigned to device %d", slotNumber, Device->DeviceNumber() + 1);
                  }
-              else
+              else {
+                 CancelActivation();
                  dsyslog("CAM %d: unassigned", slotNumber);
+                 }
               }
            else
               return false;
@@ -1611,17 +1797,6 @@ bool cCamSlot::Assign(cDevice *Device, bool Query)
         }
      }
   return false;
-}
-
-cDevice *cCamSlot::Device(void)
-{
-  cMutexLock MutexLock(&mutex);
-  if (ciAdapter) {
-     cDevice *d = ciAdapter->assignedDevice;
-     if (d && d->CamSlot() == this)
-        return d;
-     }
-  return NULL;
 }
 
 void cCamSlot::NewConnection(void)
@@ -1649,6 +1824,8 @@ void cCamSlot::DeleteAllConnections(void)
 void cCamSlot::Process(cTPDU *TPDU)
 {
   cMutexLock MutexLock(&mutex);
+  if (caActivationReceiver && !caActivationReceiver->IsAttached())
+     CancelActivation();
   if (TPDU) {
      int n = TPDU->Tcid();
      if (1 <= n && n <= MAX_CONNECTIONS_PER_CAM_SLOT) {
@@ -1672,6 +1849,7 @@ void cCamSlot::Process(cTPDU *TPDU)
                dbgprotocol("Slot %d: no module present\n", slotNumber);
                isyslog("CAM %d: no module present", slotNumber);
                DeleteAllConnections();
+               CancelActivation();
                break;
           case msReset:
                dbgprotocol("Slot %d: module reset\n", slotNumber);
@@ -1731,6 +1909,37 @@ bool cCamSlot::Reset(void)
      dbgprotocol("failed!\n");
      }
   return false;
+}
+
+bool cCamSlot::CanActivate(void)
+{
+  return ModuleStatus() == msReady;
+}
+
+void cCamSlot::StartActivation(void)
+{
+  cMutexLock MutexLock(&mutex);
+  if (!caActivationReceiver) {
+     if (cDevice *d = Device()) {
+        if (cChannel *Channel = Channels.GetByNumber(cDevice::CurrentChannel())) {
+           caActivationReceiver = new cCaActivationReceiver(Channel, this);
+           d->AttachReceiver(caActivationReceiver);
+           dsyslog("CAM %d: activating on device %d with channel %d (%s)", SlotNumber(), d->DeviceNumber() + 1, Channel->Number(), Channel->Name());
+           }
+        }
+     }
+}
+
+void cCamSlot::CancelActivation(void)
+{
+  cMutexLock MutexLock(&mutex);
+  delete caActivationReceiver;
+  caActivationReceiver = NULL;
+}
+
+bool cCamSlot::IsActivating(void)
+{
+  return caActivationReceiver;
 }
 
 eModuleStatus cCamSlot::ModuleStatus(void)
@@ -1811,7 +2020,7 @@ void cCamSlot::SendCaPmt(uint8_t CmdId)
      const int *CaSystemIds = cas->GetCaSystemIds();
      if (CaSystemIds && *CaSystemIds) {
         if (caProgramList.Count()) {
-           if (caPidReceiver && caPidReceiver->NumPids()) {
+           if (caPidReceiver && caPidReceiver->HasCaPids()) {
               if (cDevice *d = Device())
                  d->Detach(caPidReceiver);
               }
@@ -1845,7 +2054,7 @@ void cCamSlot::SendCaPmt(uint8_t CmdId)
                       }
                    }
                }
-           if (caPidReceiver && caPidReceiver->NumPids()) {
+           if (caPidReceiver && caPidReceiver->HasCaPids()) {
               if (cDevice *d = Device())
                  d->AttachReceiver(caPidReceiver);
               }
@@ -1854,6 +2063,11 @@ void cCamSlot::SendCaPmt(uint8_t CmdId)
         else {
            cCiCaPmt CaPmt(CmdId, 0, 0, 0, NULL);
            cas->SendPMT(&CaPmt);
+           if (caPidReceiver) {
+              if (cDevice *d = Device())
+                 d->Detach(caPidReceiver);
+              caPidReceiver->Reset();
+              }
            }
         }
      }

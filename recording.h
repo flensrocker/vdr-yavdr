@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 3.4 2014/01/01 12:45:18 kls Exp $
+ * $Id: recording.h 3.6 2015/01/31 13:34:44 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -117,7 +117,6 @@ private:
   static char *StripEpisodeName(char *s, bool Strip);
   char *SortName(void) const;
   void ClearSortName(void);
-  int GetResume(void) const;
   time_t start;
   int priority;
   int lifetime;
@@ -160,6 +159,9 @@ public:
   int FileSizeMB(void) const;
        ///< Returns the total file size of this recording (in MB), or -1 if the file
        ///< size is unknown.
+  int GetResume(void) const;
+       ///< Returns the index of the frame where replay of this recording shall
+       ///< be resumed, or -1 in case of an error.
   bool IsNew(void) const { return GetResume() <= 0; }
   bool IsEdited(void) const;
   bool IsPesRecording(void) const { return isPesRecording; }
@@ -429,7 +431,7 @@ private:
   void ConvertToPes(tIndexTs *IndexTs, int Count);
   bool CatchUp(int Index = -1);
 public:
-  cIndexFile(const char *FileName, bool Record, bool IsPesRecording = false, bool PauseLive = false);
+  cIndexFile(const char *FileName, bool Record, bool IsPesRecording = false, bool PauseLive = false, bool Update = false);
   ~cIndexFile();
   bool Ok(void) { return index != NULL; }
   bool Write(bool Independent, uint16_t FileNumber, off_t FileOffset);
@@ -488,7 +490,11 @@ char *ExchangeChars(char *s, bool ToFileSystem);
       // be modified and may be reallocated if more space is needed. The return
       // value points to the resulting string, which may be different from s.
 
-bool GenerateIndex(const char *FileName);
+bool GenerateIndex(const char *FileName, bool Update = false);
+       ///< Generates the index of the existing recording with the given FileName.
+       ///< If Update is true, an existing index file will be checked whether it is
+       ///< complete, and will be updated if it isn't. Otherwise an existing index
+       ///< file will be removed before a new one is generated.
 
 enum eRecordingsSortMode { rsmName, rsmTime };
 extern eRecordingsSortMode RecordingsSortMode;

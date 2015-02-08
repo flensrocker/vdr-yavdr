@@ -26,6 +26,9 @@ test -x $VDRPRG || exit 0
 
 . /usr/lib/vdr/config-loader.sh
 
+mkdir -p /var/run/vdr
+chown -R vdr:vdr /var/run/vdr
+
 # Set shutdown command
 test "$ENABLE_SHUTDOWN" = "1" && VDRSHUTDOWN="/usr/lib/vdr/vdr-shutdown.wrapper" \
                               || VDRSHUTDOWN=""

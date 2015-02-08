@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.0.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2013-11-03 15:59+0100\n"
+"POT-Creation-Date: 2015-01-30 13:14+0100\n"
 "PO-Revision-Date: 2008-02-26 17:20+0100\n"
 "Last-Translator: Cedric Dewijs <cedric.dewijs@telfort.nl>\n"
 "Language-Team: Dutch <vdr@linuxtv.org>\n"
@@ -23,6 +23,9 @@ msgstr ""
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Ongeldig kanaal ***"
+
+msgid "CAM activated!"
+msgstr ""
 
 msgid "Channel not available!"
 msgstr "Kanaal niet beschikbaar"
@@ -1113,8 +1116,18 @@ msgstr "CAM aanwezig"
 msgid "CAM ready"
 msgstr "CAM gereed"
 
+#. TRANSLATORS: note the leading blank!
+msgid " (activating)"
+msgstr ""
+
 msgid "CAM"
 msgstr "CAM"
+
+msgid "Button$Cancel activation"
+msgstr ""
+
+msgid "Button$Activate"
+msgstr ""
 
 msgid "Button$Menu"
 msgstr "Menu"
@@ -1127,6 +1140,9 @@ msgstr "CAM-menu wordt geopend..."
 
 msgid "Can't open CAM menu!"
 msgstr "Kan CAM-menu niet openen!"
+
+msgid "Can't activate CAM!"
+msgstr ""
 
 msgid "CAM is in use - really reset?"
 msgstr "CAM wordt gebruikt - werkelijk herstarten?"
@@ -1221,6 +1237,21 @@ msgstr "Verlopen tijd tijd (s)"
 msgid "Setup.Replay$Pause replay when setting mark"
 msgstr "Pauzeer wanneer markering wordt geplaatst"
 
+msgid "Setup.Replay$Pause replay when jumping to a mark"
+msgstr ""
+
+msgid "Setup.Replay$Skip edited parts"
+msgstr ""
+
+msgid "Setup.Replay$Pause replay at last mark"
+msgstr ""
+
+msgid "Setup.Replay$Binary skip initial value (s)"
+msgstr ""
+
+msgid "Setup.Replay$Binary skip timeout (s)"
+msgstr ""
+
 msgid "Setup.Replay$Resume ID"
 msgstr "Hervattings ID"
 
@@ -1256,6 +1287,12 @@ msgstr "zoals eerder"
 
 msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Opstartvolume"
+
+msgid "Setup.Miscellaneous$Volume steps"
+msgstr ""
+
+msgid "Setup.Miscellaneous$Volume linearize"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "Doorscrollen kanalenlijst"

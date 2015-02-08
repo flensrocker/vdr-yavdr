@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 3.2 2013/08/31 12:41:28 kls Exp $
+ * $Id: config.c 3.6 2015/01/29 09:01:30 kls Exp $
  */
 
 #include "config.h"
@@ -470,9 +470,16 @@ cSetup::cSetup(void)
   ShowRemainingTime = 0;
   ProgressDisplayTime = 0;
   PauseOnMarkSet = 0;
+  PauseOnMarkJump = 1;
+  SkipEdited = 0;
+  PauseAtLastMark = 0;
+  BinarySkipInitial = 120;
+  BinarySkipTimeout = 3;
   ResumeID = 0;
   CurrentChannel = -1;
   CurrentVolume = MAXVOLUME;
+  VolumeSteps = 51;
+  VolumeLinearize = 0;
   CurrentDolby = 0;
   InitialChannel = "";
   DeviceBondings = "";
@@ -681,11 +688,18 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "ShowRemainingTime"))   ShowRemainingTime  = atoi(Value);
   else if (!strcasecmp(Name, "ProgressDisplayTime")) ProgressDisplayTime= atoi(Value);
   else if (!strcasecmp(Name, "PauseOnMarkSet"))      PauseOnMarkSet     = atoi(Value);
+  else if (!strcasecmp(Name, "PauseOnMarkJump"))     PauseOnMarkJump    = atoi(Value);
+  else if (!strcasecmp(Name, "SkipEdited"))          SkipEdited         = atoi(Value);
+  else if (!strcasecmp(Name, "PauseAtLastMark"))     PauseAtLastMark    = atoi(Value);
+  else if (!strcasecmp(Name, "BinarySkipInitial"))   BinarySkipInitial  = atoi(Value);
+  else if (!strcasecmp(Name, "BinarySkipTimeout"))   BinarySkipTimeout  = atoi(Value);
   else if (!strcasecmp(Name, "ResumeID"))            ResumeID           = atoi(Value);
   else if (!strcasecmp(Name, "CurrentChannel"))      CurrentChannel     = atoi(Value);
   else if (!strcasecmp(Name, "CurrentVolume"))       CurrentVolume      = atoi(Value);
   else if (!strcasecmp(Name, "CurrentDolby"))        CurrentDolby       = atoi(Value);
   else if (!strcasecmp(Name, "InitialChannel"))      InitialChannel     = Value;
+  else if (!strcasecmp(Name, "VolumeSteps"))         VolumeSteps        = atoi(Value);
+  else if (!strcasecmp(Name, "VolumeLinearize"))     VolumeLinearize    = atoi(Value);
   else if (!strcasecmp(Name, "InitialVolume"))       InitialVolume      = atoi(Value);
   else if (!strcasecmp(Name, "DeviceBondings"))      DeviceBondings     = Value;
   else if (!strcasecmp(Name, "ChannelsWrap"))        ChannelsWrap       = atoi(Value);
@@ -796,11 +810,18 @@ bool cSetup::Save(void)
   Store("ShowRemainingTime",  ShowRemainingTime);
   Store("ProgressDisplayTime",ProgressDisplayTime);
   Store("PauseOnMarkSet",     PauseOnMarkSet);
+  Store("PauseOnMarkJump",    PauseOnMarkJump);
+  Store("SkipEdited",         SkipEdited);
+  Store("PauseAtLastMark",    PauseAtLastMark);
+  Store("BinarySkipInitial",  BinarySkipInitial);
+  Store("BinarySkipTimeout",  BinarySkipTimeout);
   Store("ResumeID",           ResumeID);
   Store("CurrentChannel",     CurrentChannel);
   Store("CurrentVolume",      CurrentVolume);
   Store("CurrentDolby",       CurrentDolby);
   Store("InitialChannel",     InitialChannel);
+  Store("VolumeSteps",        VolumeSteps);
+  Store("VolumeLinearize",    VolumeLinearize);
   Store("InitialVolume",      InitialVolume);
   Store("DeviceBondings",     DeviceBondings);
   Store("ChannelsWrap",       ChannelsWrap);

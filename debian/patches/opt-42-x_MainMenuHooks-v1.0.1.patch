@@ -73,9 +73,9 @@ just the version number.
 
 --- a/config.h
 +++ b/config.h
-@@ -38,6 +38,10 @@
- 
- #define JUMPPLAYVERSNUM 110
+@@ -36,6 +36,10 @@
+ // plugins to work with newer versions of the core VDR as long as no
+ // VDR header files have changed.
  
 +// The MainMenuHook Patch's version number:
 +#define MAINMENUHOOKSVERSION "1.0.1"
@@ -86,7 +86,7 @@ just the version number.
  #define LIVEPRIORITY      0                  // priority used when selecting a device for live viewing
 --- a/menu.c
 +++ b/menu.c
-@@ -3786,15 +3786,31 @@
+@@ -3859,15 +3859,31 @@
  
    // Initial submenus:
  
@@ -124,7 +124,7 @@ just the version number.
  }
  
  cOsdObject *cMenuMain::PluginOsdObject(void)
-@@ -3927,13 +3943,34 @@
+@@ -4000,13 +4016,34 @@
    eOSState state = cOsdMenu::ProcessKey(Key);
    HadSubMenu |= HasSubMenu();
  
@@ -165,7 +165,7 @@ just the version number.
      case osStopRecord: if (Interface->Confirm(tr("Stop recording?"))) {
                            cOsdItem *item = Get(Current());
                            if (item) {
-@@ -4020,6 +4057,12 @@
+@@ -4093,6 +4130,12 @@
                 default:      break;
                 }
      }

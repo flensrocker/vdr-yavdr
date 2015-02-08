@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 3.7 2014/01/31 09:21:21 kls Exp $
+ * $Id: ci.h 3.11 2015/01/31 14:36:41 kls Exp $
  */
 
 #ifndef __CI_H
@@ -79,11 +79,14 @@ enum eModuleStatus { msNone, msReset, msPresent, msReady };
 class cCiAdapter : public cThread {
   friend class cCamSlot;
 private:
-  cDevice *assignedDevice;
   cCamSlot *camSlots[MAX_CAM_SLOTS_PER_ADAPTER];
   void AddCamSlot(cCamSlot *CamSlot);
        ///< Adds the given CamSlot to this CI adapter.
 protected:
+  cCamSlot *ItCamSlot(int &Iter);
+       ///< Iterates over all added CAM slots of this adapter. Iter has to be
+       ///< initialized to 0 and is required to store the iteration state.
+       ///< Returns NULL if no further CAM slot is found.
   virtual void Action(void);
        ///< Handles the attached CAM slots in a separate thread.
        ///< The derived class must call the Start() function to
@@ -119,7 +122,8 @@ class cTPDU;
 class cCiTransportConnection;
 class cCiSession;
 class cCiCaProgramData;
-class cReceiver;
+class cCaPidReceiver;
+class cCaActivationReceiver;
 
 class cCamSlot : public cListObject {
   friend class cCiAdapter;
@@ -128,7 +132,9 @@ private:
   cMutex mutex;
   cCondVar processed;
   cCiAdapter *ciAdapter;
-  cReceiver *caPidReceiver;
+  cDevice *assignedDevice;
+  cCaPidReceiver *caPidReceiver;
+  cCaActivationReceiver *caActivationReceiver;
   int slotIndex;
   int slotNumber;
   cCiTransportConnection *tc[MAX_CONNECTIONS_PER_CAM_SLOT + 1];  // connection numbering starts with 1
@@ -164,7 +170,7 @@ public:
        ///< device it was previously assigned to. The value of Query
        ///< is ignored in that case, and this function always returns
        ///< 'true'.
-  cDevice *Device(void);
+  cDevice *Device(void) { return assignedDevice; }
        ///< Returns the device this CAM slot is currently assigned to.
   bool WantsTsData(void) const { return caPidReceiver != NULL; }
        ///< Returns true if this CAM slot wants to receive the TS data through
@@ -178,6 +184,23 @@ public:
   virtual bool Reset(void);
        ///< Resets the CAM in this slot.
        ///< Returns true if the operation was successful.
+  virtual bool CanActivate(void);
+       ///< Returns true if there is a CAM in this slot that can be put into
+       ///< activation mode.
+  virtual void StartActivation(void);
+       ///< Puts the CAM in this slot into a mode where an inserted smart card
+       ///< can be activated. The default action is to make IsActivating() return
+       ///< true, which causes the device this CAM slot is attached to to never
+       ///< automatically detach any receivers with negative priority if the
+       ///< PIDs they want to receive are not decrypted by the CAM.
+       ///< StartActivation() must be called *after* the CAM slot has been assigned
+       ///< to a device. The CAM slot will stay in activation mode until the CAM
+       ///< begins to decrypt, a call to CancelActivation() is made, or the device
+       ///< is needed for a recording.
+  virtual void CancelActivation(void);
+       ///< Cancels a previously started activation (if any).
+  virtual bool IsActivating(void);
+       ///< Returns true if this CAM slot is currently activating a smart card.
   virtual eModuleStatus ModuleStatus(void);
        ///< Returns the status of the CAM in this slot.
   virtual const char *GetCamName(void);
@@ -197,7 +220,7 @@ public:
   virtual cCiEnquiry *GetEnquiry(void);
        ///< Gets a pending enquiry, or NULL if there is no enquiry.
   int Priority(void);
-       ///< Returns the priority if the device this slot is currently assigned
+       ///< Returns the priority of the device this slot is currently assigned
        ///< to, or IDLEPRIORITY if it is not assigned to any device.
   virtual bool ProvidesCa(const int *CaSystemIds);
        ///< Returns true if the CAM in this slot provides one of the given
