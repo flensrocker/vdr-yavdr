@@ -37,5 +37,3 @@ opt-65_pin.patch
 #xprmtl-02_permashift-0.5.4.patch
 xprmtl-03_hide-first-recording-level-v3.patch
 
-vdr-2.1.7-eit-memory-leak.patch
-
