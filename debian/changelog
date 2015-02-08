@@ -1,4 +1,10 @@
-vdr (2.1.9-0yavdr0~precise) precise; urgency=medium
+vdr (2.1.9-1yavdr0~precise) precise; urgency=medium
+
+  * increase abi-version
+
+ -- Lars Hanisch <dvb@flensrocker.de>  Sun, 08 Feb 2015 15:54:28 +0100
+
+vdr (2.1.9-0yavdr0~trusty) trusty; urgency=medium
 
   * new upstream version
 
