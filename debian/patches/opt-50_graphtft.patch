@@ -156,7 +156,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    };
  
  cMenuSetupCAM::cMenuSetupCAM(void)
-@@ -3790,6 +3830,7 @@
+@@ -3793,6 +3833,7 @@
  public:
    cMenuSetupPlugins(void);
    virtual eOSState ProcessKey(eKeys Key);
@@ -164,7 +164,7 @@ Origin: https://vdr-graphtft.svn.sourceforge.net/svnroot/vdr-graphtft
    };
  
  cMenuSetupPlugins::cMenuSetupPlugins(void)
-@@ -3845,6 +3886,7 @@
+@@ -3848,6 +3889,7 @@
  public:
    cMenuSetup(void);
    virtual eOSState ProcessKey(eKeys Key);

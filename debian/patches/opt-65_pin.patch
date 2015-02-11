@@ -65,7 +65,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
       if (ri->IsDirectory())
          Open();
       else {
-@@ -4057,28 +4073,32 @@
+@@ -4060,28 +4076,32 @@
  
    // Basic menu items:
  
@@ -103,7 +103,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
       Add(new cOsdItem(hk(tr("Commands")),  osCommands));
  
    }
-@@ -4149,6 +4169,14 @@
+@@ -4152,6 +4172,14 @@
    eOSState state = cOsdMenu::ProcessKey(Key);
    HadSubMenu |= HasSubMenu();
  
@@ -118,7 +118,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
    cOsdObject *menu = NULL;
    switch (state) {
      case osSchedule:
-@@ -4195,6 +4223,7 @@
+@@ -4198,6 +4226,7 @@
                           if (item) {
                              cPlugin *p = cPluginManager::GetPlugin(item->PluginIndex());
                              if (p) {
@@ -126,7 +126,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
                                 cOsdObject *menu = p->MainMenuAction();
                                 if (menu) {
                                    if (menu->IsMenu())
-@@ -4206,6 +4235,7 @@
+@@ -4209,6 +4238,7 @@
                                    }
                                 }
                              }
@@ -134,7 +134,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
                           state = osEnd;
                         }
                         break;
-@@ -4420,6 +4450,7 @@
+@@ -4423,6 +4453,7 @@
             Channel = Direction > 0 ? Channels.Next(Channel) : Channels.Prev(Channel);
             if (!Channel && Setup.ChannelsWrap)
                Channel = Direction > 0 ? Channels.First() : Channels.Last();
@@ -142,7 +142,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
             if (Channel && !Channel->GroupSep() && cDevice::GetDevice(Channel, LIVEPRIORITY, true, true))
                return Channel;
             }
-@@ -5128,6 +5159,7 @@
+@@ -5131,6 +5162,7 @@
             for (int i = 0; i < MAXRECORDCONTROLS; i++) {
                 if (!RecordControls[i]) {
                    RecordControls[i] = new cRecordControl(device, Timer, Pause);
@@ -152,7 +152,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
                 }
 --- a/osd.c
 +++ b/osd.c
-@@ -1634,6 +1634,7 @@
+@@ -1643,6 +1643,7 @@
  int cOsd::osdHeight = 0;
  cVector<cOsd *> cOsd::Osds;
  cMutex cOsd::mutex;
@@ -162,10 +162,10 @@ Author: Jörg Wendel (horchi@vdr-portal)
  {
 --- a/osd.h
 +++ b/osd.h
-@@ -937,6 +937,7 @@
-        ///<        MyOsdDrawPixmap(Left() + pm->ViewPort().X(), Top() + pm->ViewPort().Y(), pm->Data(), w, h, h * d);
-        ///<        delete pm;
-        ///<        }
+@@ -941,6 +941,7 @@
+        ///<
+        ///< If a plugin uses a derived cPixmap implementation, it needs to use that
+        ///< type instead of cPixmapMemory.
 +  static bool pinValid;   // PIN PATCH
    };
  
@@ -388,7 +388,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
  
  #define MINCHANNELWAIT        10 // seconds to wait between failed channel switchings
  #define ACTIVITYTIMEOUT       60 // seconds before starting housekeeping
-@@ -1064,6 +1065,7 @@
+@@ -1087,6 +1088,7 @@
          cOsdObject *Interact = Menu ? Menu : cControl::Control();
          eKeys key = Interface->GetKey(!Interact || !Interact->NeedsFastResponse());
          if (ISREALKEY(key)) {
@@ -396,7 +396,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
             EITScanner.Activity();
             // Cancel shutdown countdown:
             if (ShutdownHandler.countdown)
-@@ -1136,10 +1138,12 @@
+@@ -1159,10 +1161,12 @@
                       cControl::Control()->Hide();
                    cPlugin *plugin = cPluginManager::GetPlugin(PluginName);
                    if (plugin) {
@@ -409,7 +409,7 @@ Author: Jörg Wendel (horchi@vdr-portal)
                    else
                       esyslog("ERROR: unknown plugin '%s'", PluginName);
                    }
-@@ -1352,9 +1356,11 @@
+@@ -1375,9 +1379,11 @@
               // Instant resume of the last viewed recording:
               case kPlay:
                    if (cReplayControl::LastReplayed()) {
